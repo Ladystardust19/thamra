@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #f2ebe3;
+    /* Very subtle paper grain: tiny dots at ~3% over the warm cream */
+    background-image: radial-gradient(
+      rgba(61, 51, 53, 0.03) 0.6px,
+      transparent 0.7px
+    );
+    background-size: 3px 3px;
+    color: #3d3335;
+    font-weight: 300; /* Jost light — thin, airy body */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings/brand: light serif (Cormorant / Noto Serif Georgian) for an
+     elegant thin look. Base layer so a utility weight class still wins. */
+  .font-display {
+    font-weight: 300;
+  }
+
+  ::selection {
+    background-color: rgba(139, 47, 58, 0.9);
+    color: #f7f1e9;
+  }
+}
+
+@layer utilities {
+  /*
+   * Scroll-reveal as progressive enhancement.
+   * Content is fully visible by default (no-JS / pre-hydration). Only once the
+   * inline boot script adds `.js` to <html> do we hide elements and let the
+   * IntersectionObserver fade them in. This guarantees content is never trapped
+   * at opacity:0 if JavaScript fails to run.
+   */
+  html.js .reveal {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 1.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+      transform 1.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: opacity, transform;
+  }
+
+  html.js .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
