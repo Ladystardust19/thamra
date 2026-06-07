@@ -5,6 +5,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Reserve space at the top for the fixed header so anchor links land correctly */
+    scroll-padding-top: 80px;
   }
 
   body {

@@ -1,0 +1,188 @@
+/* ============================================================
+   HeroCover — full-screen luxury hero section
+   Design system tokens (colors, fonts) are inherited from
+   globals.css and tailwind.config.ts where applicable.
+   ============================================================ */
+
+/* ─── Hero wrapper ─── */
+.hero {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+
+  /* Cover image fills the frame; right-anchored so the woman stays visible */
+  background-image: url('/hero-cover.webp');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+
+  /* Vertically center the content block */
+  display: flex;
+  align-items: center;
+}
+
+/* ─── Gradient overlay ───────────────────────────────────────
+   A left-to-right fade: denser on the left where text lives,
+   barely-there on the right so the woman's face stays vivid.
+   Left panel reaches ~50% opacity; right thins to ~5%.
+   ─────────────────────────────────────────────────────────── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(22, 12, 14, 0.62) 0%,    /* text side — warm dark, strong enough for white type */
+    rgba(22, 12, 14, 0.28) 48%,   /* center transition */
+    rgba(22, 12, 14, 0.06) 100%   /* portrait side — barely tinted */
+  );
+  pointer-events: none;
+}
+
+/* ─── Max-width content container ─── */
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 2.5rem;
+
+  /* Push content below the fixed header (announcement bar + nav ≈ 104px) */
+  padding-top: 6.5rem;
+}
+
+/* ─── Left-side text block ─── */
+.content {
+  max-width: 520px;
+}
+
+/* ─── Subheadline — small uppercase with wide tracking ─── */
+.subheadline {
+  display: block;
+  font-family: var(--font-jost), var(--font-ge-sans), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+
+  /* Gold — matches brand accent color */
+  color: #c9a96e;
+}
+
+/* ─── H1 — prominent display serif ─── */
+.headline {
+  margin-top: 1.2rem;
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+
+  /* Fluid type: never smaller than 2.4rem, scales with viewport */
+  font-size: clamp(2.4rem, 4.8vw, 3.6rem);
+  font-weight: 300;
+  line-height: 1.07;
+  letter-spacing: 0.01em;
+
+  color: #f7f1e9; /* cream-soft */
+}
+
+/* Italic THAMRA wordmark within the H1 */
+.headlineItalic {
+  font-style: italic;
+  letter-spacing: 0.22em;
+}
+
+/* ─── Description paragraph ─── */
+.description {
+  margin-top: 1.4rem;
+  font-family: var(--font-jost), var(--font-ge-sans), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 300;
+  line-height: 1.82;
+
+  /* Slightly muted cream — softer than the headline */
+  color: rgba(247, 241, 233, 0.80);
+  max-width: 430px;
+}
+
+/* ─── CTA button ─── */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 2.2rem;
+  padding: 0.9rem 2.1rem;
+  border-radius: 3px;
+
+  background-color: #8b2f3a; /* oxblood */
+  color: #f7f1e9;             /* cream-soft */
+  text-decoration: none;
+
+  font-family: var(--font-jost), system-ui, sans-serif;
+  font-size: 0.77rem;
+  font-weight: 400;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+
+  /* Smooth lift + color transition */
+  transition:
+    background-color 0.3s ease,
+    transform 0.25s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Arrow trailing the label */
+.cta::after {
+  content: '→';
+  display: inline-block;
+  transition: transform 0.35s ease;
+}
+
+.cta:hover {
+  background-color: #722530; /* oxblood-dark */
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -8px rgba(139, 47, 58, 0.45);
+}
+
+.cta:hover::after {
+  transform: translateX(5px);
+}
+
+
+/* ============================================================
+   RESPONSIVE — Mobile (< 768 px)
+   ============================================================ */
+@media (max-width: 767px) {
+
+  .hero {
+    /* Allow content to grow beyond the viewport on very short screens */
+    min-height: 100vh;
+    height: auto;
+
+    /* Shift portrait to top-center so the woman's face leads the frame */
+    background-position: center top;
+
+    /* Stack content at the bottom — face stays visible at top */
+    align-items: flex-end;
+  }
+
+  .container {
+    /* Generous bottom breathing room; top accounts for fixed header */
+    padding: 7rem 1.375rem 3.25rem;
+  }
+
+  .content {
+    max-width: 100%;
+  }
+
+  .headline {
+    font-size: clamp(1.9rem, 7.5vw, 2.5rem);
+  }
+
+  .description {
+    font-size: 0.9375rem;
+    max-width: 100%;
+  }
+
+  .cta {
+    width: 100%;
+    justify-content: center;
+  }
+}

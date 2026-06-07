@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
+import HeroCover from "@/components/HeroCover";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -224,6 +225,11 @@ function Stars() {
 export default function Home() {
   return (
     <main className="w-full overflow-x-hidden">
+      {/* ============================================================ */}
+      {/* COVER HERO — full-screen background image                    */}
+      {/* ============================================================ */}
+      <HeroCover />
+
       {/* ============================================================ */}
       {/* 3 — HERO                                                     */}
       {/* ============================================================ */}

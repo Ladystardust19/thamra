@@ -14,14 +14,15 @@ export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    // Switch to opaque once user scrolls past the hero fold
+    const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <>
+    <header className="fixed inset-x-0 top-0 z-50">
       {/* 1 — ANNOUNCEMENT BAR */}
       {!dismissed && (
         <div className="relative flex h-10 items-center justify-center bg-oxblood px-10 text-center">
@@ -48,8 +49,10 @@ export default function SiteHeader() {
 
       {/* 2 — NAVIGATION */}
       <nav
-        className={`sticky top-0 z-40 bg-cream/95 backdrop-blur-sm transition-shadow duration-300 ${
-          scrolled ? "shadow-[0_4px_24px_-12px_rgba(61,51,53,0.3)]" : ""
+        className={`transition-all duration-500 ${
+          scrolled
+            ? "bg-cream/95 shadow-[0_4px_24px_-12px_rgba(61,51,53,0.25)] backdrop-blur-sm"
+            : "bg-transparent"
         }`}
       >
         <div className="relative mx-auto flex w-full max-w-[1280px] items-center justify-between px-6 py-4 sm:px-10">
@@ -59,17 +62,23 @@ export default function SiteHeader() {
               <a
                 key={l.href}
                 href={l.href}
-                className="font-body text-[13px] font-normal uppercase tracking-[0.1em] text-ink transition-colors hover:text-oxblood"
+                className={`font-body text-[13px] font-normal uppercase tracking-[0.1em] transition-colors duration-500 ${
+                  scrolled
+                    ? "text-ink hover:text-oxblood"
+                    : "text-cream-soft/90 hover:text-white"
+                }`}
               >
                 {l.label}
               </a>
             ))}
           </div>
 
-          {/* centered logo */}
+          {/* centered wordmark */}
           <a
             href="#"
-            className="absolute left-1/2 -translate-x-1/2 font-display text-2xl font-normal tracking-[0.3em] text-oxblood"
+            className={`absolute left-1/2 -translate-x-1/2 font-display text-2xl font-normal tracking-[0.3em] transition-colors duration-500 ${
+              scrolled ? "text-oxblood" : "text-cream-soft"
+            }`}
           >
             THAMRA
           </a>
@@ -78,13 +87,17 @@ export default function SiteHeader() {
           <div className="ml-auto flex items-center gap-5">
             <a
               href="#shop"
-              className="font-body text-[12px] font-normal uppercase tracking-[0.15em] text-oxblood transition-colors duration-300 hover:text-oxblood-dark"
+              className={`font-body text-[12px] font-normal uppercase tracking-[0.15em] transition-colors duration-500 ${
+                scrolled
+                  ? "text-oxblood hover:text-oxblood-dark"
+                  : "text-cream-soft/90 hover:text-white"
+              }`}
             >
               რეგისტრაცია
             </a>
           </div>
         </div>
       </nav>
-    </>
+    </header>
   );
 }
