@@ -92,6 +92,33 @@ const testimonials = [
   },
 ];
 
+const problemCauses = [
+  {
+    num: "01",
+    side: "left",
+    title: "ესტროგენი ეცემა, DHT იზრდება",
+    text: "მენოპაუზის დროს ესტროგენი მკვეთრად მცირდება. DHT ჰორმონი თავისუფლდება — და ფოლიკულს ანადგურებს.",
+  },
+  {
+    num: "02",
+    side: "right",
+    title: "სხეული ვეღარ კვებავს თმას",
+    text: "მენოპაუზი ამცირებს კოლაგენის წარმოებას, რკინის შეწოვას და ცილის სინთეზს. ფოლიკულს აკლია ნედლეული.",
+  },
+  {
+    num: "03",
+    side: "left",
+    title: "კორტიზოლი არ ჩერდება",
+    text: "ჰორმონალური ცვლილება კორტიზოლს ზრდის. მაღალი კორტიზოლი ფოლიკულს ვადამდე \"ძილის რეჟიმში\" აგზავნის.",
+  },
+  {
+    num: "04",
+    side: "right",
+    title: "სკალპი კარგავს სიძლიერეს",
+    text: "D ვიტამინისა და სელენის ნაკლებობა ასუსტებს სკალპის ეკოსისტემას — სუსტი ნიადაგი, სუსტი ფესვები.",
+  },
+];
+
 const trustBadges = [
   { icon: "flask",        text: "ლაბორატორიულად ტესტირებული" },
   { icon: "shield-check", text: "GMP სერტიფიცირებული" },
@@ -228,6 +255,7 @@ function TrustBadgeIcon({ name }: { name: string }) {
   );
 }
 
+
 function Check() {
   return (
     <svg
@@ -310,6 +338,118 @@ export default function Home() {
               </Fragment>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* PROBLEM STATEMENT — Part 1: dramatic oxblood opener         */}
+      {/* ============================================================ */}
+      <section className="relative overflow-hidden bg-oxblood">
+        <div className="relative mx-auto w-full max-w-[1280px] px-6 sm:px-10">
+          <div className="grid min-h-0 grid-cols-1 py-[160px] lg:grid-cols-[60fr_40fr]">
+
+            {/* LEFT — headline block */}
+            <Reveal>
+              <div className="relative z-10 flex flex-col">
+                {/* label */}
+                <span
+                  className="font-body text-[15px] uppercase tracking-[0.18em] text-gold"
+                >
+                  რატომ იზრდება თმის ცვენა მენოპაუზის დროს?
+                </span>
+
+                {/* headline */}
+                <h2 className="mt-8 font-display font-[300] leading-[1.05]">
+                  <span className="block text-[clamp(2.8rem,7vw,4.5rem)] text-[#F5F0EB]">
+                    ერთი მიზეზი არ აქვს.
+                  </span>
+                  <span className="block text-[clamp(3.2rem,8vw,5rem)] italic text-gold">
+                    აქვს ხუთი.
+                  </span>
+                </h2>
+
+                {/* subtitle */}
+                <p className="mt-10 max-w-[480px] font-body text-[17px] font-light leading-[1.8] text-[#F5F0EB]/70">
+                  ასაკობრივ და ჰორმონალურ ცვლილებებთან ერთად, თმის ფოლიკულს
+                  ერთდროულად რამდენიმე ფაქტორი ასუსტებს.
+                </p>
+              </div>
+            </Reveal>
+
+            {/* RIGHT — decorative bleed "5" */}
+            <div className="pointer-events-none hidden select-none lg:flex lg:items-center lg:justify-start">
+              <span
+                className="font-display font-[200] leading-none text-[#F5F0EB]/[0.05]"
+                style={{ fontSize: "500px", lineHeight: 1, marginLeft: "-60px" }}
+                aria-hidden
+              >
+                5
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* PROBLEM STATEMENT — Part 2: staggered timeline causes        */}
+      {/* ============================================================ */}
+      <section className="bg-[#F2EBE3]">
+        <div className="mx-auto w-full max-w-[1100px] px-6 sm:px-10 py-[120px]">
+
+          {/* timeline wrapper — relative so the center line can be absolute */}
+          <div className="relative">
+
+            {/* center vertical line — desktop only */}
+            <div
+              className="absolute left-1/2 hidden h-full w-px -translate-x-1/2 bg-[#C9A96E]/20 lg:block"
+              aria-hidden
+            />
+
+            {/* causes */}
+            <div className="flex flex-col gap-[60px] lg:gap-[100px]">
+              {problemCauses.map((c, i) => {
+                const isLeft = c.side === "left";
+                return (
+                  <Reveal key={c.num} delay={i * 60}>
+                    {/* 2-col grid — left half and right half separated by the center line */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2">
+                      {/* content cell — sits in the correct half via col-start */}
+                      <div
+                        className={`flex flex-col${
+                          isLeft
+                            ? " lg:col-start-1 lg:pr-16"
+                            : " lg:col-start-2 lg:pl-16"
+                        }`}
+                      >
+                        <span className="font-display text-[64px] font-[200] leading-none text-gold">
+                          {c.num}
+                        </span>
+                        <h3 className="mt-4 font-display text-[24px] font-normal leading-snug text-oxblood">
+                          {c.title}
+                        </h3>
+                        <p className="mt-3 max-w-[400px] font-body text-[15px] font-light leading-[1.7] text-[#4A3F3C]">
+                          {c.text}
+                        </p>
+                      </div>
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* footer */}
+          <Reveal delay={80}>
+            <div className="mt-20 flex flex-col items-center gap-4">
+              <span className="h-px w-[60px] bg-gold" aria-hidden />
+              <p className="font-display text-[20px] italic text-oxblood">
+                Thamra Advanced Hair Biomatrix™
+              </p>
+              <p className="font-body text-[13px] uppercase tracking-[0.12em] text-gold">
+                15 ინგრედიენტი · 5 მიზნობრივი კომპლექსი
+              </p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
