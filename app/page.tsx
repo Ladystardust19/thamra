@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import HeroCover from "@/components/HeroCover";
@@ -6,11 +7,6 @@ import HeroCover from "@/components/HeroCover";
 /* Data                                                                */
 /* ------------------------------------------------------------------ */
 
-const heroStats = [
-  { value: "14", label: "ინგრედიენტი" },
-  { value: "5g", label: "კოლაგენი" },
-  { value: "90", label: "დღე" },
-];
 
 const rootCauses = [
   {
@@ -96,6 +92,14 @@ const testimonials = [
   },
 ];
 
+const trustBadges = [
+  { icon: "flask",        text: "ლაბორატორიულად ტესტირებული" },
+  { icon: "shield-check", text: "GMP სერტიფიცირებული" },
+  { icon: "leaf",         text: "არა-GMO" },
+  { icon: "cross",        text: "ექიმის მიერ შექმნილი" },
+  { icon: "japan",        text: "წარმოებულია იაპონიაში" },
+];
+
 /* ------------------------------------------------------------------ */
 /* Icons                                                               */
 /* ------------------------------------------------------------------ */
@@ -177,6 +181,53 @@ function RootCauseIcon({ name }: { name: string }) {
   );
 }
 
+function TrustBadgeIcon({ name }: { name: string }) {
+  const base = {
+    width: 24,
+    height: 24,
+    viewBox: "0 0 24 24",
+    fill: "none" as const,
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  if (name === "flask")
+    return (
+      <svg {...base} aria-hidden>
+        <path d="M9 2h6" />
+        <path d="M10 2v7L5.5 16.5A2 2 0 0 0 7.3 19.5h9.4a2 2 0 0 0 1.8-3L14 9V2" />
+        <path d="M7.5 14.5h9" />
+      </svg>
+    );
+  if (name === "shield-check")
+    return (
+      <svg {...base} aria-hidden>
+        <path d="M12 2L4 6v5c0 4.4 3.5 8.5 8 10 4.5-1.5 8-5.6 8-10V6L12 2z" />
+        <path d="M9 12l2 2 4-4" />
+      </svg>
+    );
+  if (name === "leaf")
+    return (
+      <svg {...base} aria-hidden>
+        <path d="M5 19c0-8 6-14 14-14 0 8-6 14-14 14z" />
+        <path d="M5 19C9 14 13 11 18 9" />
+      </svg>
+    );
+  if (name === "cross")
+    return (
+      <svg {...base} strokeWidth={1.8} aria-hidden>
+        <path d="M12 5v14M5 12h14" />
+      </svg>
+    );
+  return (
+    <svg {...base} aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7l1.4 3.5L17 11l-2.5 2.5.6 3.5L12 15.5 9 17l.6-3.5L7 11l3.6-.5L12 7z" />
+    </svg>
+  );
+}
+
 function Check() {
   return (
     <svg
@@ -231,65 +282,34 @@ export default function Home() {
       <HeroCover />
 
       {/* ============================================================ */}
-      {/* 3 — HERO                                                     */}
+      {/* TRUST BADGES                                                 */}
       {/* ============================================================ */}
-      <section>
-        <div
-          className={`${CONTAINER} grid items-center gap-14 py-16 md:py-24 lg:grid-cols-[45fr_55fr] lg:gap-16`}
-        >
-          <Reveal className="order-1">
-            <h1 className="font-display text-[2rem] font-light leading-[1.1] text-oxblood sm:text-[2.6rem] lg:text-[3rem]">
-              <span className="block italic tracking-[0.2em]">THAMRA</span>
-              <span className="block text-read">თმის სილამაზე შიგნიდან</span>
-            </h1>
-            <p className="mt-6 max-w-md font-body text-[17px] font-light leading-[1.8] text-read">
-              უნიკალური ფორმულა{" "}
-              <span className="italic text-oxblood">Advanced Hair Biomatrix™</span>{" "}
-              ქალებისთვის შექმნილი თმის ზრდის, ბუნებრივი მოცულობისა და
-              ბრწყინვალების ხანგრძლივი მხარდაჭერისთვის ასაკობრივი და
-              ჰორმონალური ცვლილებების პერიოდში.
-            </p>
-            <a
-              href="#shop"
-              className="mt-9 inline-flex items-center gap-3 rounded-[4px] bg-oxblood px-9 py-4 font-body text-[13px] font-normal uppercase tracking-[0.14em] text-cream-soft transition-colors duration-300 hover:bg-oxblood-dark"
-            >
-              შეიძინე Thamra
-              <span aria-hidden>→</span>
-            </a>
-
-            {/* stats row */}
-            <div className="mt-10 flex items-center gap-6">
-              {heroStats.map((s, i) => (
-                <div key={s.label} className="flex items-center gap-6">
-                  {i > 0 && (
-                    <span className="h-8 w-px bg-gold/40" aria-hidden />
-                  )}
-                  <div>
-                    <div className="font-display text-[1.6rem] font-light leading-none text-oxblood">
-                      {s.value}
-                    </div>
-                    <div className="mt-1.5 font-body text-[12px] font-light uppercase tracking-[0.14em] text-muted">
-                      {s.label}
-                    </div>
-                  </div>
+      <section aria-label="Trust badges" className="bg-[#EDE5DC]">
+        <div className={`${CONTAINER} py-10`}>
+          <div className="grid grid-cols-2 gap-y-7 md:flex md:items-center md:justify-center">
+            {trustBadges.map((badge, i) => (
+              <Fragment key={badge.text}>
+                {i > 0 && (
+                  <span
+                    className="hidden md:block h-10 w-px flex-shrink-0 bg-[#C9A96E]/15"
+                    aria-hidden
+                  />
+                )}
+                <div
+                  className={`flex flex-col items-center gap-2.5 px-5 md:px-8${
+                    i === 4 ? " col-span-2 justify-self-center" : ""
+                  }`}
+                >
+                  <span className="text-oxblood">
+                    <TrustBadgeIcon name={badge.icon} />
+                  </span>
+                  <span className="text-center font-body text-[12px] uppercase leading-snug tracking-[0.1em] text-[#4A3F3C]">
+                    {badge.text}
+                  </span>
                 </div>
-              ))}
-            </div>
-          </Reveal>
-
-          <Reveal className="order-2" delay={150}>
-            <div className="relative mx-auto w-full max-w-[620px]">
-              <Image
-                src="/product-hero.png"
-                alt="თამრა — ქალის თმის გრძელვადიანი ფორმულა"
-                width={1402}
-                height={1122}
-                priority
-                sizes="(min-width: 1024px) 620px, 100vw"
-                className="w-full"
-              />
-            </div>
-          </Reveal>
+              </Fragment>
+            ))}
+          </div>
         </div>
       </section>
 
