@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
   { label: "ჩვენ შესახებ", href: "#story" },
-  { label: "მეცნიერება", href: "#science" },
-  { label: "შეიძინე", href: "#shop" },
-  { label: "კონტაქტი", href: "#footer" },
+  { label: "მეცნიერება",   href: "#science" },
+  { label: "შეიძინე",      href: "#shop" },
+  { label: "კონტაქტი",     href: "#footer" },
 ];
 
 export default function SiteHeader() {
@@ -14,7 +14,6 @@ export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    // Switch to opaque once user scrolls past the hero fold
     const onScroll = () => setScrolled(window.scrollY > 80);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -26,7 +25,7 @@ export default function SiteHeader() {
       {/* 1 — ANNOUNCEMENT BAR */}
       {!dismissed && (
         <div className="relative flex h-10 items-center justify-center bg-oxblood px-10 text-center">
-          <p className="font-body text-[13px] font-light tracking-[0.04em] text-cream-soft">
+          <p className="font-body text-[14px] font-light tracking-[0.04em] text-cream-soft">
             უფასო მიწოდება თბილისში · ყველა შეკვეთაზე
           </p>
           <button
@@ -55,14 +54,15 @@ export default function SiteHeader() {
             : "bg-transparent"
         }`}
       >
-        <div className="relative mx-auto flex w-full max-w-[1280px] items-center justify-between px-6 py-4 sm:px-10">
-          {/* left links (desktop) */}
+        <div className="relative mx-auto flex w-full max-w-[1400px] items-center px-6 py-4 sm:px-12">
+
+          {/* Left nav links */}
           <div className="hidden items-center gap-8 lg:flex">
             {NAV_LINKS.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
-                className={`font-body text-[13px] font-normal uppercase tracking-[0.1em] transition-colors duration-500 ${
+                className={`font-body text-[17px] font-normal uppercase tracking-[0.1em] transition-colors duration-500 ${
                   scrolled
                     ? "text-ink hover:text-oxblood"
                     : "text-cream-soft/90 hover:text-white"
@@ -73,21 +73,11 @@ export default function SiteHeader() {
             ))}
           </div>
 
-          {/* centered wordmark */}
-          <a
-            href="#"
-            className={`absolute left-1/2 -translate-x-1/2 font-display text-2xl font-normal tracking-[0.3em] transition-colors duration-500 ${
-              scrolled ? "text-oxblood" : "text-cream-soft"
-            }`}
-          >
-            THAMRA
-          </a>
-
-          {/* right actions */}
-          <div className="ml-auto flex items-center gap-5">
+          {/* Right action */}
+          <div className="ml-auto flex items-center">
             <a
               href="#shop"
-              className={`font-body text-[12px] font-normal uppercase tracking-[0.15em] transition-colors duration-500 ${
+              className={`font-body text-[17px] font-normal uppercase tracking-[0.15em] transition-colors duration-500 ${
                 scrolled
                   ? "text-oxblood hover:text-oxblood-dark"
                   : "text-cream-soft/90 hover:text-white"
@@ -96,6 +86,7 @@ export default function SiteHeader() {
               რეგისტრაცია
             </a>
           </div>
+
         </div>
       </nav>
     </header>

@@ -2,6 +2,9 @@ import { Fragment } from "react";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import HeroCover from "@/components/HeroCover";
+import KeyReasons from "@/components/KeyReasons";
+import IngredientsAccordion from "@/components/IngredientsAccordion";
+import Transformation from "@/components/Transformation";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -92,32 +95,6 @@ const testimonials = [
   },
 ];
 
-const problemCauses = [
-  {
-    num: "01",
-    side: "left",
-    title: "ესტროგენი ეცემა, DHT იზრდება",
-    text: "მენოპაუზის დროს ესტროგენი მკვეთრად მცირდება. DHT ჰორმონი თავისუფლდება — და ფოლიკულს ანადგურებს.",
-  },
-  {
-    num: "02",
-    side: "right",
-    title: "სხეული ვეღარ კვებავს თმას",
-    text: "მენოპაუზი ამცირებს კოლაგენის წარმოებას, რკინის შეწოვას და ცილის სინთეზს. ფოლიკულს აკლია ნედლეული.",
-  },
-  {
-    num: "03",
-    side: "left",
-    title: "კორტიზოლი არ ჩერდება",
-    text: "ჰორმონალური ცვლილება კორტიზოლს ზრდის. მაღალი კორტიზოლი ფოლიკულს ვადამდე \"ძილის რეჟიმში\" აგზავნის.",
-  },
-  {
-    num: "04",
-    side: "right",
-    title: "სკალპი კარგავს სიძლიერეს",
-    text: "D ვიტამინისა და სელენის ნაკლებობა ასუსტებს სკალპის ეკოსისტემას — სუსტი ნიადაგი, სუსტი ფესვები.",
-  },
-];
 
 const trustBadges = [
   { icon: "flask",        text: "ლაბორატორიულად ტესტირებული" },
@@ -284,8 +261,8 @@ function Star() {
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
-const CONTAINER = "mx-auto w-full max-w-[1280px] px-6 sm:px-10";
-const LABEL = "font-body text-[12px] font-normal uppercase tracking-[0.22em]";
+const CONTAINER = "mx-auto w-full max-w-[1400px] px-6 sm:px-12";
+const LABEL = "font-body text-[14px] font-normal uppercase tracking-[0.22em]";
 
 function Stars() {
   return (
@@ -342,124 +319,17 @@ export default function Home() {
       </section>
 
       {/* ============================================================ */}
-      {/* PROBLEM STATEMENT — Part 1: dramatic oxblood opener         */}
+      {/* KEY REASONS — interactive arc                              */}
       {/* ============================================================ */}
-      <section className="relative overflow-hidden bg-oxblood">
-        <div className="relative mx-auto w-full max-w-[1280px] px-6 sm:px-10">
-          <div className="grid min-h-0 grid-cols-1 py-[160px] lg:grid-cols-[60fr_40fr]">
-
-            {/* LEFT — headline block */}
-            <Reveal>
-              <div className="relative z-10 flex flex-col">
-                {/* label */}
-                <span
-                  className="font-body text-[15px] uppercase tracking-[0.18em] text-gold"
-                >
-                  რატომ იზრდება თმის ცვენა მენოპაუზის დროს?
-                </span>
-
-                {/* headline */}
-                <h2 className="mt-8 font-display font-[300] leading-[1.05]">
-                  <span className="block text-[clamp(2.8rem,7vw,4.5rem)] text-[#F5F0EB]">
-                    ერთი მიზეზი არ აქვს.
-                  </span>
-                  <span className="block text-[clamp(3.2rem,8vw,5rem)] italic text-gold">
-                    აქვს ხუთი.
-                  </span>
-                </h2>
-
-                {/* subtitle */}
-                <p className="mt-10 max-w-[480px] font-body text-[17px] font-light leading-[1.8] text-[#F5F0EB]/70">
-                  ასაკობრივ და ჰორმონალურ ცვლილებებთან ერთად, თმის ფოლიკულს
-                  ერთდროულად რამდენიმე ფაქტორი ასუსტებს.
-                </p>
-              </div>
-            </Reveal>
-
-            {/* RIGHT — decorative bleed "5" */}
-            <div className="pointer-events-none hidden select-none lg:flex lg:items-center lg:justify-start">
-              <span
-                className="font-display font-[200] leading-none text-[#F5F0EB]/[0.05]"
-                style={{ fontSize: "500px", lineHeight: 1, marginLeft: "-60px" }}
-                aria-hidden
-              >
-                5
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <KeyReasons />
 
       {/* ============================================================ */}
-      {/* PROBLEM STATEMENT — Part 2: staggered timeline causes        */}
-      {/* ============================================================ */}
-      <section className="bg-[#F2EBE3]">
-        <div className="mx-auto w-full max-w-[1100px] px-6 sm:px-10 py-[120px]">
-
-          {/* timeline wrapper — relative so the center line can be absolute */}
-          <div className="relative">
-
-            {/* center vertical line — desktop only */}
-            <div
-              className="absolute left-1/2 hidden h-full w-px -translate-x-1/2 bg-[#C9A96E]/20 lg:block"
-              aria-hidden
-            />
-
-            {/* causes */}
-            <div className="flex flex-col gap-[60px] lg:gap-[100px]">
-              {problemCauses.map((c, i) => {
-                const isLeft = c.side === "left";
-                return (
-                  <Reveal key={c.num} delay={i * 60}>
-                    {/* 2-col grid — left half and right half separated by the center line */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2">
-                      {/* content cell — sits in the correct half via col-start */}
-                      <div
-                        className={`flex flex-col${
-                          isLeft
-                            ? " lg:col-start-1 lg:pr-16"
-                            : " lg:col-start-2 lg:pl-16"
-                        }`}
-                      >
-                        <span className="font-display text-[64px] font-[200] leading-none text-gold">
-                          {c.num}
-                        </span>
-                        <h3 className="mt-4 font-display text-[24px] font-normal leading-snug text-oxblood">
-                          {c.title}
-                        </h3>
-                        <p className="mt-3 max-w-[400px] font-body text-[15px] font-light leading-[1.7] text-[#4A3F3C]">
-                          {c.text}
-                        </p>
-                      </div>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* footer */}
-          <Reveal delay={80}>
-            <div className="mt-20 flex flex-col items-center gap-4">
-              <span className="h-px w-[60px] bg-gold" aria-hidden />
-              <p className="font-display text-[20px] italic text-oxblood">
-                Thamra Advanced Hair Biomatrix™
-              </p>
-              <p className="font-body text-[13px] uppercase tracking-[0.12em] text-gold">
-                15 ინგრედიენტი · 5 მიზნობრივი კომპლექსი
-              </p>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* 4 — TAGLINE + BENEFITS                                       */}
+      {/* TAGLINE + BENEFITS                                           */}
       {/* ============================================================ */}
       <section className="bg-surface/40">
         <div className={`${CONTAINER} py-20 md:py-[140px]`}>
           <Reveal>
-            <p className="mx-auto max-w-3xl text-center font-display text-[24px] font-normal italic leading-[1.4] text-oxblood">
+            <p className="mx-auto max-w-3xl text-center font-display text-[32px] font-normal italic leading-[1.4] text-oxblood">
               უფრო ძლიერი, სიცოცხლით სავსე თმა — ყოველდღიურად.
             </p>
           </Reveal>
@@ -471,10 +341,10 @@ export default function Home() {
                   <span className="inline-flex text-oxblood">
                     <BenefitIcon name={b.icon} />
                   </span>
-                  <h3 className="mt-6 font-display text-[18px] font-normal text-ink">
+                  <h3 className="mt-6 font-display text-[22px] font-normal text-ink">
                     {b.title}
                   </h3>
-                  <p className="mt-3 font-body text-[17px] font-light leading-[1.8] text-read">
+                  <p className="mt-3 font-body text-[20px] font-light leading-[1.8] text-read">
                     {b.text}
                   </p>
                 </div>
@@ -485,238 +355,231 @@ export default function Home() {
       </section>
 
       {/* ============================================================ */}
-      {/* 4.5 — ROOT CAUSES                                            */}
+      {/* INGREDIENTS ACCORDION — Advanced Hair Biomatrix™             */}
       {/* ============================================================ */}
-      <section>
-        <div className={`${CONTAINER} py-20 md:py-[140px]`}>
-          <Reveal>
-            <div className="text-center">
-              <h2 className="font-display text-[36px] font-normal leading-[1.15] text-oxblood">
-                თმის ცვენის 6 ძირითადი მიზეზი
-              </h2>
-              <p className="mt-4 font-body text-[17px] font-light leading-[1.8] text-muted">
-                გაიგე, რა დგას შენი თმის ცვენის უკან
-              </p>
-            </div>
-          </Reveal>
-
-          <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-            {rootCauses.map((c, i) => (
-              <Reveal key={c.title} delay={(i % 3) * 120}>
-                <div className="group h-full rounded-[4px] border border-black/[0.06] bg-paper p-8 transition-all duration-1000 hover:-translate-y-1 hover:shadow-[inset_2px_0_0_0_#8B2F3A,0_24px_50px_-24px_rgba(61,51,53,0.3)]">
-                  <span className="inline-flex text-oxblood">
-                    <RootCauseIcon name={c.icon} />
-                  </span>
-                  <h3 className="mt-6 font-display text-[18px] font-normal text-oxblood">
-                    {c.title}
-                  </h3>
-                  <p className="mt-3 font-body text-[17px] font-light leading-[1.8] text-read">
-                    {c.text}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
+      <IngredientsAccordion />
 
       {/* ============================================================ */}
-      {/* 5 — SCIENCE / INGREDIENTS                                    */}
+      {/* TRANSFORMATION — 5-part section                             */}
       {/* ============================================================ */}
-      <section id="science" className="scroll-mt-24">
-        <div
-          className={`${CONTAINER} grid items-center gap-14 py-20 md:py-[140px] lg:grid-cols-2 lg:gap-20`}
-        >
-          <Reveal className="order-2 lg:order-1">
-            <span className={`${LABEL} text-gold`}>მეცნიერება</span>
-            <h2 className="mt-5 font-display text-[2rem] font-normal leading-[1.15] text-ink md:text-[2.25rem]">
-              ბუნებისა და მეცნიერების ძალა
-            </h2>
-            <p className="mt-5 max-w-md font-body text-[17px] font-light leading-[1.8] text-read">
-              ყოველი კოვზი აერთიანებს ძლიერ ინგრედიენტებს, რომლებიც თმის
-              ჯანმრთელობას შიგნიდან უჭერს მხარს.
-            </p>
-
-            <ul className="mt-9 space-y-5">
-              {ingredients.map((ing) => (
-                <li key={ing.name} className="flex gap-3.5">
-                  <Check />
-                  <span className="font-body text-[17px] font-light leading-[1.8] text-read">
-                    <span className="font-normal">{ing.name}</span>
-                    <span className="text-muted"> — {ing.desc}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-
-          <Reveal className="order-1 lg:order-2" delay={120}>
-            <div className="relative mx-auto w-full max-w-[560px]">
-              {/* soft background shape */}
-              <div
-                className="absolute inset-0 -m-6 rounded-[36px] bg-surface"
-                aria-hidden
-              />
-              <Image
-                src="/product-hero.png"
-                alt="თამრა — ინგრედიენტები"
-                width={1402}
-                height={1122}
-                sizes="(min-width: 1024px) 560px, 100vw"
-                className="relative w-full"
-              />
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <Transformation />
 
       {/* ============================================================ */}
       {/* 6 — BRAND STORY                                              */}
       {/* ============================================================ */}
-      <section id="story" className="scroll-mt-24 bg-surface/40">
-        <div
-          className={`${CONTAINER} grid items-center gap-14 py-20 md:py-[140px] lg:grid-cols-2 lg:gap-20`}
-        >
-          <Reveal className="order-2 lg:order-1">
-            <span className={`${LABEL} text-gold`}>ჩვენი ისტორია</span>
-            <h2 className="mt-5 font-display text-[1.9rem] font-normal leading-[1.15] text-ink md:text-[2rem]">
-              შთაგონებული ბუნებრივი სიძლიერით
-            </h2>
-            <p className="mt-6 font-body text-[17px] font-light leading-[1.8] text-read">
-              თამრა დაიბადა მარტივი რწმენით — რომ თმის ჯანმრთელობა სხეულის
-              შიგნით იწყება. ჩვენ გავაერთიანეთ თანამედროვე მეცნიერება და ბუნების
-              ძალა ერთ ფორმულაში.
-            </p>
-            <p className="mt-4 font-body text-[17px] font-light leading-[1.8] text-read">
-              ყოველი ინგრედიენტი შერჩეულია კლინიკური კვლევების საფუძველზე, რათა
-              მხარი დაუჭიროს ქალების თმის სიძლიერესა და ზრდას — ნაზად,
-              ბუნებრივად, ყოველდღიურად.
-            </p>
-            <a
-              href="#science"
-              className="mt-9 inline-flex items-center gap-3 rounded-[4px] border border-oxblood px-8 py-3.5 font-body text-[13px] font-normal uppercase tracking-[0.14em] text-oxblood transition-colors duration-300 hover:bg-oxblood hover:text-cream-soft"
-            >
-              გაიგე მეტი
-            </a>
-          </Reveal>
+      <section id="story" className="scroll-mt-24 bg-surface/40 overflow-hidden">
+        <div className="grid lg:grid-cols-2 min-h-[80vh]">
 
-          <Reveal className="order-1 lg:order-2" delay={120}>
-            <div className="relative mx-auto w-full max-w-[560px]">
-              <Image
-                src="/product-hero.png"
-                alt="თამრა — ბრენდის ისტორია"
-                width={1402}
-                height={1122}
-                sizes="(min-width: 1024px) 560px, 100vw"
-                className="w-full"
-              />
+          {/* Text — left, vertically centered, contained */}
+          <Reveal className="flex items-center order-2 lg:order-1">
+            <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
+              <span className={`${LABEL} text-gold`}>ჩვენი ისტორია</span>
+              <h2 className="mt-5 font-display text-[3.25rem] font-normal leading-[1.15] text-ink md:text-[3.75rem]">
+                შთაგონებული ბუნებრივი სიძლიერით
+              </h2>
+              <p className="mt-6 font-body text-[20px] font-light leading-[1.8] text-read">
+                თამრა დაიბადა მარტივი რწმენით — რომ თმის ჯანმრთელობა სხეულის
+                შიგნით იწყება. ჩვენ გავაერთიანეთ თანამედროვე მეცნიერება და ბუნების
+                ძალა ერთ ფორმულაში.
+              </p>
+              <p className="mt-4 font-body text-[20px] font-light leading-[1.8] text-read">
+                ყოველი ინგრედიენტი შერჩეულია კლინიკური კვლევების საფუძველზე, რათა
+                მხარი დაუჭიროს ქალების თმის სიძლიერესა და ზრდას — ნაზად,
+                ბუნებრივად, ყოველდღიურად.
+              </p>
+              <a
+                href="#science"
+                className="mt-9 inline-flex min-h-[60px] min-w-[280px] items-center gap-3 rounded-[4px] border border-oxblood px-8 py-4 font-body text-[18px] font-normal uppercase tracking-[0.14em] text-oxblood transition-colors duration-300 hover:bg-oxblood hover:text-cream-soft"
+              >
+                გაიგე მეტი
+              </a>
             </div>
           </Reveal>
+
+          {/* Image — right, full-bleed, fills entire column */}
+          <Reveal className="relative min-h-[420px] lg:min-h-0 order-1 lg:order-2" delay={120}>
+            <Image
+              src="/natural-accents.png"
+              alt="თამრა — ბრენდის ისტორია"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </Reveal>
+
         </div>
       </section>
+
+      {/* ============================================================ */}
+      {/* SECTION DIVIDER                                              */}
+      {/* ============================================================ */}
+      <div style={{ backgroundColor: "#F2EBE3", padding: "64px 0", textAlign: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, maxWidth: 480, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
+          {/* Small diamond ornament */}
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
+            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
+          </svg>
+          <span style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontSize: 13, letterSpacing: "0.35em", textTransform: "uppercase", color: "rgba(139,47,58,0.5)" }}>
+            THAMRA
+          </span>
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
+            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
+          </svg>
+          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
+        </div>
+      </div>
 
       {/* ============================================================ */}
       {/* 7 — TESTIMONIALS                                             */}
       {/* ============================================================ */}
-      <section>
-        <div className={`${CONTAINER} py-20 md:py-[140px]`}>
-          <Reveal>
-            <div className="text-center">
-              <h2 className="font-display text-[2rem] font-normal leading-[1.15] text-ink md:text-[2rem]">
+      <section style={{ backgroundColor: "#F2EBE3" }}>
+        <div className="flex flex-col lg:flex-row lg:min-h-screen">
+
+          {/* LEFT: title + stacked testimonials */}
+          <div className="flex-1 flex flex-col justify-center px-8 py-20 md:px-16 xl:px-24">
+
+            <Reveal>
+              <h2
+                className="font-display font-normal"
+                style={{ fontSize: "clamp(2.2rem, 4vw, 3rem)", color: "#8B2F3A", margin: "0 0 12px", lineHeight: 1.15 }}
+              >
                 ნდობით არჩეული
               </h2>
-              <p className="mt-4 font-body text-[17px] font-light leading-[1.8] text-muted">
-                ქალები, რომლებმაც თამრა აირჩიეს
+              <p className="font-body font-light" style={{ fontSize: 17, color: "#6B5F5A", marginBottom: 56 }}>
+                ქალები, რომლებმაც{" "}
+                <span style={{ color: "#C9A96E", letterSpacing: "0.1em" }}>THAMRA</span>{" "}
+                აირჩიეს
               </p>
-            </div>
-          </Reveal>
+            </Reveal>
 
-          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-            {testimonials.map((t, i) => (
-              <Reveal key={t.name} delay={i * 120}>
-                <figure className="flex h-full flex-col rounded-[4px] border border-black/[0.06] bg-paper p-8 transition-all duration-1000 hover:shadow-[inset_2px_0_0_0_#8B2F3A]">
-                  <span
-                    className="font-display text-[40px] leading-[0.6] text-gold"
-                    aria-hidden
-                  >
-                    &ldquo;
-                  </span>
-                  <div className="mt-5">
-                    <Stars />
-                  </div>
-                  <blockquote className="mt-5 grow font-body text-[17px] font-light leading-[1.8] text-read">
-                    {t.quote}
-                  </blockquote>
-                  <figcaption className="mt-7 flex items-center gap-3 border-t border-black/[0.06] pt-6">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-oxblood font-display text-[15px] text-cream-soft">
-                      {t.initial}
+            <div className="flex flex-col gap-10">
+              {testimonials.map((t, i) => (
+                <Reveal key={t.name} delay={i * 120}>
+                  <figure style={{ borderTop: "2px solid #C9A96E", paddingTop: 28, margin: 0 }}>
+                    <span
+                      className="font-display"
+                      style={{ fontSize: 48, lineHeight: 0.8, color: "rgba(201,169,110,0.45)", display: "block" }}
+                      aria-hidden
+                    >
+                      &ldquo;
                     </span>
-                    <span className="font-body text-[13px] font-light text-muted">
-                      <span className="font-normal text-ink">{t.name}</span> ·{" "}
-                      {t.age} · {t.city}
-                    </span>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
+                    <blockquote
+                      className="font-display font-light italic"
+                      style={{ fontSize: 20, color: "#3D3335", lineHeight: 1.75, marginTop: 14 }}
+                    >
+                      {t.quote}
+                    </blockquote>
+                    <figcaption className="flex items-center gap-3" style={{ marginTop: 20 }}>
+                      <span
+                        className="font-display text-cream-soft"
+                        style={{
+                          width: 38, height: 38, borderRadius: "50%",
+                          backgroundColor: "#8B2F3A",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: 14, flexShrink: 0,
+                        }}
+                      >
+                        {t.initial}
+                      </span>
+                      <span className="font-body font-light" style={{ fontSize: 15, color: "#6B5F5A" }}>
+                        <span style={{ fontWeight: 400, color: "#3D3335" }}>{t.name}</span>
+                        {" "}·{" "}{t.age}{" "}·{" "}{t.city}
+                      </span>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+
           </div>
+
+          {/* RIGHT: full-bleed image covering the entire right side */}
+          <div className="relative w-full lg:w-1/2 lg:flex-shrink-0 min-h-[400px] lg:min-h-0">
+            <img
+              src="/women-wellness.png"
+              alt="Thamra women wellness"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
+              }}
+            />
+          </div>
+
         </div>
       </section>
 
       {/* ============================================================ */}
+      {/* THAMRA TRANSITION DIVIDER                                    */}
+      {/* ============================================================ */}
+      <div style={{ backgroundColor: "#F2EBE3", padding: "64px 0", textAlign: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, maxWidth: 480, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
+            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
+          </svg>
+          <span style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontSize: 13, letterSpacing: "0.35em", textTransform: "uppercase", color: "rgba(139,47,58,0.5)" }}>
+            THAMRA
+          </span>
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
+            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
+          </svg>
+          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
+        </div>
+      </div>
+
+      {/* ============================================================ */}
       {/* 8 — FINAL CTA                                                */}
       {/* ============================================================ */}
-      <section id="shop" className="scroll-mt-24 bg-surface">
-        <div
-          className={`${CONTAINER} grid items-center gap-14 py-20 md:py-[140px] lg:grid-cols-2 lg:gap-20`}
-        >
-          <Reveal className="order-2 lg:order-1">
-            <div className="relative mx-auto w-full max-w-[520px]">
-              <Image
-                src="/product-hero.png"
-                alt="თამრა — შეიძინე"
-                width={1402}
-                height={1122}
-                sizes="(min-width: 1024px) 520px, 100vw"
-                className="w-full"
-              />
+      <section id="shop" className="scroll-mt-24 bg-surface overflow-hidden">
+        <div className="grid lg:grid-cols-2 min-h-[85vh]">
+
+          {/* Left — text, vertically centred */}
+          <Reveal className="flex items-center order-2 lg:order-1">
+            <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
+              <h2 className="font-display text-[3.25rem] font-normal leading-[1.15] text-ink md:text-[3.75rem]">
+                შენი ახალი თავი იწყება დღეს
+              </h2>
+
+              <div className="mt-8 flex items-end gap-4">
+                <span className="font-body text-[18px] font-light text-muted line-through">89₾</span>
+                <span className="font-display text-[56px] font-normal leading-none text-oxblood">69₾</span>
+                <span className="mb-1 font-body text-[13px] font-light text-muted">/ 1 თვის მარაგი</span>
+              </div>
+              <p className="mt-4 font-body text-[15px] font-normal text-ink">
+                3 თვე — 159₾ <span className="text-oxblood">დაზოგე 48₾</span>
+              </p>
+
+              <div className="mt-8 h-px w-full max-w-[280px] bg-gold/40" aria-hidden />
+
+              <a
+                href="#"
+                className="mt-8 inline-flex min-h-[60px] min-w-[280px] items-center justify-center rounded-[4px] bg-oxblood px-12 py-4 font-body text-[18px] font-normal uppercase tracking-[0.14em] text-cream-soft transition-colors duration-300 hover:bg-oxblood-dark"
+              >
+                შეიძინე ახლა
+              </a>
+
+              <p className="mt-5 font-body text-[12px] font-light tracking-[0.08em] text-muted">
+                15 დღიანი გარანტია
+              </p>
             </div>
           </Reveal>
 
-          <Reveal className="order-1 lg:order-2" delay={120}>
-            <h2 className="font-display text-[2rem] font-normal leading-[1.15] text-ink md:text-[2.4rem]">
-              შენი ახალი თავი იწყება დღეს
-            </h2>
-
-            <div className="mt-8 flex items-end gap-4">
-              <span className="font-body text-[18px] font-light text-muted line-through">
-                89₾
-              </span>
-              <span className="font-display text-[48px] font-normal leading-none text-oxblood">
-                69₾
-              </span>
-              <span className="mb-1 font-body text-[13px] font-light text-muted">
-                / 1 თვის მარაგი
-              </span>
-            </div>
-            <p className="mt-4 font-body text-[15px] font-normal text-ink">
-              3 თვე — 159₾ <span className="text-oxblood">დაზოგე 48₾</span>
-            </p>
-
-            {/* gold divider */}
-            <div className="mt-8 h-px w-full max-w-[280px] bg-gold/40" aria-hidden />
-
-            <a
-              href="#"
-              className="mt-8 inline-flex min-w-[280px] items-center justify-center rounded-[4px] bg-oxblood px-12 py-4 font-body text-[13px] font-normal uppercase tracking-[0.14em] text-cream-soft transition-colors duration-300 hover:bg-oxblood-dark"
-            >
-              შეიძინე ახლა
-            </a>
-
-            <p className="mt-5 font-body text-[12px] font-light tracking-[0.08em] text-muted">
-              15 დღიანი გარანტია
-            </p>
+          {/* Right — full-bleed image covering entire column */}
+          <Reveal className="relative min-h-[480px] lg:min-h-0 order-1 lg:order-2" delay={120}>
+            <Image
+              src="/sheni-akhali-tavi.png"
+              alt="თამრა — შეიძინე"
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
+            />
           </Reveal>
+
         </div>
       </section>
 
@@ -728,10 +591,10 @@ export default function Home() {
           <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-8">
             {/* brand */}
             <div className="col-span-2 md:col-span-1">
-              <span className="font-display text-xl tracking-[0.3em]">
+              <span className="font-display text-[28px] tracking-[0.3em]">
                 THAMRA
               </span>
-              <p className="mt-4 max-w-[16rem] font-body text-[13px] font-light leading-[1.7] text-cream-soft/70">
+              <p className="mt-4 max-w-[16rem] font-body text-[16px] font-light leading-[1.7] text-cream-soft/70">
                 პრემიუმ ფორმულა ქალის თმის ჯანმრთელი ზრდისთვის — შიგნიდან.
               </p>
             </div>
@@ -749,7 +612,7 @@ export default function Home() {
                   <li key={x.l}>
                     <a
                       href={x.h}
-                      className="font-body text-[13px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
+                      className="font-body text-[16px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
                     >
                       {x.l}
                     </a>
@@ -766,7 +629,7 @@ export default function Home() {
                   <li key={l}>
                     <a
                       href="#"
-                      className="font-body text-[13px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
+                      className="font-body text-[16px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
                     >
                       {l}
                     </a>
@@ -804,7 +667,7 @@ export default function Home() {
           </div>
 
           <div className="mt-14 border-t border-cream-soft/15 pt-6">
-            <p className="font-body text-[12px] font-light tracking-[0.04em] text-cream-soft/70">
+            <p className="font-body text-[13px] font-light tracking-[0.04em] text-cream-soft/70">
               © 2026 Thamra. ყველა უფლება დაცულია.
             </p>
           </div>
