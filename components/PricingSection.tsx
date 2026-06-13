@@ -179,7 +179,7 @@ export default function PricingSection() {
               width: "100%",
               maxWidth: 500,
               backgroundColor: "#6B3739",
-              color: "#F7F1E9",
+              color: "#C9A96E",
               fontFamily: FB,
               fontSize: 16,
               fontWeight: 400,

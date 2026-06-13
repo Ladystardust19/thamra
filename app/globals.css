@@ -71,7 +71,7 @@
 
 .kr-label {
   display: block;
-  font-family: var(--font-jost), sans-serif;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 20px;
   font-weight: 400;
   letter-spacing: 0.3em;
@@ -81,7 +81,7 @@
 }
 
 .kr-headline {
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
   font-size: 44px;
   font-weight: 300;
   color: #8b2f3a;
@@ -90,7 +90,7 @@
 }
 
 .kr-subtitle {
-  font-family: var(--font-jost), sans-serif;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 18px;
   font-weight: 300;
   color: #4a3f3c;
@@ -150,7 +150,7 @@
 }
 
 .kr-title {
-  font-family: var(--font-cormorant), Georgia, serif;
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
   font-size: 24px;
   font-weight: 500;
   color: #8b2f3a;
@@ -159,7 +159,7 @@
 }
 
 .kr-desc {
-  font-family: var(--font-jost), sans-serif;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 17px;
   font-weight: 300;
   color: #4a3f3c;
@@ -345,7 +345,7 @@
 .ia-cta {
   display: inline-block;
   background-color: #6B3739;
-  color: #f7f1e9;
+  color: #C9A96E;
   padding: 16px 40px;
   border-radius: 4px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
