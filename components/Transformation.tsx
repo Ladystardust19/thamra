@@ -304,9 +304,11 @@ function PhaseDecoration({ index }: { index: number }) {
   );
 }
 
-function Part2Timeline({ isInView }: { isInView: boolean }) {
+function Part2Timeline({ isInView: _unused }: { isInView: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
   return (
-    <div>
+    <div ref={ref}>
     {/* Decorative separator band */}
     <div style={{ height: 5, background: `linear-gradient(to right, ${OXBLOOD}, ${GOLD}, ${OXBLOOD})` }} aria-hidden />
     <div style={{ backgroundColor: "#F2EBE3", padding: "120px 0" }}>
@@ -315,9 +317,9 @@ function Part2Timeline({ isInView }: { isInView: boolean }) {
         {/* Header */}
         <motion.div
           style={{ textAlign: "center", marginBottom: 64 }}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 28 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 1.0, ease: "easeOut" }}
         >
           <h3 style={{
             fontFamily: CORMORANT,
@@ -368,7 +370,7 @@ function Part2Timeline({ isInView }: { isInView: boolean }) {
                 }}
                 initial={{ opacity: 0, y: 24 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.65, delay: 0.1 + i * 0.18, ease: "easeOut" }}
+                transition={{ duration: 1.0, delay: 0.2 + i * 0.25, ease: "easeOut" }}
               >
                 {/* Circle */}
                 <div style={{

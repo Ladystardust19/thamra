@@ -106,13 +106,15 @@
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: #C9A96E;
 }
 
 .ctaSub {
   font-size: 0.75rem;
   font-weight: 300;
   letter-spacing: 0.08em;
-  opacity: 0.75;
+  color: #C9A96E;
+  opacity: 0.85;
   text-transform: none;
 }
 

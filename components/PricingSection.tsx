@@ -24,13 +24,13 @@ export default function PricingSection() {
             fontFamily: FD,
             fontSize: "clamp(2.4rem, 4vw, 3.25rem)",
             fontWeight: 300,
-            color: "#3D3335",
+            color: "#8B2F3A",
             textAlign: "center",
             marginBottom: 56,
             lineHeight: 1.15,
           }}
         >
-          აირჩიე შენი <em>THAMRA</em>
+          აირჩიე შენი <em style={{ color: "#C9A96E" }}>THAMRA</em>
         </h2>
 
         {/* Pricing grid */}

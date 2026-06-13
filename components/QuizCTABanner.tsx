@@ -15,7 +15,7 @@ export default function QuizCTABanner() {
           fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
           fontSize: "clamp(1.9rem, 5.5vw, 2.7rem)",
           fontWeight: 300,
-          color: "#F7F1E9",
+          color: "#C9A96E",
           lineHeight: 1.22,
           maxWidth: 520,
           margin: "0 auto 18px",

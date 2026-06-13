@@ -68,11 +68,7 @@ export default function IngredientsAccordion() {
 
         {/* ── TOP ── */}
         <div className="ia-top">
-          <span className="ia-label">ფორმულა</span>
-          <h2 className="ia-headline">ხუთი მიზნობრივი კომპლექსი ერთ კოვზში.</h2>
-          <p className="ia-hook">
-            გინეკოლოგის 40-წლიანი გამოცდილებით შექმნილი უნიკალური ფორმულა Advanced Hair Biomatrix™ — მენოპაუზის პერიოდში ქალის თმის მხარდაჭერას აერთიანებს ერთ გააზრებულ ყოველდღიურ კომპლექსში.
-          </p>
+<h2 className="ia-headline">ხუთი მიზნობრივი კომპლექსი ერთ კოვზში.</h2>
         </div>
 
         {/* ── CARD GRID ── */}

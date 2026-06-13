@@ -368,7 +368,7 @@ export default function Home() {
           <Reveal className="flex items-center order-2 lg:order-1">
             <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
               <span className={`${LABEL} text-gold`}>ჩვენი ისტორია</span>
-              <h2 className="mt-5 font-display text-[3.25rem] font-normal leading-[1.15] text-ink md:text-[3.75rem]">
+              <h2 className="mt-5 font-display text-[3.25rem] font-normal leading-[1.15] md:text-[3.75rem]" style={{ color: "#8B2F3A" }}>
                 შთაგონებული ბუნებრივი სიძლიერით
               </h2>
               <p className="mt-6 font-body text-[20px] font-light leading-[1.8] text-read">
@@ -408,7 +408,7 @@ export default function Home() {
           <div className="flex-1 flex flex-col justify-center px-8 py-20 md:px-16 xl:px-24">
 
             <Reveal>
-<h2 className="font-display font-normal" style={{ fontSize: "clamp(2rem, 3.5vw, 2.8rem)", color: "#3D3335", lineHeight: 1.2, marginBottom: 56 }}>
+<h2 className="font-display font-normal" style={{ fontSize: "clamp(2rem, 3.5vw, 2.8rem)", color: "#8B2F3A", lineHeight: 1.2, marginBottom: 56 }}>
                 ქალები, რომლებმაც{" "}
                 <span style={{ color: "#C9A96E", letterSpacing: "0.1em", fontStyle: "italic" }}>THAMRA</span>{" "}
                 ყოველდღიური რიტუალის ნაწილად აქციეს
