@@ -373,6 +373,63 @@
 .fieldInput:focus { border-color: #8b2f3a; }
 .fieldInput.hasError { border-color: rgba(139, 47, 58, 0.6); }
 
+/* ── Phone field with +995 prefix ── */
+
+.phoneWrap {
+  display: flex;
+  align-items: stretch;
+}
+
+.phonePrefix {
+  display: flex;
+  align-items: center;
+  padding: 14px 12px;
+  background-color: rgba(247, 243, 238, 0.95);
+  border: 1.5px solid rgba(201, 169, 110, 0.28);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 300;
+  color: #6b5f5a;
+  flex-shrink: 0;
+  user-select: none;
+  transition: border-color 0.2s;
+}
+
+.phoneInput {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px;
+  background-color: rgba(253, 250, 247, 0.92);
+  border: 1.5px solid rgba(201, 169, 110, 0.28);
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 300;
+  color: #3d3335;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+}
+
+.phoneWrap:focus-within .phonePrefix { border-color: #8b2f3a; }
+.phoneWrap:focus-within .phoneInput  { border-color: #8b2f3a; }
+
+.phoneWrap.phoneError .phonePrefix { border-color: rgba(139, 47, 58, 0.6); }
+.phoneWrap.phoneError .phoneInput  { border-color: rgba(139, 47, 58, 0.6); }
+
+/* Optional label tag */
+.optionalTag {
+  font-weight: 300;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #9b8f8c;
+  font-size: 11px;
+}
+
 .fieldError {
   font-family: var(--font-jost), sans-serif;
   font-size: 13px;

@@ -11,34 +11,19 @@ type PartialAnswers = {
   q2?: string;
   q3?: string[];
   q4?: string[];
-  q5?: string;
-  q6?: string;
-  q7?: string;
+  q5?: string;   // sleep (new Q5)
+  q6?: string;   // what tried (was Q5)
+  q7?: string;   // goal
 };
 
 type Screen =
   | "intro"
-  | "q1"
-  | "q2"
-  | "q3"
-  | "q4"
-  | "q5"
-  | "q6"
-  | "q7"
-  | "email"
+  | "q1" | "q2" | "q3" | "q4" | "q5" | "q6" | "q7"
+  | "gate"
   | "result";
 
 const SCREEN_ORDER: Screen[] = [
-  "intro",
-  "q1",
-  "q2",
-  "q3",
-  "q4",
-  "q5",
-  "q6",
-  "q7",
-  "email",
-  "result",
+  "intro", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "gate", "result",
 ];
 
 const Q_SCREENS = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
@@ -92,7 +77,6 @@ const QUESTIONS: Question[] = [
     options: [
       "ციკლი არარეგულარული გახდა ან შეწყდა",
       "სიცხის შემოტევები ან ღამის ოფლიანობა",
-      "ცუდი ძილი",
       "მეტი სტრესი ან შფოთვა",
       "წონის ცვლილება",
       "არცერთი",
@@ -100,6 +84,17 @@ const QUESTIONS: Question[] = [
   },
   {
     id: "q5",
+    text: "როგორ გძინავს ბოლო პერიოდში?",
+    type: "single",
+    options: [
+      "კარგად, ვისვენებ",
+      "ხშირად ვიღვიძებ ღამით",
+      "მიჭირს დაძინება",
+      "ღამის ოფლიანობა მაღვიძებს",
+    ],
+  },
+  {
+    id: "q6",
     text: "რა სცადე აქამდე?",
     type: "single",
     options: [
@@ -109,12 +104,6 @@ const QUESTIONS: Question[] = [
       "ჯერ არაფერი",
       "რამდენიმე ერთად",
     ],
-  },
-  {
-    id: "q6",
-    text: "როგორ შეაფასებდი შენს ყოველდღიურ სტრესს?",
-    type: "single",
-    options: ["დაბალი", "საშუალო", "მაღალი", "ნუ მკითხავ 🙂"],
   },
   {
     id: "q7",
@@ -135,22 +124,22 @@ type Driver = { title: string; text: string };
 
 const DHT_DRIVER: Driver = {
   title: "ესტროგენი ეცემა, DHT თავისუფლდება.",
-  text: "ესტროგენი, რომელიც DHT ჰორმონს აკონტროლებდა, მცირდება. DHT ფოლიკულს ავიწროებს — თმა თხელდება ზუსტად იქ, სადაც შენ ამჩნევ.",
+  text: "ესტროგენი, რომელიც DHT ჰორმონს აკონტროლებდა, მცირდება. DHT ფოლიკულს ავიწროებს, თმა თხელდება ზუსტად იქ, სადაც შენ ამჩნევ.",
 };
 
 const CORTISOL_DRIVER: Driver = {
   title: "კორტიზოლი არ ჩერდება.",
-  text: "მაღალი სტრესი ფოლიკულებს ვადამდე „ძილის რეჟიმში“ აგზავნის — ამიტომ რჩება მეტი თმა სავარცხელზე.",
+  text: "ცუდი ძილი და სტრესი კორტიზოლს ზრდის, ის კი ფოლიკულებს ვადამდე „ძილის რეჟიმში“ აგზავნის. ამიტომ რჩება მეტი თმა სავარცხელზე.",
 };
 
 const NUTRIENT_DRIVER: Driver = {
   title: "სხეული ვეღარ კვებავს თმას.",
-  text: "მენოპაუზის დროს კოლაგენის წარმოება და რკინის შეწოვა მცირდება. შენს ფოლიკულს უბრალოდ აკლია ნედლეული.",
+  text: "ჰორმონალური ცვლილებისას კოლაგენის წარმოება და რკინის შეწოვა მცირდება. შენს ფოლიკულს უბრალოდ აკლია ნედლეული.",
 };
 
 const SCALP_DRIVER: Driver = {
   title: "სკალპი კარგავს სიძლიერეს.",
-  text: "D ვიტამინისა და სელენის ნაკლებობა ასუსტებს ნიადაგს, რომელშიც თმა იზრდება. სუსტი ფესვები — სუსტი თმა.",
+  text: "D ვიტამინისა და სელენის ნაკლებობა ასუსტებს ნიადაგს, რომელშიც თმა იზრდება. სუსტი ფესვები, სუსტი თმა.",
 };
 
 function getDrivers(a: PartialAnswers): [Driver, Driver] {
@@ -158,10 +147,8 @@ function getDrivers(a: PartialAnswers): [Driver, Driver] {
   if (a.q3?.includes("გაყოფის ხაზი გაფართოვდა") || a.q3?.includes("თხემზე სკალპი მოჩანს"))
     pool.push(DHT_DRIVER);
   if (
-    a.q6 === "მაღალი" ||
-    a.q6 === "ნუ მკითხავ 🙂" ||
-    a.q4?.includes("მეტი სტრესი ან შფოთვა") ||
-    a.q4?.includes("ცუდი ძილი")
+    (a.q5 !== undefined && a.q5 !== "კარგად, ვისვენებ") ||
+    a.q4?.includes("მეტი სტრესი ან შფოთვა")
   )
     pool.push(CORTISOL_DRIVER);
   if (a.q3?.includes("თმა ტყდება და დაკარგა ბზინვარება") || a.q3?.includes("კუდი გათხელდა"))
@@ -171,18 +158,18 @@ function getDrivers(a: PartialAnswers): [Driver, Driver] {
   return result as [Driver, Driver];
 }
 
-function getBlock3(q5: string | undefined): Driver {
-  if (q5 === "სპეციალური შამპუნები და სერუმები")
+function getBlock3(q6: string | undefined): Driver {
+  if (q6 === "სპეციალური შამპუნები და სერუმები")
     return {
       title: "ამიტომ ვერ გიშველა შამპუნმა.",
-      text: "შამპუნი ზედაპირზე მუშაობს. შენი პრობლემა კი შიგნით არის — ჰორმონებში, კვებაში, სტრესში.",
+      text: "შამპუნი ზედაპირზე მუშაობს. შენი პრობლემა კი შიგნით არის, ჰორმონებში, კვებაში, სტრესში.",
     };
-  if (q5 === "ჩვეულებრივი ვიტამინები (ბიოტინი და სხვა)")
+  if (q6 === "ჩვეულებრივი ვიტამინები (ბიოტინი და სხვა)")
     return {
       title: "ამიტომ ვერ გიშველა ჩვეულებრივმა ვიტამინმა.",
-      text: "ბიოტინი მხოლოდ ერთ პრობლემას ეხება. DHT-ს, კორტიზოლს და სკალპის შესუსტებას — ვერა.",
+      text: "ბიოტინი მხოლოდ ერთ პრობლემას ეხება. DHT-ს, კორტიზოლს და სკალპის შესუსტებას, ვერა.",
     };
-  if (q5 === "ჯერ არაფერი")
+  if (q6 === "ჯერ არაფერი")
     return {
       title: "კარგ დროს იწყებ.",
       text: "რაც უფრო ადრე მიეხმარები ფოლიკულებს, მით მეტი მათგანი გადარჩება აქტიურ ფაზაში.",
@@ -194,12 +181,24 @@ function getBlock3(q5: string | undefined): Driver {
 }
 
 const Q7_LINES: Record<string, string> = {
-  "თმის ხილული ზრდა": "შენი მიზანი — თმის ხილული ზრდა — ზუსტად აქ იწყება.",
-  "ცვენის შეჩერება": "შენი მიზანი — ცვენის შეჩერება — ზუსტად აქ იწყება.",
-  "უფრო სქელი და ხშირი თმა": "შენი მიზანი — უფრო სქელი და ხშირი თმა — ზუსტად აქ იწყება.",
+  "თმის ხილული ზრდა":
+    "შენი მიზანი, თმის ხილული ზრდა, ზუსტად აქ იწყება.",
+  "ცვენის შეჩერება":
+    "შენი მიზანი, ცვენის შეჩერება, ზუსტად აქ იწყება.",
+  "უფრო სქელი და ხშირი თმა":
+    "შენი მიზანი, უფრო სქელი და ხშირი თმა, ზუსტად აქ იწყება.",
   "ყველაფერი ერთად, ბუნებრივად":
-    "შენი მიზანი — ბუნებრივი, ყოვლისმომცველი შედეგი — ზუსტად აქ იწყება.",
+    "შენი მიზანი, ყველაფერი ერთად და ბუნებრივად, ზუსტად აქ იწყება.",
 };
+
+function getResultHeadline(firstName: string, age: string | undefined): string {
+  const prefix = firstName ? `${firstName}, ` : "";
+  if (age === "46–52" || age === "53–60" || age === "60+")
+    return `${prefix}შენი პასუხები მენოპაუზაზე მიუთითებს.`;
+  if (age === "40–45")
+    return `${prefix}შენი პასუხები ჰორმონალურ ცვლილებაზე, სავარაუდოდ პერიმენოპაუზაზე, მიუთითებს.`;
+  return `${prefix}შენი პასუხები ჰორმონალურ დისბალანსზე მიუთითებს.`;
+}
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -208,8 +207,10 @@ export default function QuizClient() {
   const [direction, setDirection] = useState<"forward" | "back">("forward");
   const [answers, setAnswers] = useState<PartialAnswers>({});
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [nameError, setNameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -248,29 +249,46 @@ export default function QuizClient() {
     });
   }
 
-  function handleEmailSubmit() {
+  function handleGateSubmit() {
     let valid = true;
+
     if (!name.trim()) {
       setNameError("სახელი სავალდებულოა");
       valid = false;
     } else {
       setNameError("");
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setEmailError("გთხოვთ, შეიყვანეთ სწორი ელ.ფოსტა");
+
+    const rawPhone = phone.replace(/\s+/g, "");
+    if (!rawPhone || rawPhone.length !== 9 || !rawPhone.startsWith("5")) {
+      setPhoneError("შეიყვანე სწორი მობილურის ნომერი");
+      valid = false;
+    } else {
+      setPhoneError("");
+    }
+
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setEmailError("შეიყვანე სწორი ელ.ფოსტა");
       valid = false;
     } else {
       setEmailError("");
     }
+
     if (!valid) return;
 
     // TODO: Replace with Supabase insert
     // await supabase.from("quiz_leads").insert({
-    //   name, email, answers, submitted_at: new Date().toISOString()
+    //   name: name.trim(), phone: `+995${rawPhone}`,
+    //   email: email.trim() || null, answers,
+    //   submitted_at: new Date().toISOString()
     // })
     console.log(
       "Thamra quiz submission:",
-      JSON.stringify({ name, email, answers }, null, 2)
+      JSON.stringify(
+        { name: name.trim(), phone: `+995${rawPhone}`, email: email.trim() || null, answers },
+        null,
+        2
+      )
     );
 
     navigate("result", "forward");
@@ -326,15 +344,18 @@ export default function QuizClient() {
               );
             })()}
 
-          {screen === "email" && (
-            <EmailScreen
+          {screen === "gate" && (
+            <GateScreen
               name={name}
+              phone={phone}
               email={email}
               nameError={nameError}
+              phoneError={phoneError}
               emailError={emailError}
               onNameChange={setName}
+              onPhoneChange={setPhone}
               onEmailChange={setEmail}
-              onSubmit={handleEmailSubmit}
+              onSubmit={handleGateSubmit}
               onBack={goBack}
             />
           )}
@@ -352,13 +373,7 @@ export default function QuizClient() {
 
 function BackArrow() {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden
-    >
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
       <path
         d="M10 3L5 8l5 5"
         stroke="currentColor"
@@ -428,11 +443,7 @@ function QuestionScreen({
           return (
             <button
               key={opt}
-              className={
-                isSelected
-                  ? `${styles.option} ${styles.selected}`
-                  : styles.option
-              }
+              className={isSelected ? `${styles.option} ${styles.selected}` : styles.option}
               onClick={() =>
                 question.type === "single" ? onSingleSelect(opt) : onToggle(opt)
               }
@@ -474,23 +485,18 @@ function QuestionScreen({
   );
 }
 
-// ─── Email gate ───────────────────────────────────────────────────────────────
+// ─── Gate (contact collection) ────────────────────────────────────────────────
 
-function EmailScreen({
-  name,
-  email,
-  nameError,
-  emailError,
-  onNameChange,
-  onEmailChange,
-  onSubmit,
-  onBack,
+function GateScreen({
+  name, phone, email,
+  nameError, phoneError, emailError,
+  onNameChange, onPhoneChange, onEmailChange,
+  onSubmit, onBack,
 }: {
-  name: string;
-  email: string;
-  nameError: string;
-  emailError: string;
+  name: string; phone: string; email: string;
+  nameError: string; phoneError: string; emailError: string;
   onNameChange: (v: string) => void;
+  onPhoneChange: (v: string) => void;
   onEmailChange: (v: string) => void;
   onSubmit: () => void;
   onBack: () => void;
@@ -502,14 +508,13 @@ function EmailScreen({
         უკან
       </button>
 
-      <h2 className={styles.emailHeadline}>
-        შენი პერსონალური ანალიზი მზადაა
-      </h2>
+      <h2 className={styles.emailHeadline}>შენი ანალიზი მზადაა</h2>
       <p className={styles.emailSubtext}>
-        სად გამოგიგზავნოთ შედეგი და შენზე მორგებული რეკომენდაცია?
+        დატოვე ნომერი, რომ შედეგი და შენი პერსონალური −15% შეთავაზება მიიღო.
       </p>
 
       <div className={styles.fields}>
+        {/* Name */}
         <div className={styles.field}>
           <label className={styles.fieldLabel} htmlFor="quiz-name">
             სახელი
@@ -517,42 +522,53 @@ function EmailScreen({
           <input
             id="quiz-name"
             type="text"
-            className={
-              nameError
-                ? `${styles.fieldInput} ${styles.hasError}`
-                : styles.fieldInput
-            }
+            className={nameError ? `${styles.fieldInput} ${styles.hasError}` : styles.fieldInput}
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             autoComplete="given-name"
             placeholder="შენი სახელი"
           />
-          {nameError && (
-            <span className={styles.fieldError}>{nameError}</span>
-          )}
+          {nameError && <span className={styles.fieldError}>{nameError}</span>}
         </div>
 
+        {/* Phone */}
+        <div className={styles.field}>
+          <label className={styles.fieldLabel} htmlFor="quiz-phone">
+            ტელეფონის ნომერი
+          </label>
+          <div className={`${styles.phoneWrap} ${phoneError ? styles.phoneError : ""}`}>
+            <span className={styles.phonePrefix}>+995</span>
+            <input
+              id="quiz-phone"
+              type="tel"
+              inputMode="numeric"
+              className={styles.phoneInput}
+              value={phone}
+              onChange={(e) => onPhoneChange(e.target.value)}
+              autoComplete="tel-national"
+              placeholder="5XX XXX XXX"
+            />
+          </div>
+          {phoneError && <span className={styles.fieldError}>{phoneError}</span>}
+        </div>
+
+        {/* Email — optional */}
         <div className={styles.field}>
           <label className={styles.fieldLabel} htmlFor="quiz-email">
-            ელ.ფოსტა
+            ელ.ფოსტა{" "}
+            <span className={styles.optionalTag}>(არასავალდებულო)</span>
           </label>
           <input
             id="quiz-email"
             type="email"
             inputMode="email"
-            className={
-              emailError
-                ? `${styles.fieldInput} ${styles.hasError}`
-                : styles.fieldInput
-            }
+            className={emailError ? `${styles.fieldInput} ${styles.hasError}` : styles.fieldInput}
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             autoComplete="email"
             placeholder="example@gmail.com"
           />
-          {emailError && (
-            <span className={styles.fieldError}>{emailError}</span>
-          )}
+          {emailError && <span className={styles.fieldError}>{emailError}</span>}
         </div>
       </div>
 
@@ -560,7 +576,7 @@ function EmailScreen({
         მაჩვენე ჩემი შედეგი
       </button>
       <p className={styles.disclaimer}>
-        სპამს არ გიგზავნით. მხოლოდ ის, რაც შენს თმას ეხება.
+        შენს ნომერს მხოლოდ შენი შედეგისა და შეთავაზებისთვის გამოვიყენებთ.
       </p>
     </div>
   );
@@ -576,11 +592,10 @@ function ResultScreen({
   answers: PartialAnswers;
 }) {
   const [d1, d2] = getDrivers(answers);
-  const block3 = getBlock3(answers.q5);
+  const block3 = getBlock3(answers.q6);
   const q7Line =
     answers.q7 !== undefined
-      ? (Q7_LINES[answers.q7] ??
-        Q7_LINES["ყველაფერი ერთად, ბუნებრივად"])
+      ? (Q7_LINES[answers.q7] ?? Q7_LINES["ყველაფერი ერთად, ბუნებრივად"])
       : Q7_LINES["ყველაფერი ერთად, ბუნებრივად"];
   const firstName = name.trim().split(" ")[0];
 
@@ -589,11 +604,10 @@ function ResultScreen({
       {/* ── Block 1 ── */}
       <span className={styles.resultLabel}>შენი ანალიზი</span>
       <h2 className={styles.resultHeadline}>
-        {firstName && `${firstName}, `}
-        შენი პასუხები ერთ მიზეზზე მიუთითებს: მენოპაუზა.
+        {getResultHeadline(firstName, answers.q1)}
       </h2>
       <p className={styles.resultText}>
-        შენი თმის ცვლილება ზედაპირული პრობლემა არ არის. ის შიგნიდან იწყება —
+        შენი თმის ცვლილება ზედაპირული პრობლემა არ არის. ის შიგნიდან იწყება,
         ჰორმონალური ცვლილებით, რომელიც ერთდროულად ოთხ პროცესს უშვებს შენს
         სხეულში.
       </p>
@@ -627,7 +641,7 @@ function ResultScreen({
         <h3 className={styles.thamraHeadline}>სწორედ ამიტომ შეიქმნა Thamra.</h3>
         <p className={styles.thamraText}>
           Thamra Advanced Hair Biomatrix™ ერთდროულად მუშაობს ოთხივე მიზეზზე,
-          რომელსაც მენოპაუზა იწვევს — და არა ერთ სიმპტომზე.
+          რომელსაც ჰორმონალური ცვლილება იწვევს, და არა ერთ სიმპტომზე.
         </p>
         <p className={styles.thamraPersonal}>{q7Line}</p>
         <a href="/#shop" className={styles.ctaBtn}>
