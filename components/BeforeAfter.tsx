@@ -98,7 +98,7 @@ export default function BeforeAfter() {
           <motion.h3
             style={{
               textAlign: "center",
-              fontFamily: "var(--font-cormorant), Georgia, serif",
+              fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
               fontSize: "clamp(1.5rem, 3.5vw, 2rem)",
               fontWeight: 300,
               color: "#8B2F3A",
@@ -158,7 +158,7 @@ function StatItem({
       <div style={{ width: 28, height: 1, background: "#C9A96E", margin: "0 auto 14px" }} />
       <div
         style={{
-          fontFamily: "var(--font-cormorant), Georgia, serif",
+          fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
           fontSize: "clamp(2.75rem, 6vw, 4.25rem)",
           fontWeight: 300,
           lineHeight: 1,
@@ -170,7 +170,7 @@ function StatItem({
       </div>
       <div
         style={{
-          fontFamily: "var(--font-jost), sans-serif",
+          fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
           fontSize: 13,
           fontWeight: 300,
           color: "#6B5F5A",
@@ -232,7 +232,7 @@ function ComparisonSlider({ isInView }: { isInView: boolean }) {
             padding: "6px 20px",
             border: "1px solid rgba(201,169,110,0.45)",
             borderRadius: 100,
-            fontFamily: "var(--font-jost), sans-serif",
+            fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
             fontSize: 12,
             fontWeight: 400,
             letterSpacing: "0.2em",
@@ -300,7 +300,7 @@ function ComparisonSlider({ isInView }: { isInView: boolean }) {
               position: "absolute", bottom: 0, left: 0, right: 0,
               padding: "32px 24px 20px",
               background: "linear-gradient(to top, rgba(214,201,181,0.55), transparent)",
-              fontFamily: "var(--font-cormorant), Georgia, serif",
+              fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
               fontSize: 22, fontStyle: "italic", fontWeight: 300,
               color: "#8B2F3A", textAlign: "right",
             }}
@@ -346,7 +346,7 @@ function ComparisonSlider({ isInView }: { isInView: boolean }) {
               position: "absolute", bottom: 0, left: 0, right: 0,
               padding: "32px 24px 20px",
               background: "linear-gradient(to top, rgba(100,92,88,0.18), transparent)",
-              fontFamily: "var(--font-cormorant), Georgia, serif",
+              fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
               fontSize: 22, fontStyle: "italic", fontWeight: 300,
               color: "#3D3335",
             }}
@@ -402,7 +402,7 @@ function ComparisonSlider({ isInView }: { isInView: boolean }) {
         style={{
           textAlign: "center",
           marginTop: 10,
-          fontFamily: "var(--font-jost), sans-serif",
+          fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
           fontSize: 12,
           color: "#6B5F5A",
           letterSpacing: "0.06em",
@@ -452,7 +452,7 @@ function PhaseCard({
       >
         <span
           style={{
-            fontFamily: "var(--font-cormorant), Georgia, serif",
+            fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
             fontSize: 17,
             fontWeight: 300,
             color: "white",
@@ -465,7 +465,7 @@ function PhaseCard({
 
       <div
         style={{
-          fontFamily: "var(--font-jost), sans-serif",
+          fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
           fontSize: 11,
           fontWeight: 400,
           letterSpacing: "0.22em",
@@ -479,7 +479,7 @@ function PhaseCard({
 
       <h3
         style={{
-          fontFamily: "var(--font-cormorant), Georgia, serif",
+          fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
           fontSize: 26,
           fontWeight: 300,
           color: "#8B2F3A",
@@ -492,7 +492,7 @@ function PhaseCard({
 
       <p
         style={{
-          fontFamily: "var(--font-jost), sans-serif",
+          fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
           fontSize: 15,
           fontWeight: 300,
           color: "#4A3F3C",
@@ -508,7 +508,7 @@ function PhaseCard({
           <span
             key={tag}
             style={{
-              fontFamily: "var(--font-jost), sans-serif",
+              fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
               fontSize: 11,
               fontWeight: 400,
               letterSpacing: "0.07em",
@@ -534,7 +534,7 @@ function chipStyle(side: "left" | "right"): CSSProperties {
     position: "absolute",
     top: 18,
     [side]: 18,
-    fontFamily: "var(--font-jost), sans-serif",
+    fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
     fontSize: 11,
     fontWeight: 400,
     letterSpacing: "0.2em",
@@ -552,7 +552,7 @@ function chipStyle(side: "left" | "right"): CSSProperties {
 
 const LABEL: CSSProperties = {
   display: "block",
-  fontFamily: "var(--font-jost), sans-serif",
+  fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
   fontSize: 14,
   fontWeight: 400,
   letterSpacing: "0.3em",
@@ -562,7 +562,7 @@ const LABEL: CSSProperties = {
 };
 
 const HEADLINE: CSSProperties = {
-  fontFamily: "var(--font-cormorant), Georgia, serif",
+  fontFamily: "var(--font-cormorant), var(--font-ge-serif), Georgia, serif",
   fontSize: "clamp(2.4rem, 5.5vw, 3.25rem)",
   fontWeight: 300,
   lineHeight: 1.1,
@@ -571,7 +571,7 @@ const HEADLINE: CSSProperties = {
 };
 
 const SUBTITLE: CSSProperties = {
-  fontFamily: "var(--font-jost), sans-serif",
+  fontFamily: "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif",
   fontSize: 18,
   fontWeight: 300,
   lineHeight: 1.7,

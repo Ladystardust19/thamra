@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { label: "ჩვენ შესახებ", href: "#story" },
@@ -10,8 +11,11 @@ const NAV_LINKS = [
 ];
 
 export default function SiteHeader() {
+  const pathname = usePathname();
   const [dismissed, setDismissed] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  if (pathname === "/quiz") return null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80);
@@ -22,29 +26,6 @@ export default function SiteHeader() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      {/* 1 — ANNOUNCEMENT BAR */}
-      {!dismissed && (
-        <div className="relative flex h-10 items-center justify-center bg-oxblood px-10 text-center">
-          <p className="font-body text-[14px] font-light tracking-[0.04em] text-cream-soft">
-            უფასო მიწოდება თბილისში · ყველა შეკვეთაზე
-          </p>
-          <button
-            type="button"
-            onClick={() => setDismissed(true)}
-            aria-label="დახურვა"
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-cream-soft/70 transition-colors hover:text-cream-soft"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-              <path
-                d="M1 1l12 12M13 1L1 13"
-                stroke="currentColor"
-                strokeWidth="1.3"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-        </div>
-      )}
 
       {/* 2 — NAVIGATION */}
       <nav

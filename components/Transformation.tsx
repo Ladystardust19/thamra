@@ -14,8 +14,8 @@ const DARK    = "#3D3335";
 const MUTED   = "#6B5F5A";
 const BG      = "#F2EBE3";
 
-const JOST      = "var(--font-jost), sans-serif";
-const CORMORANT = "var(--font-cormorant), Georgia, serif";
+const JOST      = "var(--font-jost), var(--font-ge-sans), system-ui, sans-serif";
+const CORMORANT = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 
 /* ── Root ────────────────────────────────────────────────────────── */
 export default function Transformation() {
@@ -26,8 +26,6 @@ export default function Transformation() {
       <Part1Hero     isInView={isInView} />
       <Part2Timeline isInView={isInView} />
       <Part3Slider   />
-      <Part4Quote    isInView={isInView} />
-      <Part5Badges   isInView={isInView} />
     </div>
   );
 }
@@ -85,6 +83,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
         background: `linear-gradient(to right, rgba(139,47,58,0.80) 0%, rgba(139,47,58,0.45) 50%, rgba(139,47,58,0.12) 80%, transparent 100%)`,
       }} aria-hidden />
 
+
       {/* Content — left-aligned over the oxblood wash */}
       <motion.div
         style={{ position: "absolute", top: "18%", left: 60, zIndex: 1, maxWidth: 500 }}
@@ -99,7 +98,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
             <rect x="0.5" y="0.5" width="7" height="7" transform="rotate(45 4 4)" fill={GOLD} fillOpacity="0.85" />
           </svg>
           <span style={{ fontFamily: JOST, fontSize: 11, letterSpacing: "0.3em", textTransform: "uppercase", color: GOLD }}>
-            THE TRANSFORMATION
+            ტრანსფორმაცია
           </span>
           <svg width="7" height="7" viewBox="0 0 8 8" aria-hidden>
             <rect x="0.5" y="0.5" width="7" height="7" transform="rotate(45 4 4)" fill={GOLD} fillOpacity="0.85" />
@@ -118,7 +117,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
           letterSpacing: "0.01em",
           textShadow: "0 2px 18px rgba(0,0,0,0.35)",
         }}>
-          The Return of Fuller Hair
+          შედეგის გზა
         </h2>
 
         <p style={{
@@ -130,7 +129,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
           margin: "0 0 28px",
           maxWidth: 380,
         }}>
-          90 days of Advanced Hair Biomatrix™ — documented phase by phase.
+          თმის განახლება პროცესია — და ჩვენ გეხმარებით, ეს პროცესი ეტაპობრივად დაინახოთ. <span style={{ color: GOLD, fontStyle: "italic" }}>THAMRA</span><span style={{ fontStyle: "normal" }}>-სთან ერთად თმა ხდება უფრო სავსე, ძლიერი და მოვლილი დროთა განმავლობაში.</span>
         </p>
 
         <div style={{ width: 48, height: 1, background: GOLD, marginBottom: 20, opacity: 0.5 }} />
@@ -142,7 +141,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
           textTransform: "uppercase",
           color: "rgba(201,169,110,0.72)",
         }}>
-          Real Women · Documented Results
+          რეალური პროცესი · რეალური ცვლილება
         </span>
       </motion.div>
     </div>
@@ -154,9 +153,21 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
 ══════════════════════════════════════════════════════════════════ */
 
 const PHASES = [
-  { num: "01", month: "MONTH 1", days: "DAYS 1–30",  title: "Stabilization",  desc: "Shedding begins to slow. Follicles receive nutrition. Cortisol drops. Most women notice less hair on the brush by week 3." },
-  { num: "02", month: "MONTH 2", days: "DAYS 31–60", title: "Activation",     desc: "New fine strands emerge at the hairline. Existing hair visibly thicker. Keratin rebuilds from the inside out." },
-  { num: "03", month: "MONTH 3", days: "DAYS 61–90", title: "Transformation", desc: "Full density shift. Volume that others notice. Dormant follicles are active again. The visible result of 90 days." },
+  {
+    num: "01",
+    label: "თვე 1–3",
+    desc: "ცვენა ნელდება და თმა ხდება ნაკლებად მტვრევადი. გამოიყურება უფრო ჯანსაღად და სქლად.",
+  },
+  {
+    num: "02",
+    label: "თვე 2–4",
+    desc: "ჩნდება ახალი, წვრილი თმის ღერები. თმა ვიზუალურად უფრო სავსე და მკვრივი ხდება. თმის ხაზი და გაყოფის ადგილი ნაკლებად გამოკვეთილი.",
+  },
+  {
+    num: "03",
+    label: "თვე 6+",
+    desc: "უფრო სქელი, ძლიერი და მოცულობითი. ყოველდღიური გამოყენება ეხმარება თმას შეინარჩუნოს შემცირებული ცვენა, ახალი ზრდის ნიშნები და უფრო სავსე, ჯანსაღი იერი.",
+  },
 ] as const;
 
 /* ── Phase strand data — rx = relative x (0–1), h = height px ───── */
@@ -278,7 +289,7 @@ function PhaseDecoration({ index }: { index: number }) {
 
         {/* Day range watermark inside circle */}
         <text x={CX} y={CY + R - 5} textAnchor="middle" fontFamily={JOST} fontSize={8} letterSpacing="0.16em" fill={color} fillOpacity={0.25}>
-          {index === 0 ? "DAY 1–30" : index === 1 ? "DAY 31–60" : "DAY 61–90"}
+          {index === 0 ? "1–30 დღე" : index === 1 ? "31–60 დღე" : "61–90 დღე"}
         </text>
 
         {/* Phase 3 sparkle above circle */}
@@ -295,89 +306,100 @@ function PhaseDecoration({ index }: { index: number }) {
 
 function Part2Timeline({ isInView }: { isInView: boolean }) {
   return (
-    <div style={{ backgroundColor: BG, padding: "100px 0" }}>
+    <div>
+    {/* Decorative separator band */}
+    <div style={{ height: 5, background: `linear-gradient(to right, ${OXBLOOD}, ${GOLD}, ${OXBLOOD})` }} aria-hidden />
+    <div style={{ backgroundColor: "#F2EBE3", padding: "120px 0" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 40px" }}>
 
         {/* Header */}
         <motion.div
-          style={{ textAlign: "center", marginBottom: 80 }}
+          style={{ textAlign: "center", marginBottom: 64 }}
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <span style={{ display: "block", fontFamily: JOST, fontSize: 11, letterSpacing: "0.28em", textTransform: "uppercase", color: GOLD, marginBottom: 20 }}>
-            THE EVOLUTION
-          </span>
-          <h3 style={{ fontFamily: CORMORANT, fontSize: "clamp(1.9rem, 4vw, 2.7rem)", fontWeight: 300, fontStyle: "italic", color: DARK, margin: "0 auto 24px", maxWidth: 560, lineHeight: 1.25 }}>
-            Hair renewal is a process. We document it for you.
+          <h3 style={{
+            fontFamily: CORMORANT,
+            fontSize: "clamp(1.9rem, 3.5vw, 2.8rem)",
+            fontWeight: 300,
+            fontStyle: "italic",
+            color: OXBLOOD,
+            margin: "0 0 28px",
+            lineHeight: 1.2,
+            maxWidth: 680,
+            marginInline: "auto",
+          }}>
+            თმის ზრდა სულ რაღაც 3–6 თვეში
           </h3>
-          <div style={{ width: 48, height: 1, background: GOLD, margin: "0 auto", opacity: 0.5 }} />
+          <div style={{ width: 56, height: 1, background: GOLD, margin: "0 auto", opacity: 0.45 }} />
         </motion.div>
 
-        {/* 3 columns */}
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 0 }}>
-          {PHASES.map((phase, i) => (
-            <Fragment key={phase.title}>
+        {/* Timeline — 3-column grid, circles centered over each column */}
+        <div style={{ position: "relative" }}>
+
+          {/* Line 1→2: left-edge of circle 02 from right-edge of circle 01 */}
+          <div style={{
+            position: "absolute", top: 30, zIndex: 0, pointerEvents: "none",
+            left: "calc(100% / 6 + 30px)",
+            width: "calc(100% / 3 - 60px)",
+            height: 1.5,
+            backgroundColor: "rgba(201,169,110,0.30)",
+          }} aria-hidden />
+
+          {/* Line 2→3 */}
+          <div style={{
+            position: "absolute", top: 30, zIndex: 0, pointerEvents: "none",
+            left: "calc(100% / 2 + 30px)",
+            width: "calc(100% / 3 - 60px)",
+            height: 1.5,
+            backgroundColor: "rgba(201,169,110,0.30)",
+          }} aria-hidden />
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+            {PHASES.map((phase, i) => (
               <motion.div
-                style={{ flex: 1, minWidth: 0 }}
-                initial={{ opacity: 0, y: 18 }}
+                key={phase.num}
+                style={{
+                  display: "flex", flexDirection: "column",
+                  alignItems: "center", textAlign: "center",
+                  padding: "0 28px",
+                  position: "relative", zIndex: 1,
+                }}
+                initial={{ opacity: 0, y: 24 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.55, delay: 0.2 + i * 0.15, ease: "easeOut" }}
+                transition={{ duration: 0.65, delay: 0.1 + i * 0.18, ease: "easeOut" }}
               >
-                {/* Large faint phase number */}
-                <span style={{
-                  display: "block",
-                  fontFamily: CORMORANT,
-                  fontSize: 52,
-                  fontWeight: 300,
-                  fontStyle: "italic",
-                  color: `rgba(139,47,58,0.16)`,
-                  lineHeight: 1,
-                  marginBottom: 6,
+                {/* Circle */}
+                <div style={{
+                  width: 60, height: 60, borderRadius: "50%",
+                  border: "1.5px solid #C9A96E",
+                  backgroundColor: "#F2EBE3",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  marginBottom: 40, flexShrink: 0,
                 }}>
-                  {phase.num}
+                  <span style={{ fontFamily: CORMORANT, fontSize: 18, fontWeight: 400, color: OXBLOOD, letterSpacing: "0.05em" }}>
+                    {phase.num}
+                  </span>
+                </div>
+
+                {/* Phase label */}
+                <span style={{ display: "block", fontFamily: JOST, fontSize: 13, letterSpacing: "0.1em", textTransform: "uppercase", color: "#6B5F5A", marginBottom: 20 }}>
+                  {phase.label}
                 </span>
 
-                <PhaseDecoration index={i} />
-
-                <span style={{ display: "block", fontFamily: JOST, fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: GOLD, marginBottom: 10 }}>
-                  {phase.month} · {phase.days}
-                </span>
-                <h4 style={{ fontFamily: CORMORANT, fontSize: 31, fontWeight: 300, color: OXBLOOD, margin: "0 0 14px", lineHeight: 1.1 }}>
-                  {phase.title}
-                </h4>
-                <p style={{ fontFamily: JOST, fontSize: 14, fontWeight: 300, color: MUTED, lineHeight: 1.78, margin: 0 }}>
+                {/* Description */}
+                <p style={{ fontFamily: JOST, fontSize: 17, fontWeight: 300, color: "#4A3F3C", lineHeight: 1.7, margin: 0 }}>
                   {phase.desc}
                 </p>
               </motion.div>
-
-              {/* Arrow between columns */}
-              {i < 2 && (
-                <div style={{ flexShrink: 0, display: "flex", alignItems: "center", padding: "0 20px", marginTop: 108 }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: "50%",
-                    border: `1px solid rgba(139,47,58,0.28)`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                  }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={OXBLOOD} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                      <path d="M5 12h14M13 6l6 6-6 6" />
-                    </svg>
-                  </div>
-                </div>
-              )}
-            </Fragment>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Footer label */}
-        <div style={{ textAlign: "center", marginTop: 64 }}>
-          <span style={{ fontFamily: JOST, fontSize: 11, letterSpacing: "0.28em", textTransform: "uppercase", color: GOLD }}>
-            12-WEEK DOCUMENTED RESULTS
-          </span>
-          <div style={{ width: 40, height: 1, background: GOLD, margin: "10px auto 0", opacity: 0.42 }} />
-        </div>
 
       </div>
+    </div>
     </div>
   );
 }
@@ -393,14 +415,14 @@ function Part3Slider() {
           itemOne={
             <ReactCompareSliderImage
               src="/before-thamra.png"
-              alt="Before Thamra"
+              alt="თამრამდე"
               style={{ objectFit: "cover", height: 520 }}
             />
           }
           itemTwo={
             <ReactCompareSliderImage
               src="/after-thamra.png"
-              alt="After 12 weeks Thamra"
+              alt="თამრა 6 თვის შემდეგ"
               style={{ objectFit: "cover", height: 520 }}
             />
           }
@@ -422,14 +444,14 @@ function Part3Slider() {
           style={{ width: "100%", height: 520 }}
         />
 
-        <div style={sliderLabel("left")}>BEFORE</div>
-        <div style={sliderLabel("right")}>AFTER 12 WEEKS</div>
+        <div style={sliderLabel("left")}>THAMRA-მდე</div>
+        <div style={sliderLabel("right")}>6 თვის შემდეგ</div>
       </div>
 
       {/* Drag hint — oxblood strip */}
       <div style={{ backgroundColor: OXBLOOD, padding: "14px 0", textAlign: "center" }}>
         <span style={{ fontFamily: JOST, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(245,240,235,0.55)" }}>
-          ← drag to compare →
+          ← გაასრიალეთ, რომ შეადაროთ →
         </span>
       </div>
     </div>
@@ -446,80 +468,11 @@ function sliderLabel(side: "left" | "right"): CSSProperties {
     fontSize: 11,
     letterSpacing: "0.18em",
     textTransform: "uppercase",
-    color: isLeft ? CREAM : DARK,
-    backgroundColor: isLeft ? OXBLOOD : GOLD,
+    color: CREAM,
+    backgroundColor: OXBLOOD,
     padding: "6px 14px",
     zIndex: 10,
     pointerEvents: "none",
   };
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   PART 4 — Featured testimonial quote on oxblood
-══════════════════════════════════════════════════════════════════ */
-function Part4Quote({ isInView }: { isInView: boolean }) {
-  return (
-    <div style={{ backgroundColor: BG, padding: "100px 24px", textAlign: "center" }}>
-      <motion.div
-        style={{ maxWidth: 640, margin: "0 auto" }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, ease: "easeOut", delay: 0.3 }}
-      >
-        {/* Decorative gold quote mark */}
-        <span style={{ fontFamily: CORMORANT, fontSize: 88, lineHeight: 0.8, color: `rgba(201,169,110,0.45)`, display: "block", marginBottom: 24 }} aria-hidden>
-          &ldquo;
-        </span>
-
-        <blockquote style={{
-          fontFamily: CORMORANT,
-          fontSize: "clamp(1.75rem, 4vw, 2.6rem)",
-          fontWeight: 300,
-          fontStyle: "italic",
-          color: DARK,
-          lineHeight: 1.35,
-          margin: "0 0 40px",
-        }}>
-          For the first time in years, I stopped thinking about my hair.
-        </blockquote>
-
-        <div style={{ width: 40, height: 1, background: GOLD, margin: "0 auto 28px", opacity: 0.55 }} />
-
-        <p style={{ fontFamily: JOST, fontSize: 13, letterSpacing: "0.2em", textTransform: "uppercase", color: DARK, margin: "0 0 8px" }}>
-          MARIAM, 53
-        </p>
-        <p style={{ fontFamily: JOST, fontSize: 12, color: MUTED, margin: 0, letterSpacing: "0.06em" }}>
-          Verified THAMRA Customer
-        </p>
-      </motion.div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════
-   PART 5 — THAMRA transition divider into next section
-══════════════════════════════════════════════════════════════════ */
-function Part5Badges({ isInView }: { isInView: boolean }) {
-  return (
-    <motion.div
-      style={{ backgroundColor: BG, padding: "64px 0", textAlign: "center" }}
-      initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : {}}
-      transition={{ duration: 0.7, delay: 0.3 }}
-    >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, maxWidth: 480, margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
-        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
-          <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill={GOLD} fillOpacity="0.55" />
-        </svg>
-        <span style={{ fontFamily: CORMORANT, fontSize: 13, letterSpacing: "0.38em", textTransform: "uppercase", color: `rgba(139,47,58,0.45)` }}>
-          THAMRA
-        </span>
-        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
-          <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill={GOLD} fillOpacity="0.55" />
-        </svg>
-        <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
-      </div>
-    </motion.div>
-  );
-}

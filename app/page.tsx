@@ -5,6 +5,7 @@ import KeyReasons from "@/components/KeyReasons";
 import Transformation from "@/components/Transformation";
 import ThamraDivider from "@/components/ThamraDivider";
 import QuizCTABanner from "@/components/QuizCTABanner";
+import IngredientsAccordion from "@/components/IngredientsAccordion";
 import PricingSection from "@/components/PricingSection";
 
 /* ------------------------------------------------------------------ */
@@ -346,6 +347,8 @@ export default function Home() {
         </div>
       </section>
 
+      <IngredientsAccordion />
+
       {/* ============================================================ */}
       {/* TRANSFORMATION — 5-part section                             */}
       {/* ============================================================ */}
@@ -485,13 +488,6 @@ export default function Home() {
       <footer id="footer" className="bg-oxblood text-cream-soft">
         <div className={`${CONTAINER} pt-[100px] pb-[60px]`}>
           <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-8">
-            {/* brand */}
-            <div className="col-span-2 md:col-span-1">
-              <span className="font-display text-[28px] tracking-[0.3em]">
-                THAMRA
-              </span>
-            </div>
-
             {/* nav */}
             <div>
               <h4 className={`${LABEL} text-cream-soft/70`}>ნავიგაცია</h4>
@@ -542,17 +538,6 @@ export default function Home() {
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M14.5 8.5h2V5.5h-2c-2 0-3.3 1.3-3.3 3.4v1.6H9v3h2.2v7h3v-7h2.1l.4-3h-2.5V9c0-.3.2-.5.6-.5z" />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  aria-label="Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-cream-soft/25 text-cream-soft/70 transition-colors hover:border-cream-soft hover:text-cream-soft"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-                    <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-                    <circle cx="12" cy="12" r="3.6" />
-                    <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
                   </svg>
                 </a>
               </div>

@@ -3,27 +3,20 @@ import styles from "./HeroCover.module.css";
 export default function HeroCover() {
   return (
     <section className={styles.hero} aria-label="Hero">
-      {/* Gradient tint: strong on the left for text legibility,
-          fades to near-nothing on the right to keep her face vivid */}
-      <div className={styles.overlay} aria-hidden="true" />
 
       <div className={styles.container}>
         <div className={styles.content}>
           <h1 className={styles.headline}>
             <span className={styles.headlineItalic}>THAMRA</span>
-            <br />
-            თმის სილამაზე იწყება შიგნიდან
           </h1>
 
           <p className={styles.description}>
-            უნიკალური ფორმულა{" "}
-            <em>Advanced Hair Biomatrix™</em> ქალებისთვის შექმნილი თმის ზრდის,
-            ბუნებრივი მოცულობისა და ბრწყინვალების ხანგრძლივი მხარდაჭერისთვის
-            ასაკობრივი და ჰორმონალური ცვლილებების პერიოდში.
+            გინეკოლოგის 40-წლიანი გამოცდილებით შექმნილი უნიკალური საკვები დანამატი — მენოპაუზის პერიოდში ქალის თმის ჯანმრთელობაზე ზრუნვას აერთიანებს ერთ გააზრებულ ყოველდღიურ კომპლექსში.
           </p>
 
-          <a href="#shop" className={styles.cta}>
-            შეიძინე Thamra
+          <a href="/quiz" className={styles.cta}>
+            <span className={styles.ctaMain}>გაიგეთ, რა სჭირდება თქვენს თმას</span>
+            <span className={styles.ctaSub}>2წთ</span>
           </a>
         </div>
       </div>
