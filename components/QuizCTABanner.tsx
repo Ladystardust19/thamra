@@ -27,14 +27,14 @@ export default function QuizCTABanner() {
         href="/quiz"
         style={{
           display: "inline-block",
-          backgroundColor: "#8B2F3A",
+          backgroundColor: "#6B3739",
           color: "#C9A96E",
           padding: "16px 40px",
           borderRadius: 4,
           fontFamily: "var(--font-jost), var(--font-ge-sans), sans-serif",
           fontSize: 16,
           fontWeight: 400,
-          letterSpacing: "0.1em",
+          letterSpacing: "0.12em",
           textTransform: "uppercase",
           textDecoration: "none",
         }}

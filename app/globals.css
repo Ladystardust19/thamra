@@ -102,20 +102,20 @@
 
 .key-reasons-cta {
   display: inline-block;
-  background-color: #8b2f3a;
+  background-color: #6B3739;
   color: #C9A96E;
   padding: 16px 40px;
   border-radius: 4px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 16px;
   font-weight: 400;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-decoration: none;
   text-transform: uppercase;
   transition: background-color 0.3s;
 }
 .key-reasons-cta:hover {
-  background-color: #6e242e;
+  background-color: #582e30;
 }
 
 .kr-right {
@@ -344,20 +344,20 @@
 }
 .ia-cta {
   display: inline-block;
-  background-color: #8b2f3a;
-  color: #C9A96E;
-  padding: 16px 48px;
+  background-color: #6B3739;
+  color: #f7f1e9;
+  padding: 16px 40px;
   border-radius: 4px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-decoration: none;
   text-transform: uppercase;
   transition: background-color 0.3s, transform 0.2s;
 }
 .ia-cta:hover {
-  background-color: #6e242e;
+  background-color: #582e30;
   transform: translateY(-1px);
 }
 

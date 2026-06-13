@@ -70,8 +70,8 @@ export default function PricingSection() {
           <div className="order-1 lg:order-2 flex flex-col">
             <div style={{ textAlign: "center", marginBottom: 8 }}>
               <span style={{
-                backgroundColor: "#8B2F3A",
-                color: "#fff",
+                backgroundColor: "#6B3739",
+                color: "#C9A96E",
                 fontFamily: FB,
                 fontSize: 11,
                 letterSpacing: "0.1em",
@@ -178,16 +178,17 @@ export default function PricingSection() {
             style={{
               width: "100%",
               maxWidth: 500,
-              backgroundColor: "#8B2F3A",
+              backgroundColor: "#6B3739",
               color: "#F7F1E9",
               fontFamily: FB,
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: 400,
-              padding: 20,
+              padding: "16px 40px",
               borderRadius: 4,
               border: "none",
               cursor: "pointer",
-              letterSpacing: "0.04em",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
             }}
           >
             შეიძინე <em style={{ color: "#C9A96E" }}>THAMRA</em> →
