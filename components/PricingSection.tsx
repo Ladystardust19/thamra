@@ -184,6 +184,7 @@ export default function PricingSection() {
               fontFamily: FB,
               fontSize: 16,
               fontWeight: 400,
+              fontStyle: "italic",
               padding: "16px 40px",
               borderRadius: 4,
               border: "none",
