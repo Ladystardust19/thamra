@@ -24,6 +24,7 @@ export default function PricingSection() {
             fontFamily: FD,
             fontSize: "clamp(2.4rem, 4vw, 3.25rem)",
             fontWeight: 300,
+            fontStyle: "italic",
             color: "#8B2F3A",
             textAlign: "center",
             marginBottom: 56,

@@ -288,33 +288,11 @@ export default function Home() {
       {/* ============================================================ */}
       <HeroCover />
 
-      {/* ============================================================ */}
-      {/* TRUST BADGES — marquee strip                                */}
-      {/* ============================================================ */}
-      <section aria-label="Trust badges" className="bg-[#EDE5DC] py-4">
-        <div className="flex flex-wrap items-center justify-center gap-0">
-          {trustBadges.map((badge, i) => (
-            <div key={badge.text} className="flex items-center">
-              <div className="flex items-center gap-2 px-5 py-1">
-                <span className="text-oxblood" style={{ transform: "scale(0.75)", display: "inline-flex" }}>
-                  <TrustBadgeIcon name={badge.icon} />
-                </span>
-                <span className="whitespace-nowrap font-body text-[10px] uppercase tracking-[0.12em] text-[#4A3F3C]">
-                  {badge.text}
-                </span>
-              </div>
-              {i < trustBadges.length - 1 && (
-                <span className="h-5 w-px flex-shrink-0 bg-[#C9A96E]/25" aria-hidden />
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ============================================================ */}
       {/* KEY REASONS — interactive arc                              */}
       {/* ============================================================ */}
-      <KeyReasons />
+      <Reveal><KeyReasons /></Reveal>
 
       {/* ============================================================ */}
       {/* TAGLINE + BENEFITS                                           */}
@@ -334,7 +312,7 @@ export default function Home() {
                   <span className="inline-flex text-oxblood">
                     <BenefitIcon name={b.icon} />
                   </span>
-                  <h3 className="mt-6 font-display text-[22px] font-normal text-ink">
+                  <h3 className="mt-6 font-display text-[22px] font-normal italic text-ink">
                     {b.title}
                   </h3>
                   <p className="mt-3 font-body text-[20px] font-light leading-[1.8] text-read">
@@ -347,14 +325,14 @@ export default function Home() {
         </div>
       </section>
 
-      <IngredientsAccordion />
+      <Reveal><IngredientsAccordion /></Reveal>
 
       {/* ============================================================ */}
       {/* TRANSFORMATION — 5-part section                             */}
       {/* ============================================================ */}
       <Transformation />
 
-      <QuizCTABanner />
+      <Reveal><QuizCTABanner /></Reveal>
 
       <ThamraDivider />
 
@@ -368,7 +346,7 @@ export default function Home() {
           <Reveal className="flex items-center order-2 lg:order-1">
             <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
               <span className={`${LABEL} text-gold`}>ჩვენი ისტორია</span>
-              <h2 className="mt-5 font-display text-[3.25rem] font-normal leading-[1.15] md:text-[3.75rem]" style={{ color: "#8B2F3A" }}>
+              <h2 className="mt-5 font-display text-[3.25rem] font-normal italic leading-[1.15] md:text-[3.75rem]" style={{ color: "#8B2F3A" }}>
                 შთაგონებული ბუნებრივი სიძლიერით
               </h2>
               <p className="mt-6 font-body text-[20px] font-light leading-[1.8] text-read">
@@ -408,7 +386,7 @@ export default function Home() {
           <div className="flex-1 flex flex-col justify-center px-8 py-20 md:px-16 xl:px-24">
 
             <Reveal>
-<h2 className="font-display font-normal" style={{ fontSize: "clamp(2rem, 3.5vw, 2.8rem)", color: "#8B2F3A", lineHeight: 1.2, marginBottom: 56 }}>
+<h2 className="font-display font-normal italic" style={{ fontSize: "clamp(2rem, 3.5vw, 2.8rem)", color: "#8B2F3A", lineHeight: 1.2, marginBottom: 56 }}>
                 ქალები, რომლებმაც{" "}
                 <span style={{ color: "#C9A96E", letterSpacing: "0.1em", fontStyle: "italic" }}>THAMRA</span>{" "}
                 ყოველდღიური რიტუალის ნაწილად აქციეს

@@ -84,6 +84,7 @@
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
   font-size: 44px;
   font-weight: 300;
+  font-style: italic;
   color: #8b2f3a;
   line-height: 1.2;
   margin: 0;
@@ -153,6 +154,7 @@
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
   font-size: 24px;
   font-weight: 500;
+  font-style: italic;
   color: #8b2f3a;
   margin: 8px 0 12px 0;
   line-height: 1.2;
@@ -236,6 +238,7 @@
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
   font-size: clamp(2.4rem, 4vw, 3rem);
   font-weight: 300;
+  font-style: italic;
   color: #8B2F3A;
   max-width: 700px;
   margin: 0 auto 32px;
