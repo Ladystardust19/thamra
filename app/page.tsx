@@ -1,10 +1,11 @@
-import { Fragment } from "react";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import HeroCover from "@/components/HeroCover";
 import KeyReasons from "@/components/KeyReasons";
-import IngredientsAccordion from "@/components/IngredientsAccordion";
 import Transformation from "@/components/Transformation";
+import ThamraDivider from "@/components/ThamraDivider";
+import QuizCTABanner from "@/components/QuizCTABanner";
+import PricingSection from "@/components/PricingSection";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -73,25 +74,25 @@ const ingredients = [
 const testimonials = [
   {
     initial: "ნ",
-    name: "ნატო მ.",
+    name: "ნატო დ.",
     age: "47",
     city: "თბილისი",
     quote:
-      "პირველ თვეში ცვენა შემცირდა. მესამეში — სარკეში სხვა ადამიანს ვხედავ.",
+      "რამდენიმე კვირაში შევამჩნიე, რომ თმა უფრო მოვლილი და ძლიერი ჩანდა. მესამე თვიდან კი სარკეში უკვე მეტი მოცულობა დავინახე.",
   },
   {
     initial: "მ",
     name: "მარიამ კ.",
     age: "53",
     city: "ბათუმი",
-    quote: "ექიმმა მითხრა ვერაფერს იზამო. თამრამ დამიმტკიცა, რომ ეშლებოდა.",
+    quote: '„ყველაზე მეტად ის მომწონს, რომ აღარ მიწევს სხვადასხვა დანამატზე ცალ-ცალკე ფიქრი."',
   },
   {
-    initial: "თ",
-    name: "თეა ბ.",
-    age: "58",
-    city: "ქუთაისი",
-    quote: "6 წელია ვებრძოდი. თამრა იყო ერთადერთი, რამაც შიგნიდან იმუშავა.",
+    initial: "ნ",
+    name: "ნანა ვ.",
+    age: "56",
+    city: "თბილისი",
+    quote: "მენოპაუზის შემდეგ, თმის გაყოფის ადგილი უფრო შესამჩნევი გახდა და ვარცხნილობასაც ვეღარ ვიკეთებდი ისე, როგორც ადრე. რამდენიმე თვის შემდეგ შევამჩნიე, რომ თმა ვიზუალურად უფრო გაუმჯობესდა და ვარცხნილობაც უკეთ ინარჩუნებდა ფორმას.",
   },
 ];
 
@@ -287,34 +288,25 @@ export default function Home() {
       <HeroCover />
 
       {/* ============================================================ */}
-      {/* TRUST BADGES                                                 */}
+      {/* TRUST BADGES — marquee strip                                */}
       {/* ============================================================ */}
-      <section aria-label="Trust badges" className="bg-[#EDE5DC]">
-        <div className={`${CONTAINER} py-10`}>
-          <div className="grid grid-cols-2 gap-y-7 md:flex md:items-center md:justify-center">
-            {trustBadges.map((badge, i) => (
-              <Fragment key={badge.text}>
-                {i > 0 && (
-                  <span
-                    className="hidden md:block h-10 w-px flex-shrink-0 bg-[#C9A96E]/15"
-                    aria-hidden
-                  />
-                )}
-                <div
-                  className={`flex flex-col items-center gap-2.5 px-5 md:px-8${
-                    i === 4 ? " col-span-2 justify-self-center" : ""
-                  }`}
-                >
-                  <span className="text-oxblood">
-                    <TrustBadgeIcon name={badge.icon} />
-                  </span>
-                  <span className="text-center font-body text-[12px] uppercase leading-snug tracking-[0.1em] text-[#4A3F3C]">
-                    {badge.text}
-                  </span>
-                </div>
-              </Fragment>
-            ))}
-          </div>
+      <section aria-label="Trust badges" className="bg-[#EDE5DC] py-4">
+        <div className="flex flex-wrap items-center justify-center gap-0">
+          {trustBadges.map((badge, i) => (
+            <div key={badge.text} className="flex items-center">
+              <div className="flex items-center gap-2 px-5 py-1">
+                <span className="text-oxblood" style={{ transform: "scale(0.75)", display: "inline-flex" }}>
+                  <TrustBadgeIcon name={badge.icon} />
+                </span>
+                <span className="whitespace-nowrap font-body text-[10px] uppercase tracking-[0.12em] text-[#4A3F3C]">
+                  {badge.text}
+                </span>
+              </div>
+              {i < trustBadges.length - 1 && (
+                <span className="h-5 w-px flex-shrink-0 bg-[#C9A96E]/25" aria-hidden />
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -355,14 +347,13 @@ export default function Home() {
       </section>
 
       {/* ============================================================ */}
-      {/* INGREDIENTS ACCORDION — Advanced Hair Biomatrix™             */}
-      {/* ============================================================ */}
-      <IngredientsAccordion />
-
-      {/* ============================================================ */}
       {/* TRANSFORMATION — 5-part section                             */}
       {/* ============================================================ */}
       <Transformation />
+
+      <QuizCTABanner />
+
+      <ThamraDivider />
 
       {/* ============================================================ */}
       {/* 6 — BRAND STORY                                              */}
@@ -378,26 +369,18 @@ export default function Home() {
                 შთაგონებული ბუნებრივი სიძლიერით
               </h2>
               <p className="mt-6 font-body text-[20px] font-light leading-[1.8] text-read">
-                თამრა დაიბადა მარტივი რწმენით — რომ თმის ჯანმრთელობა სხეულის
-                შიგნით იწყება. ჩვენ გავაერთიანეთ თანამედროვე მეცნიერება და ბუნების
-                ძალა ერთ ფორმულაში.
+                თამრა დაიბადა მარტივი რწმენით — რომ თმის ჯანმრთელობა სხეულის შიგნიდან იწყება. ჩვენ გავაერთიანეთ თანამედროვე მეცნიერება და ბუნების ძალა ერთ ფორმულაში.
               </p>
               <p className="mt-4 font-body text-[20px] font-light leading-[1.8] text-read">
                 ყოველი ინგრედიენტი შერჩეულია კლინიკური კვლევების საფუძველზე, რათა
                 მხარი დაუჭიროს ქალების თმის სიძლიერესა და ზრდას — ნაზად,
                 ბუნებრივად, ყოველდღიურად.
               </p>
-              <a
-                href="#science"
-                className="mt-9 inline-flex min-h-[60px] min-w-[280px] items-center gap-3 rounded-[4px] border border-oxblood px-8 py-4 font-body text-[18px] font-normal uppercase tracking-[0.14em] text-oxblood transition-colors duration-300 hover:bg-oxblood hover:text-cream-soft"
-              >
-                გაიგე მეტი
-              </a>
             </div>
           </Reveal>
 
           {/* Image — right, full-bleed, fills entire column */}
-          <Reveal className="relative min-h-[420px] lg:min-h-0 order-1 lg:order-2" delay={120}>
+          <div className="relative min-h-[420px] lg:min-h-0 order-1 lg:order-2">
             <Image
               src="/natural-accents.png"
               alt="თამრა — ბრენდის ისტორია"
@@ -405,30 +388,12 @@ export default function Home() {
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="object-cover"
             />
-          </Reveal>
+          </div>
 
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* SECTION DIVIDER                                              */}
-      {/* ============================================================ */}
-      <div style={{ backgroundColor: "#F2EBE3", padding: "64px 0", textAlign: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, maxWidth: 480, margin: "0 auto", padding: "0 24px" }}>
-          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
-          {/* Small diamond ornament */}
-          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
-            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
-          </svg>
-          <span style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontSize: 13, letterSpacing: "0.35em", textTransform: "uppercase", color: "rgba(139,47,58,0.5)" }}>
-            THAMRA
-          </span>
-          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
-            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
-          </svg>
-          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
-        </div>
-      </div>
+      <ThamraDivider />
 
       {/* ============================================================ */}
       {/* 7 — TESTIMONIALS                                             */}
@@ -440,17 +405,11 @@ export default function Home() {
           <div className="flex-1 flex flex-col justify-center px-8 py-20 md:px-16 xl:px-24">
 
             <Reveal>
-              <h2
-                className="font-display font-normal"
-                style={{ fontSize: "clamp(2.2rem, 4vw, 3rem)", color: "#8B2F3A", margin: "0 0 12px", lineHeight: 1.15 }}
-              >
-                ნდობით არჩეული
-              </h2>
-              <p className="font-body font-light" style={{ fontSize: 17, color: "#6B5F5A", marginBottom: 56 }}>
+<h2 className="font-display font-normal" style={{ fontSize: "clamp(2rem, 3.5vw, 2.8rem)", color: "#3D3335", lineHeight: 1.2, marginBottom: 56 }}>
                 ქალები, რომლებმაც{" "}
-                <span style={{ color: "#C9A96E", letterSpacing: "0.1em" }}>THAMRA</span>{" "}
-                აირჩიეს
-              </p>
+                <span style={{ color: "#C9A96E", letterSpacing: "0.1em", fontStyle: "italic" }}>THAMRA</span>{" "}
+                ყოველდღიური რიტუალის ნაწილად აქციეს
+              </h2>
             </Reveal>
 
             <div className="flex flex-col gap-10">
@@ -513,75 +472,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* THAMRA TRANSITION DIVIDER                                    */}
-      {/* ============================================================ */}
-      <div style={{ backgroundColor: "#F2EBE3", padding: "64px 0", textAlign: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, maxWidth: 480, margin: "0 auto", padding: "0 24px" }}>
-          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
-          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
-            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
-          </svg>
-          <span style={{ fontFamily: "var(--font-cormorant), Georgia, serif", fontSize: 13, letterSpacing: "0.35em", textTransform: "uppercase", color: "rgba(139,47,58,0.5)" }}>
-            THAMRA
-          </span>
-          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
-            <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />
-          </svg>
-          <div style={{ flex: 1, height: 1, background: "rgba(201,169,110,0.35)" }} />
-        </div>
-      </div>
+      <ThamraDivider />
 
       {/* ============================================================ */}
       {/* 8 — FINAL CTA                                                */}
       {/* ============================================================ */}
-      <section id="shop" className="scroll-mt-24 bg-surface overflow-hidden">
-        <div className="grid lg:grid-cols-2 min-h-[85vh]">
-
-          {/* Left — text, vertically centred */}
-          <Reveal className="flex items-center order-2 lg:order-1">
-            <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
-              <h2 className="font-display text-[3.25rem] font-normal leading-[1.15] text-ink md:text-[3.75rem]">
-                შენი ახალი თავი იწყება დღეს
-              </h2>
-
-              <div className="mt-8 flex items-end gap-4">
-                <span className="font-body text-[18px] font-light text-muted line-through">89₾</span>
-                <span className="font-display text-[56px] font-normal leading-none text-oxblood">69₾</span>
-                <span className="mb-1 font-body text-[13px] font-light text-muted">/ 1 თვის მარაგი</span>
-              </div>
-              <p className="mt-4 font-body text-[15px] font-normal text-ink">
-                3 თვე — 159₾ <span className="text-oxblood">დაზოგე 48₾</span>
-              </p>
-
-              <div className="mt-8 h-px w-full max-w-[280px] bg-gold/40" aria-hidden />
-
-              <a
-                href="#"
-                className="mt-8 inline-flex min-h-[60px] min-w-[280px] items-center justify-center rounded-[4px] bg-oxblood px-12 py-4 font-body text-[18px] font-normal uppercase tracking-[0.14em] text-cream-soft transition-colors duration-300 hover:bg-oxblood-dark"
-              >
-                შეიძინე ახლა
-              </a>
-
-              <p className="mt-5 font-body text-[12px] font-light tracking-[0.08em] text-muted">
-                15 დღიანი გარანტია
-              </p>
-            </div>
-          </Reveal>
-
-          {/* Right — full-bleed image covering entire column */}
-          <Reveal className="relative min-h-[480px] lg:min-h-0 order-1 lg:order-2" delay={120}>
-            <Image
-              src="/sheni-akhali-tavi.png"
-              alt="თამრა — შეიძინე"
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </Reveal>
-
-        </div>
-      </section>
+      <PricingSection />
 
       {/* ============================================================ */}
       {/* 9 — FOOTER                                                   */}
@@ -594,9 +490,6 @@ export default function Home() {
               <span className="font-display text-[28px] tracking-[0.3em]">
                 THAMRA
               </span>
-              <p className="mt-4 max-w-[16rem] font-body text-[16px] font-light leading-[1.7] text-cream-soft/70">
-                პრემიუმ ფორმულა ქალის თმის ჯანმრთელი ზრდისთვის — შიგნიდან.
-              </p>
             </div>
 
             {/* nav */}
@@ -668,7 +561,7 @@ export default function Home() {
 
           <div className="mt-14 border-t border-cream-soft/15 pt-6">
             <p className="font-body text-[13px] font-light tracking-[0.04em] text-cream-soft/70">
-              © 2026 Thamra. ყველა უფლება დაცულია.
+              © 2026 THAMRA. ყველა უფლება დაცულია.
             </p>
           </div>
         </div>
