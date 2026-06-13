@@ -15,7 +15,7 @@ export default function HeroCover() {
           </p>
 
           <a href="/quiz" className={styles.cta}>
-            <span className={styles.ctaMain}>გაიგე რა სჭირდება შენს თმას</span>
+            <span className={styles.ctaMain}>გაიგე რა სჭირდება შენს თმას →</span>
             <span className={styles.ctaSub}>2წთ.</span>
           </a>
         </div>

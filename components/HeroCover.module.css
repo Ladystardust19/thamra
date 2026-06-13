@@ -89,7 +89,7 @@
   color: #f7f1e9;
   text-decoration: none;
 
-  font-family: var(--font-jost), system-ui, sans-serif;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 1.125rem;
   font-weight: 400;
   letter-spacing: 0.17em;

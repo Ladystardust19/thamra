@@ -103,14 +103,15 @@
 .key-reasons-cta {
   display: inline-block;
   background-color: #8b2f3a;
-  color: #f7f1e9;
-  padding: 16px 36px;
+  color: #C9A96E;
+  padding: 16px 40px;
   border-radius: 4px;
-  font-family: var(--font-jost), sans-serif;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 16px;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
   text-decoration: none;
+  text-transform: uppercase;
   transition: background-color 0.3s;
 }
 .key-reasons-cta:hover {
@@ -344,7 +345,7 @@
 .ia-cta {
   display: inline-block;
   background-color: #8b2f3a;
-  color: #f7f1e9;
+  color: #C9A96E;
   padding: 16px 48px;
   border-radius: 4px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;

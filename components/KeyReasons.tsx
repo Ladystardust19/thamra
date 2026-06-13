@@ -78,7 +78,7 @@ export default function KeyReasons() {
           </p>
 
           <a href="#" className="key-reasons-cta" style={{ marginTop: 40 }}>
-            გაიარე ტესტი →
+            გაიგე რა სჭირდება შენს თმას →
           </a>
         </div>
 

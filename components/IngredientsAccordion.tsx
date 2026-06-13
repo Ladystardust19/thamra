@@ -88,11 +88,6 @@ export default function IngredientsAccordion() {
 
         {/* ── BOTTOM ── */}
         <div className="ia-bottom">
-          <div className="ia-manifesto">
-            <p>არა ბევრი სხვადასხვა დანამატი.</p>
-            <p>არა რთული რუტინა.</p>
-          </div>
-          <p className="ia-sub">ყოველ დილას. ერთი კოვზი წყალში, ჩაიში ან სმუზიში.</p>
           <a href="#shop" className="ia-cta">შეიძინე <span style={{ color: "#C9A96E", fontStyle: "italic" }}>THAMRA</span> →</a>
         </div>
 

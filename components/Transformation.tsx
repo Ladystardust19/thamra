@@ -450,9 +450,9 @@ function Part3Slider() {
         <div style={sliderLabel("right")}>6 თვის შემდეგ</div>
       </div>
 
-      {/* Drag hint — oxblood strip */}
-      <div style={{ backgroundColor: OXBLOOD, padding: "14px 0", textAlign: "center" }}>
-        <span style={{ fontFamily: JOST, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(245,240,235,0.55)" }}>
+      {/* Drag hint */}
+      <div style={{ backgroundColor: "#EDE5DC", padding: "14px 0", textAlign: "center" }}>
+        <span style={{ fontFamily: JOST, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A7E79" }}>
           ← გაასრიალეთ, რომ შეადაროთ →
         </span>
       </div>
