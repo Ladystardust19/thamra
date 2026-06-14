@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
@@ -19,23 +18,12 @@ export default function PricingSection() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 80,
-            alignItems: "center",
+            alignItems: "stretch",
           }}
           className="ps-grid"
         >
 
-          {/* ── Left — image ── */}
-          <div style={{ borderRadius: 4, overflow: "hidden" }}>
-            <Image
-              src="/sheni-akhali-tavi.png"
-              alt="THAMRA"
-              width={540}
-              height={620}
-              style={{ width: "100%", height: "auto", display: "block", objectFit: "cover" }}
-            />
-          </div>
-
-          {/* ── Right — waitlist ── */}
+          {/* ── Left — waitlist ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
             <span style={{
@@ -71,25 +59,13 @@ export default function PricingSection() {
 
             <Link
               href="/quiz"
-              style={{
-                display: "inline-block",
-                backgroundColor: "#8B2F3A",
-                color: "#F7F1E9",
-                fontFamily: FB,
-                fontSize: 18,
-                fontWeight: 400,
-                padding: "18px 48px",
-                borderRadius: 4,
-                textDecoration: "none",
-                textAlign: "center",
-                letterSpacing: "0.04em",
-              }}
+              className="key-reasons-cta"
             >
               გაიგე რა სჭირდება შენს თმას →
             </Link>
 
             <p style={{ fontFamily: FB, fontSize: 13, color: "#8A7E79", margin: 0 }}>
-              უკვე 500+ ქალმა გაიარა ტესტი
+              500+ ქალმა უკვე გაიარა ტესტი
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -104,6 +80,16 @@ export default function PricingSection() {
             </div>
 
           </div>
+
+          {/* ── Right — image ── */}
+          <div style={{ borderRadius: 4, overflow: "hidden" }}>
+            <img
+              src="/sheni-akhali-tavi.png"
+              alt="THAMRA"
+              style={{ width: "100%", height: "auto", display: "block" }}
+            />
+          </div>
+
         </div>
       </div>
 

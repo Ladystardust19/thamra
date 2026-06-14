@@ -67,8 +67,6 @@ export default function KeyReasons() {
 
         {/* ── LEFT — sticky ── */}
         <div className="kr-left">
-          <span className="kr-label">THE SCIENCE</span>
-
           <h2 className="kr-headline">
             რატომ იცვლება თმა მენოპაუზის დროს?
           </h2>

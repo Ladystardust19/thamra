@@ -68,7 +68,22 @@ export default function IngredientsAccordion() {
 
         {/* ── TOP ── */}
         <div className="ia-top">
-<h2 className="ia-headline">ხუთი მიზნობრივი კომპლექსი ერთ კოვზში.</h2>
+<h2 className="ia-headline">
+  <span style={{
+    display: "block",
+    fontFamily: "var(--font-cormorant), Georgia, serif",
+    fontSize: "clamp(1.1rem, 1.8vw, 1.4rem)",
+    fontWeight: 300,
+    fontStyle: "italic",
+    letterSpacing: "0.18em",
+    color: "#C9A96E",
+    marginBottom: "0.55em",
+    textTransform: "none",
+  }}>
+    THAMRA Hair Longevity Complex™
+  </span>
+  ხუთი მიზნობრივი კომპლექსი ერთ კოვზში.
+</h2>
         </div>
 
         {/* ── CARD GRID ── */}

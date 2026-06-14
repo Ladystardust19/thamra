@@ -361,7 +361,7 @@ export default function QuizClient() {
           )}
 
           {screen === "result" && (
-            <ResultScreen name={name} answers={answers} />
+            <ResultScreen name={name} phone={phone} answers={answers} />
           )}
         </div>
       </div>
@@ -509,9 +509,6 @@ function GateScreen({
       </button>
 
       <h2 className={styles.emailHeadline}>შენი ანალიზი მზადაა</h2>
-      <p className={styles.emailSubtext}>
-        დატოვე ნომერი, რომ შედეგი და შენი პერსონალური −15% შეთავაზება მიიღო.
-      </p>
 
       <div className={styles.fields}>
         {/* Name */}
@@ -585,9 +582,11 @@ function GateScreen({
 
 function ResultScreen({
   name,
+  phone,
   answers,
 }: {
   name: string;
+  phone: string;
   answers: PartialAnswers;
 }) {
   const [d1, d2] = getDrivers(answers);
@@ -600,6 +599,7 @@ function ResultScreen({
 
   return (
     <div className={styles.resultWrap}>
+
       {/* ── Block 1 ── */}
       <span className={styles.resultLabel}>შენი ანალიზი</span>
       <h2 className={styles.resultHeadline}>
@@ -634,26 +634,49 @@ function ResultScreen({
 
       <div className={styles.resultDivider} />
 
-      {/* ── Block 4 ── */}
+      {/* ── Block 4 — Consultation ── */}
       <div className={styles.thamraBlock}>
         <span className={styles.thamraBlockLabel}>რეკომენდაცია</span>
-        <h3 className={styles.thamraHeadline}>სწორედ ამიტომ შეიქმნა THAMRA.</h3>
+
         <p className={styles.thamraText}>
-          THAMRA Advanced Hair Biomatrix™ ერთდროულად მუშაობს ოთხივე მიზეზზე,
-          რომელსაც ჰორმონალური ცვლილება იწვევს, და არა ერთ სიმპტომზე.
+          თქვენი პასუხებიდან ჩანს, რომ თმის გათხელება და ცვენა შეიძლება მენოპაუზასთან დაკავშირებულ რამდენიმე პროცესს უკავშირდებოდეს. ასეთ დროს ერთი ინგრედიენტი ან შემთხვევით შერჩეული ვიტამინი ხშირად არ არის საკმარისი.
         </p>
-        <p className={styles.thamraPersonal}>{q7Line}</p>
-        <a href="/#shop" className={styles.ctaBtn}>
-          მინდა ჩემი THAMRA · −15% ტესტის მონაწილეებისთვის
-        </a>
+
+        <p className={styles.thamraText}>
+          შემდეგი ნაბიჯია თქვენი თმის მდგომარეობის უფრო ზუსტად შეფასება.
+        </p>
+
+        <p className={styles.thamraText}>
+          დაჯავშნეთ უფასო კონსულტაცია THAMRA-ს გუნდთან და მიიღეთ თმის ცვენისა და გათხელების შესაძლო მიზეზების პირველადი შეფასება — შემდეგ კი პერსონალური რეკომენდაცია THAMRA-ს რიტუალის დასაწყებად.
+        </p>
+
+        <div className={styles.fields} style={{ marginTop: 24 }}>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel} style={{ color: "rgba(247,241,233,0.6)" }}>სახელი</label>
+            <input type="text" className={styles.fieldInput} defaultValue={name} />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel} style={{ color: "rgba(247,241,233,0.6)" }}>ტელეფონის ნომერი</label>
+            <div className={styles.phoneWrap}>
+              <span className={styles.phonePrefix}>+995</span>
+              <input type="tel" className={styles.phoneInput} defaultValue={phone} />
+            </div>
+          </div>
+        </div>
+
+        <button className={styles.ctaBtn} style={{ marginTop: 8 }}>
+          დაჯავშნეთ უფასო კონსულტაცია →
+        </button>
+
         <p className={styles.urgency}>
-          შეთავაზება მოქმედებს 24 საათის განმავლობაში.
+          კონსულტაცია უფასოა · პერსონალური რეკომენდაცია · გადახდა არ არის საჭირო
         </p>
       </div>
 
       <p className={styles.footnote}>
         ეს ტესტი საინფორმაციო ხასიათისაა და არ წარმოადგენს სამედიცინო დიაგნოზს.
       </p>
+
     </div>
   );
 }
