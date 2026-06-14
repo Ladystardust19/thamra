@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const NAV_LINKS = [
   { label: "ჩვენ შესახებ", href: "#story" },
   { label: "მეცნიერება",   href: "#science" },
-  { label: "შეიძინე",      href: "#shop" },
+  { label: "ტესტი",         href: "/quiz" },
   { label: "კონტაქტი",     href: "#footer" },
 ];
 

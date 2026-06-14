@@ -472,7 +472,7 @@ export default function Home() {
               <ul className="mt-5 space-y-3">
                 {[
                   { l: "მთავარი", h: "#" },
-                  { l: "შეიძინე", h: "#shop" },
+                  { l: "ტესტი", h: "/quiz" },
                   { l: "მეცნიერება", h: "#science" },
                   { l: "ჩვენ შესახებ", h: "#story" },
                 ].map((x) => (

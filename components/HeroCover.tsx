@@ -18,6 +18,9 @@ export default function HeroCover() {
             <span className={styles.ctaMain}>გაიგე რა სჭირდება შენს თმას →</span>
             <span className={styles.ctaSub}>2წთ.</span>
           </a>
+          <p style={{ fontSize: 13, color: "#8A7E79", marginTop: 12 }}>
+            უკვე 200+ ქალმა გაიარა ტესტი
+          </p>
         </div>
       </div>
     </section>

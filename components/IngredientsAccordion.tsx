@@ -88,7 +88,7 @@ export default function IngredientsAccordion() {
 
         {/* ── BOTTOM ── */}
         <div className="ia-bottom">
-          <a href="#shop" className="ia-cta">შეიძინე <span style={{ color: "#C9A96E", fontStyle: "italic" }}>THAMRA</span> →</a>
+          <a href="/quiz" className="ia-cta">გაიგე რა სჭირდება შენს თმას →</a>
         </div>
 
       </div>

@@ -283,7 +283,7 @@ export default function QuizClient() {
     //   submitted_at: new Date().toISOString()
     // })
     console.log(
-      "Thamra quiz submission:",
+      "THAMRA quiz submission:",
       JSON.stringify(
         { name: name.trim(), phone: `+995${rawPhone}`, email: email.trim() || null, answers },
         null,
@@ -392,10 +392,10 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
     <div className={styles.introWrap}>
       <span className={styles.eyebrow}>THAMRA · ანალიზი</span>
       <h1 className={styles.introHeadline}>
-        გაიგეთ, რა სჭირდება თქვენს თმას
+        გაიგე, რა სჭირდება შენს თმას
       </h1>
       <p className={styles.introText}>
-        უპასუხეთ რამდენიმე კითხვას და გაიგეთ, როგორ იზრუნოთ თმის სიჯანსაღეზე მენოპაუზის პერიოდში.
+        უპასუხე რამდენიმე კითხვას და გაიგე, როგორ იზრუნო თმის სიჯანსაღეზე მენოპაუზის პერიოდში.
       </p>
       <button className={styles.primaryBtn} onClick={onStart}>
         დაიწყე ტესტი
@@ -555,8 +555,7 @@ function GateScreen({
         {/* Email — optional */}
         <div className={styles.field}>
           <label className={styles.fieldLabel} htmlFor="quiz-email">
-            ელ.ფოსტა{" "}
-            <span className={styles.optionalTag}>(არასავალდებულო)</span>
+            ელ.ფოსტა
           </label>
           <input
             id="quiz-email"
@@ -566,7 +565,7 @@ function GateScreen({
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             autoComplete="email"
-            placeholder="example@gmail.com"
+            placeholder="ელ.ფოსტა (არასავალდებულო)"
           />
           {emailError && <span className={styles.fieldError}>{emailError}</span>}
         </div>
@@ -638,14 +637,14 @@ function ResultScreen({
       {/* ── Block 4 ── */}
       <div className={styles.thamraBlock}>
         <span className={styles.thamraBlockLabel}>რეკომენდაცია</span>
-        <h3 className={styles.thamraHeadline}>სწორედ ამიტომ შეიქმნა Thamra.</h3>
+        <h3 className={styles.thamraHeadline}>სწორედ ამიტომ შეიქმნა THAMRA.</h3>
         <p className={styles.thamraText}>
-          Thamra Advanced Hair Biomatrix™ ერთდროულად მუშაობს ოთხივე მიზეზზე,
+          THAMRA Advanced Hair Biomatrix™ ერთდროულად მუშაობს ოთხივე მიზეზზე,
           რომელსაც ჰორმონალური ცვლილება იწვევს, და არა ერთ სიმპტომზე.
         </p>
         <p className={styles.thamraPersonal}>{q7Line}</p>
         <a href="/#shop" className={styles.ctaBtn}>
-          მინდა ჩემი Thamra · −15% ტესტის მონაწილეებისთვის
+          მინდა ჩემი THAMRA · −15% ტესტის მონაწილეებისთვის
         </a>
         <p className={styles.urgency}>
           შეთავაზება მოქმედებს 24 საათის განმავლობაში.
