@@ -68,16 +68,6 @@ export default function PricingSection() {
               500+ ქალმა უკვე გაიარა ტესტი
             </p>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {BENEFITS.map((b) => (
-                <div key={b} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <span style={{ color: "#C9A96E", fontSize: 16, lineHeight: 1.5, flexShrink: 0 }}>·</span>
-                  <span style={{ fontFamily: FB, fontSize: 15, color: "#4A3F3C", lineHeight: 1.6 }}>
-                    {b}
-                  </span>
-                </div>
-              ))}
-            </div>
 
           </div>
 

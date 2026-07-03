@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Link from "next/link";
 import styles from "./Quiz.module.css";
+import { supabase } from "@/lib/supabase";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -276,20 +277,15 @@ export default function QuizClient() {
 
     if (!valid) return;
 
-    // TODO: Replace with Supabase insert
-    // await supabase.from("quiz_leads").insert({
-    //   name: name.trim(), phone: `+995${rawPhone}`,
-    //   email: email.trim() || null, answers,
-    //   submitted_at: new Date().toISOString()
-    // })
-    console.log(
-      "THAMRA quiz submission:",
-      JSON.stringify(
-        { name: name.trim(), phone: `+995${rawPhone}`, email: email.trim() || null, answers },
-        null,
-        2
-      )
-    );
+    supabase.from("quiz_leads").insert({
+      name: name.trim(),
+      phone: `+995${rawPhone}`,
+      email: email.trim() || null,
+      answers,
+      submitted_at: new Date().toISOString(),
+    }).then(({ error }) => {
+      if (error) console.error("Supabase insert error:", error.message);
+    });
 
     navigate("result", "forward");
   }

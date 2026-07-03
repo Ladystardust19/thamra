@@ -86,7 +86,8 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
 
       {/* Content — left-aligned over the oxblood wash */}
       <motion.div
-        style={{ position: "absolute", top: "18%", left: 60, zIndex: 1, maxWidth: 500 }}
+        className="tf-hero-content"
+        style={{}}
         initial={{ opacity: 0, y: 28 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
@@ -358,7 +359,7 @@ function Part2Timeline({ isInView: _unused }: { isInView: boolean }) {
             backgroundColor: "rgba(201,169,110,0.30)",
           }} aria-hidden />
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+          <div className="tf-timeline-grid">
             {PHASES.map((phase, i) => (
               <motion.div
                 key={phase.num}
@@ -418,14 +419,14 @@ function Part3Slider() {
             <ReactCompareSliderImage
               src="/before-thamra.png"
               alt="თამრამდე"
-              style={{ objectFit: "cover", height: 520 }}
+              className="tf-slider-img"
             />
           }
           itemTwo={
             <ReactCompareSliderImage
               src="/after-thamra.png"
               alt="თამრა 6 თვის შემდეგ"
-              style={{ objectFit: "cover", height: 520 }}
+              className="tf-slider-img"
             />
           }
           handle={
@@ -443,7 +444,7 @@ function Part3Slider() {
               linesStyle={{ background: GOLD, width: 1.5, opacity: 0.75 }}
             />
           }
-          style={{ width: "100%", height: 520 }}
+          className="tf-slider"
         />
 
         <div style={sliderLabel("left")}>THAMRA-მდე</div>

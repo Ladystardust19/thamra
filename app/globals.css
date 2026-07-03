@@ -54,6 +54,12 @@
 }
 
 /* ── Key Reasons — sticky split layout ── */
+.kr-section { padding: 140px 0 80px; }
+
+@media (max-width: 767px) {
+  .kr-section { padding: 72px 0 60px; }
+}
+
 .kr-wrapper {
   max-width: 1400px;
   margin: 0 auto;
@@ -574,6 +580,52 @@
     height: calc(100% - 52px);
     background: rgba(201,169,110,0.18);
   }
+}
+
+/* ── Transformation responsive ── */
+.tf-hero-content {
+  position: absolute;
+  top: 18%;
+  left: 60px;
+  z-index: 1;
+  max-width: 500px;
+}
+
+.tf-timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.tf-slider { width: 100%; height: 520px; }
+.tf-slider-img { object-fit: cover; height: 520px; }
+
+@media (max-width: 767px) {
+  .tf-hero-content {
+    left: 24px;
+    right: 24px;
+    max-width: 100%;
+    top: auto;
+    bottom: 8%;
+  }
+
+  .tf-timeline-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .tf-timeline-grid > div {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    padding: 0 0 40px !important;
+    gap: 20px !important;
+  }
+
+  .tf-timeline-grid > div:last-child {
+    padding-bottom: 0 !important;
+  }
+
+  .tf-slider { height: 320px !important; }
+  .tf-slider-img { height: 320px !important; }
 }
 
 @layer utilities {

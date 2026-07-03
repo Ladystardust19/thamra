@@ -50,17 +50,17 @@ const benefits = [
   {
     icon: "leaf",
     title: "ჰორმონალური ბალანსი",
-    text: "ვუჭერთ მხარს ორგანიზმის ბუნებრივ ჰორმონალურ ბალანსს, რომელიც თმის სიმკვრივეზე პირდაპირ აისახება.",
+    text: "ორგანიზმის შიდა ბალანსზე ზრუნვა მენოპაუზის პერიოდში, როდესაც ჰორმონალური ცვლილებები თმის ზრდის ციკლზეც აისახება.",
   },
   {
     icon: "heart",
-    title: "ღრმა აღდგენა",
-    text: "ამინომჟავები და კოლაგენი თმას აღადგენს ფესვიდან წვერამდე, შიგნიდან აძლიერებს სტრუქტურას.",
+    title: "თმის შინაგანი ღრმა აღდგენა",
+    text: "თამრას შიდა თმის მკვებავი კომპლექსი თმას უბრუნებს სიმკვრივეს, სიცოცხლეს, და ჯანმრთელ იერს, ფესვიდან ღერის ბოლომდე.",
   },
   {
     icon: "spark",
-    title: "სტრესის მართვა",
-    text: "ვამცირებთ კორტიზოლის დონეს და ხელახლა ვააქტიურებთ მიძინებულ ფოლიკულებს.",
+    title: "მენოპაუზის პერიოდში ფოლიკულის მგრძნობელობისა და თმის სიმკვრივეზე ზრუნვა.",
+    text: "თმისთვის მნიშვნელოვანი საკვები ნივთიერებებით გააზრებული ყოველდღიური კვება.",
   },
 ];
 
@@ -97,6 +97,45 @@ const testimonials = [
   },
 ];
 
+
+const advisors = [
+  {
+    name: "Maia Sidamonishvili",
+    title: "გინეკოლოგი, რადიოლოგი",
+    institution: "თამრას მთავარი მრჩეველი",
+    quote:
+      "ქალებში თმის ცვლილებები მენოპაუზის პერიოდში იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი. THAMRA შეიქმნა სწორედ ამ კომპლექსური პროცესის უფრო ღრმა გაგებით — როგორც ყოველდღიური რიტუალი, რომელიც თმის სიმკვრივეს, ხარისხსა და გრძელვადიან სიჯანსაღეს ერთიანად უჭერს მხარს.",
+    photo: "/maia-sidamonidze.png",
+    initial: "მ",
+  },
+  {
+    name: "Lasha Jakeli",
+    title: "ექიმი ნევროლოგი",
+    institution: "პირველი ქართული გამაჯანსაღებელი პლატფორმა 'მინდორი'-ს დამფუძნებელი",
+    quote:
+      "THAMRA-ს იდეა მხოლოდ თმაზე ზრუნვა არ არის. ეს არის ქალის ყოველდღიური რესურსის, ნერვული სისტემის ბალანსისა და გრძელვადიანი კეთილდღეობის უფრო გააზრებული მიდგომა — შექმნილი იმ ეტაპისთვის, როდესაც ორგანიზმს მეტი სიზუსტე, სიმშვიდე და თანმიმდევრული ზრუნვა სჭირდება.",
+    photo: "/lasha-jakeli.jpg",
+    initial: "L",
+  },
+  {
+    name: "Andries Van Riezen",
+    title: "ბიოქიმიკოსი, ფორმულაციების განვითარების მთავარი მეცნიერი",
+    institution: "კვლევისა და განვითარების ხელმძღვანელი, Acenzia Inc. Ontario, Canada",
+    quote:
+      "THAMRA-ს სიძლიერე ერთ ინგრედიენტში არ არის — ის მთელი ფორმულის ინტელექტუალურ სინერგიაშია. ზუსტად შერჩეული და დაბალანსებული შემადგენლობა მენოპაუზის პერიოდში თმის გათხელების ერთმანეთთან დაკავშირებულ კომპლექსურ ბიოლოგიურ პროცესებზე ერთდროულად მუშაობს, რაც THAMRA-ს თმის მოვლის გამორჩეულ სისტემად აქცევს.",
+    photo: "/andries-van-riezen.png",
+    initial: "A",
+  },
+  {
+    name: "Tomoyuki Amano",
+    title: "ნეირომეცნიერი, ბიომედიცინის ინჟინერი და მკვლევარი",
+    institution: "Georgia Institute of Technology, USA",
+    quote:
+      "როგორც ნეირომეცნიერი ვადასტურებ, რომ სტრესი, ძილის ხარისხი და ქრონიკულად მომატებული კორტიზოლი პირდაპირ აფერხებს თმის ზრდის აქტიურ ფაზას. THAMRA-ს კომპლექსურ მიდგომას სხეული ბალანსში მოჰყავს — ეს მეცნიერულად დასაბუთებული სტრატეგიაა თმის გრძელვადიანი ჯანმრთელობისთვის.",
+    photo: "/tomoyuki-amano.png",
+    initial: "T",
+  },
+];
 
 const trustBadges = [
   { icon: "flask",        text: "ლაბორატორიულად ტესტირებული" },
@@ -288,6 +327,86 @@ export default function Home() {
       {/* ============================================================ */}
       <HeroCover />
 
+      {/* ============================================================ */}
+      {/* SCIENTIFIC ADVISORY BOARD                                    */}
+      {/* ============================================================ */}
+      <section id="science" className="scroll-mt-24 bg-cream">
+        <div className={`${CONTAINER} py-20 md:py-[140px]`}>
+          <Reveal>
+            <span className={`${LABEL} text-gold`}>სამეცნიერო ხედვა</span>
+            <p className="mt-5 max-w-2xl font-body text-[18px] font-light leading-[1.8] text-read">
+              THAMRA აერთიანებს გინეკოლოგიის, ნევროლოგიის, ნეირომეცნიერებისა და ფორმულაციების განვითარების გამოცდილებას — ქალების თმის სიჯანსაღეზე კომპლექსური ზრუნვისთვის მენოპაუზის გარდამავალ ეტაპზე.
+            </p>
+          </Reveal>
+
+          <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
+            {advisors.map((a, i) => (
+              <Reveal key={a.name} delay={i * 120}>
+                <div
+                  className="flex h-full flex-col"
+                  style={{
+                    borderTop: "2px solid #C9A96E",
+                    paddingTop: 32,
+                  }}
+                >
+                  {"photo" in a && (
+                    <img
+                      src={a.photo as string}
+                      alt={a.name}
+                      style={{
+                        width: 160,
+                        height: 160,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        objectPosition: "center top",
+                        marginBottom: 16,
+                        border: "2px solid #C9A96E",
+                      }}
+                    />
+                  )}
+                  <span
+                    className="font-display"
+                    style={{
+                      fontSize: "clamp(2rem,3.5vw,2.75rem)",
+                      lineHeight: 0.8,
+                      color: "rgba(201,169,110,0.35)",
+                      display: "block",
+                    }}
+                    aria-hidden
+                  >
+                    &ldquo;
+                  </span>
+                  <p
+                    className="mt-4 flex-1 font-display font-light italic leading-[1.75] text-ink"
+                    style={{ fontSize: 17 }}
+                  >
+                    {a.quote}
+                  </p>
+                  <div className="mt-8 flex items-center gap-3">
+                    <div>
+                      <p
+                        className="font-body font-normal leading-tight text-ink"
+                        style={{ fontSize: 15 }}
+                      >
+                        {a.name}
+                      </p>
+                      <div style={{ width: "100%", height: 1, backgroundColor: "#C9A96E", opacity: 0.4, margin: "6px 0" }} />
+                      <p
+                        className="font-body font-light text-read"
+                        style={{ fontSize: 13 }}
+                      >
+                        {a.title} · {a.institution}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <ThamraDivider />
 
       {/* ============================================================ */}
       {/* KEY REASONS — interactive arc                              */}
@@ -300,7 +419,10 @@ export default function Home() {
       <section className="bg-surface/40">
         <div className={`${CONTAINER} py-20 md:py-[140px]`}>
           <Reveal>
-            <p className="mx-auto max-w-3xl text-center font-display text-[32px] font-normal italic leading-[1.4] text-oxblood">
+            <p className="mx-auto max-w-3xl text-center font-body text-[16px] sm:text-[20px] font-light leading-[1.8] text-read">
+              თამრა ზრუნავს ქალის ორგანიზმზე მიაღწიოს ბუნებრივ ჰორმონალურ ბალანსს, რომელიც თმის სიმკვრივეზე პირდაპირ აისახება.
+            </p>
+            <p className="mx-auto mt-6 max-w-3xl text-center font-display text-[22px] sm:text-[32px] font-normal italic leading-[1.4] text-oxblood">
               უფრო ძლიერი, სიცოცხლით სავსე თმა — ყოველდღიურად.
             </p>
           </Reveal>
@@ -308,14 +430,14 @@ export default function Home() {
           <div className="mt-24 grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
             {benefits.map((b, i) => (
               <Reveal key={b.title} delay={i * 120}>
-                <div className="group h-full border-b border-gold/15 p-8 transition-transform duration-1000 hover:-translate-y-1">
+                <div className="group h-full border-b border-gold/15 p-6 sm:p-8 transition-transform duration-1000 hover:-translate-y-1">
                   <span className="inline-flex text-oxblood">
                     <BenefitIcon name={b.icon} />
                   </span>
-                  <h3 className="mt-6 font-display text-[22px] font-normal italic text-ink">
+                  <h3 className="mt-6 font-display text-[19px] sm:text-[22px] font-normal italic text-ink">
                     {b.title}
                   </h3>
-                  <p className="mt-3 font-body text-[20px] font-light leading-[1.8] text-read">
+                  <p className="mt-3 font-body text-[16px] sm:text-[20px] font-light leading-[1.8] text-read">
                     {b.text}
                   </p>
                 </div>
@@ -346,16 +468,14 @@ export default function Home() {
           <Reveal className="flex items-center order-2 lg:order-1">
             <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
               <span className={`${LABEL} text-gold`}>ჩვენი ისტორია</span>
-              <h2 className="mt-5 font-display text-[3.25rem] font-normal italic leading-[1.15] md:text-[3.75rem]" style={{ color: "#8B2F3A" }}>
+              <h2 className="mt-5 font-display text-[2rem] font-normal italic leading-[1.15] md:text-[3.25rem] xl:text-[3.75rem]" style={{ color: "#8B2F3A" }}>
                 შთაგონებული ბუნებრივი სიძლიერით
               </h2>
-              <p className="mt-6 font-body text-[20px] font-light leading-[1.8] text-read">
+              <p className="mt-6 font-body text-[17px] sm:text-[20px] font-light leading-[1.8] text-read">
                 თამრა დაიბადა მარტივი რწმენით — რომ თმის ჯანმრთელობა სხეულის შიგნიდან იწყება. ჩვენ გავაერთიანეთ თანამედროვე მეცნიერება და ბუნების ძალა ერთ ფორმულაში.
               </p>
-              <p className="mt-4 font-body text-[20px] font-light leading-[1.8] text-read">
-                ყოველი ინგრედიენტი შერჩეულია კლინიკური კვლევების საფუძველზე, რათა
-                მხარი დაუჭიროს ქალების თმის სიძლიერესა და ზრდას — ნაზად,
-                ბუნებრივად, ყოველდღიურად.
+              <p className="mt-4 font-body text-[17px] sm:text-[20px] font-light leading-[1.8] text-read">
+                ყოველი ინგრედიენტი შერჩეულია კლინიკური კვლევების საფუძველზე, რათა იზრუნოს ქალების თმის სიძლიერესა და ზრდაზე — ნაზად, ბუნებრივად, ყოველდღიურად.
               </p>
             </div>
           </Reveal>
@@ -373,6 +493,7 @@ export default function Home() {
 
         </div>
       </section>
+
 
       <ThamraDivider />
 
@@ -399,14 +520,14 @@ export default function Home() {
                   <figure style={{ borderTop: "2px solid #C9A96E", paddingTop: 28, margin: 0 }}>
                     <span
                       className="font-display"
-                      style={{ fontSize: 48, lineHeight: 0.8, color: "rgba(201,169,110,0.45)", display: "block" }}
+                      style={{ fontSize: "clamp(2rem,5vw,3rem)", lineHeight: 0.8, color: "rgba(201,169,110,0.45)", display: "block" }}
                       aria-hidden
                     >
                       &ldquo;
                     </span>
                     <blockquote
                       className="font-display font-light italic"
-                      style={{ fontSize: 20, color: "#3D3335", lineHeight: 1.75, marginTop: 14 }}
+                      style={{ fontSize: "clamp(1rem,1.5vw,1.25rem)", color: "#3D3335", lineHeight: 1.75, marginTop: 14 }}
                     >
                       {t.quote}
                     </blockquote>
@@ -414,10 +535,10 @@ export default function Home() {
                       <span
                         className="font-display text-cream-soft"
                         style={{
-                          width: 38, height: 38, borderRadius: "50%",
+                          width: 44, height: 44, borderRadius: "50%",
                           backgroundColor: "#8B2F3A",
                           display: "flex", alignItems: "center", justifyContent: "center",
-                          fontSize: 14, flexShrink: 0,
+                          fontSize: 15, flexShrink: 0,
                         }}
                       >
                         {t.initial}
@@ -512,7 +633,7 @@ export default function Home() {
                 <a
                   href="#"
                   aria-label="Facebook"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-cream-soft/25 text-cream-soft/70 transition-colors hover:border-cream-soft hover:text-cream-soft"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-cream-soft/25 text-cream-soft/70 transition-colors hover:border-cream-soft hover:text-cream-soft"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                     <path d="M14.5 8.5h2V5.5h-2c-2 0-3.3 1.3-3.3 3.4v1.6H9v3h2.2v7h3v-7h2.1l.4-3h-2.5V9c0-.3.2-.5.6-.5z" />
@@ -522,10 +643,16 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-14 border-t border-cream-soft/15 pt-6">
+          <div className="mt-14 border-t border-cream-soft/15 pt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="font-body text-[13px] font-light tracking-[0.04em] text-cream-soft/70">
               © 2026 THAMRA. ყველა უფლება დაცულია.
             </p>
+            <a
+              href="/privacy"
+              className="font-body text-[13px] font-light tracking-[0.04em] text-cream-soft/70 transition-colors hover:text-cream-soft"
+            >
+              კონფიდენციალურობის პოლიტიკა
+            </a>
           </div>
         </div>
       </footer>

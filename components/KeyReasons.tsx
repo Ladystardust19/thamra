@@ -62,7 +62,7 @@ export default function KeyReasons() {
   }, []);
 
   return (
-    <section style={{ backgroundColor: "#F2EBE3", padding: "140px 0 80px" }}>
+    <section className="kr-section" style={{ backgroundColor: "#F2EBE3" }}>
       <div className="kr-wrapper">
 
         {/* ── LEFT — sticky ── */}
