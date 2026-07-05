@@ -7,11 +7,6 @@
   height: 100vh;
   width: 100%;
 
-  background-image: url('/hero-cover.png');
-  background-size: cover;
-  background-position: center 70%;
-  background-repeat: no-repeat;
-
   display: flex;
   align-items: center;
 }
@@ -135,7 +130,6 @@
   .hero {
     min-height: 100vh;
     height: auto;
-    background-position: center top;
     align-items: flex-end;
   }
 
