@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
@@ -72,11 +73,13 @@ export default function PricingSection() {
           </div>
 
           {/* ── Right — image ── */}
-          <div style={{ borderRadius: 4, overflow: "hidden" }}>
-            <img
+          <div style={{ borderRadius: 4, overflow: "hidden", position: "relative", minHeight: 400 }}>
+            <Image
               src="/sheni-akhali-tavi.png"
               alt="THAMRA"
-              style={{ width: "100%", height: "auto", display: "block" }}
+              fill
+              style={{ objectFit: "cover" }}
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
 

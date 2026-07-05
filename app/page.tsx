@@ -350,12 +350,12 @@ export default function Home() {
                   }}
                 >
                   {"photo" in a && (
-                    <img
+                    <Image
                       src={a.photo as string}
                       alt={a.name}
+                      width={160}
+                      height={160}
                       style={{
-                        width: 160,
-                        height: 160,
                         borderRadius: "50%",
                         objectFit: "cover",
                         objectPosition: "center top",
@@ -557,17 +557,12 @@ export default function Home() {
 
           {/* RIGHT: full-bleed image covering the entire right side */}
           <div className="relative w-full lg:w-1/2 lg:flex-shrink-0 min-h-[400px] lg:min-h-0">
-            <img
+            <Image
               src="/women-wellness.png"
               alt="Thamra women wellness"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center",
-              }}
+              fill
+              style={{ objectFit: "cover", objectPosition: "center" }}
+              sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </div>
 
