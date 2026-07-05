@@ -694,34 +694,6 @@ function ResultScreen({
         </div>
       </div>
 
-      <div className={styles.resultDivider} />
-
-      {/* Section 5 — THAMRA + confirmation */}
-      <div className={styles.thamraBlock}>
-        <span className={styles.thamraBlockLabel}>THAMRA</span>
-
-        <div style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 10,
-          marginTop: 20,
-          padding: "14px 18px",
-          background: "rgba(201,169,110,0.10)",
-          border: "1px solid rgba(201,169,110,0.28)",
-          borderRadius: 8,
-        }}>
-          <span style={{ color: "#C9A96E", fontSize: 15, flexShrink: 0 }}>✓</span>
-          <p style={{ margin: 0, fontSize: 13, color: "#C9A96E", lineHeight: 1.6, fontFamily: "var(--font-jost, sans-serif)" }}>
-            შენი მონაცემები შენახულია. THAMRA-ს პირველი გამოშვებისას შეგატყობინებთ
-            იმ საკონტაქტო მონაცემებით, რომელიც უკვე დატოვე.
-          </p>
-        </div>
-
-        <a href="/" className={styles.ctaBtn} style={{ marginTop: 16, display: "inline-block", textDecoration: "none" }}>
-          დასრულება
-        </a>
-      </div>
-
       <p className={styles.footnote}>
         ეს ტესტი საინფორმაციო ხასიათისაა და არ წარმოადგენს სამედიცინო დიაგნოზს.
       </p>
