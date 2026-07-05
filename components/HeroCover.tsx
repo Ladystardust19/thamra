@@ -10,7 +10,7 @@ export default function HeroCover() {
         alt=""
         fill
         priority
-        style={{ objectFit: "cover", objectPosition: "center 70%" }}
+        style={{ objectFit: "cover", objectPosition: "center center" }}
         sizes="100vw"
       />
 
