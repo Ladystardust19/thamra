@@ -121,43 +121,138 @@ const QUESTIONS: Question[] = [
 
 // ─── Result helpers ───────────────────────────────────────────────────────────
 
-type Driver = { title: string; text: string };
+type Profile = “volume” | “thinning” | “stress” | “mixed”;
+type StressLevel = “დაბალი” | “საშუალო” | “მაღალი”;
 
-const DHT_DRIVER: Driver = {
-  title: "ესტროგენი ეცემა, DHT თავისუფლდება.",
-  text: "ესტროგენი, რომელიც DHT ჰორმონს აკონტროლებდა, მცირდება. DHT ფოლიკულს ავიწროებს, თმა თხელდება ზუსტად იქ, სადაც შენ ამჩნევ.",
-};
+function calcProfile(a: PartialAnswers): Profile {
+  const s = { volume: 0, thinning: 0, stress: 0 };
 
-const CORTISOL_DRIVER: Driver = {
-  title: "კორტიზოლი არ ჩერდება.",
-  text: "ცუდი ძილი და სტრესი კორტიზოლს ზრდის, ის კი ფოლიკულებს ვადამდე „ძილის რეჟიმში“ აგზავნის. ამიტომ რჩება მეტი თმა სავარცხელზე.",
-};
+  // Q1 — age
+  if (a.q1 === “46–52” || a.q1 === “53–60” || a.q1 === “60+”) { s.volume += 2; s.thinning += 1; }
+  else if (a.q1 === “40–45”) { s.stress += 1; s.thinning += 1; }
+  else { s.stress += 2; }
 
-const NUTRIENT_DRIVER: Driver = {
-  title: "სხეული ვეღარ კვებავს თმას.",
-  text: "ჰორმონალური ცვლილებისას კოლაგენის წარმოება და რკინის შეწოვა მცირდება. შენს ფოლიკულს უბრალოდ აკლია ნედლეული.",
-};
+  // Q2 — onset
+  if (a.q2 === “6 თვეზე ნაკლები ხნის წინ”) s.stress += 2;
+  else if (a.q2 === “6–12 თვის წინ”) { s.stress += 1; s.volume += 1; }
+  else if (a.q2 === “1–3 წლის წინ”) s.thinning += 2;
+  else if (a.q2 === “3 წელზე მეტი ხნის წინ”) { s.thinning += 2; s.volume += 1; }
 
-const SCALP_DRIVER: Driver = {
-  title: "სკალპი კარგავს სიძლიერეს.",
-  text: "D ვიტამინისა და სელენის ნაკლებობა ასუსტებს ნიადაგს, რომელშიც თმა იზრდება. სუსტი ფესვები, სუსტი თმა.",
-};
+  // Q3 — visual symptoms
+  const q3 = a.q3 ?? [];
+  if (q3.includes(“გაყოფის ხაზი გაფართოვდა”)) s.volume += 2;
+  if (q3.includes(“კუდი გათხელდა”)) s.thinning += 2;
+  if (q3.includes(“მეტი თმა რჩება სავარცხელზე და სააბაზანოში”)) { s.stress += 1; s.thinning += 1; }
+  if (q3.includes(“თხემზე სკალპი მოჩანს”)) { s.volume += 2; s.thinning += 1; }
+  if (q3.includes(“თმა ტყდება და დაკარგა ბზინვარება”)) { s.thinning += 2; s.stress += 1; }
 
-function getDrivers(a: PartialAnswers): [Driver, Driver] {
-  const pool: Driver[] = [];
-  if (a.q3?.includes("გაყოფის ხაზი გაფართოვდა") || a.q3?.includes("თხემზე სკალპი მოჩანს"))
-    pool.push(DHT_DRIVER);
-  if (
-    (a.q5 !== undefined && a.q5 !== "კარგად, ვისვენებ") ||
-    a.q4?.includes("მეტი სტრესი ან შფოთვა")
-  )
-    pool.push(CORTISOL_DRIVER);
-  if (a.q3?.includes("თმა ტყდება და დაკარგა ბზინვარება") || a.q3?.includes("კუდი გათხელდა"))
-    pool.push(NUTRIENT_DRIVER);
-  const result = pool.slice(0, 2);
-  while (result.length < 2) result.push(SCALP_DRIVER);
-  return result as [Driver, Driver];
+  // Q4 — accompanying symptoms
+  const q4 = a.q4 ?? [];
+  if (q4.includes(“ციკლი არარეგულარული გახდა ან შეწყდა”)) s.volume += 2;
+  if (q4.includes(“სიცხის შემოტევები ან ღამის ოფლიანობა”)) { s.volume += 2; s.stress += 1; }
+  if (q4.includes(“მეტი სტრესი ან შფოთვა”)) s.stress += 3;
+  if (q4.includes(“წონის ცვლილება”)) { s.volume += 1; s.thinning += 1; }
+
+  // Q5 — sleep
+  if (a.q5 === “ხშირად ვიღვიძებ ღამით” || a.q5 === “მიჭირს დაძინება”) s.stress += 2;
+  else if (a.q5 === “ღამის ოფლიანობა მაღვიძებს”) { s.stress += 2; s.volume += 1; }
+
+  const sorted = (Object.entries(s) as [string, number][]).sort((a, b) => b[1] - a[1]);
+  if (sorted[0][1] - sorted[1][1] <= 2) return “mixed”;
+  return sorted[0][0] as Profile;
 }
+
+function calcStressLevel(a: PartialAnswers): StressLevel {
+  let n = 0;
+  if (a.q2 === “3 წელზე მეტი ხნის წინ”) n += 3;
+  else if (a.q2 === “1–3 წლის წინ”) n += 2;
+  else n += 1;
+  n += (a.q3 ?? []).length;
+  n += (a.q4 ?? []).filter((x) => x !== “არცერთი”).length;
+  if (a.q5 && a.q5 !== “კარგად, ვისვენებ”) n += 2;
+  if (n <= 3) return “დაბალი”;
+  if (n <= 6) return “საშუალო”;
+  return “მაღალი”;
+}
+
+const PROFILE_META: Record<Profile, { label: string; title: string }> = {
+  volume:   { label: “მოცულობის პროფილი”,    title: “შენი თმა მოცულობასა და სიმჭიდროვეს კარგავს” },
+  thinning: { label: “გათხელების პროფილი”,   title: “შენი თმა თანდათან თხელდება” },
+  stress:   { label: “სტრეს-პროფილი”,         title: “სტრესი და ძილი შენს თმის ციკლს ამოკლებს” },
+  mixed:    { label: “კომბინირებული პროფილი”, title: “რამდენიმე ფაქტორი ერთდროულად მოქმედებს შენს თმაზე” },
+};
+
+const STRESS_COLORS: Record<StressLevel, string> = {
+  “დაბალი”:  “#5C8A6B”,
+  “საშუალო”: “#C9A96E”,
+  “მაღალი”:  “#8B2F3A”,
+};
+
+const PROFILE_SENTENCES: Record<Profile, Record<StressLevel, [string, string]>> = {
+  volume: {
+    “დაბალი”: [
+      “შენი ფოლიკულები ჯერ კიდევ აქტიურია — ადრეული ეტაპი ყველაზე მგრძნობიარეა სწორი მხარდაჭერის მიმართ.”,
+      “ესტროგენის შემცირება DHT-ს ათავისუფლებს, ის კი ფოლიკულს ავიწროებს. ეს პროცესი შეჩერებადია.”,
+    ],
+    “საშუალო”: [
+      “ფოლიკულები ნელ-ნელა ვიწროვდება — ჩვეულებრივი ჰორმონალური პროცესია, მაგრამ ყოველი თვე ითვლის.”,
+      “შენი სიმპტომები ჰორმონალურ ცვლილებაზე მიუთითებს — THAMRA ზუსტად ამ მიზეზს მიმართავს.”,
+    ],
+    “მაღალი”: [
+      “გრძელვადიანი ჰორმონალური ცვლილება ფოლიკულებს ამოაწყვეტს — სისტემური, კომპლექსური მიდგომაა საჭირო.”,
+      “THAMRA-ს ფორმულა ყველა იმ ბიოლოგიურ პროცესზე მოქმედებს, რომელიც შენს სიმპტომებს იწვევს.”,
+    ],
+  },
+  thinning: {
+    “დაბალი”: [
+      “გათხელება ნელია, მაგრამ პროგრესული — ადრეული ჩარევა ფოლიკულის სრულ გამოღვიძებას ნიშნავს.”,
+      “შენი ფოლიკულები კვებასა და ჰორმონალურ მხარდაჭერას ელოდება — ეს ზუსტად ის, რასაც THAMRA აწოდებს.”,
+    ],
+    “საშუალო”: [
+      “თმა სიმჭიდროვეს კარგავს — ეს ნიშნავს, რომ ფოლიკული ჯერ ცოცხალია, მაგრამ ეხმარება.”,
+      “კომპლექსური კვება ფოლიკულის დონეზე ზუსტად ის გადაწყვეტაა, რისთვისაც THAMRA შეიქმნა.”,
+    ],
+    “მაღალი”: [
+      “გრძელვადიანი გათხელება ფოლიკულის გამოღვიძებას მოითხოვს — ეს THAMRA-ს სპეციალობაა.”,
+      “შენი სიმპტომები გვიჩვენებს, რომ ერთი ინგრედიენტი საკმარისი ვერ იქნება — კომბინირებული ფორმულა გჭირდება.”,
+    ],
+  },
+  stress: {
+    “დაბალი”: [
+      “სტრესი და ძილის ხარისხი კორტიზოლს ზრდის — ის ფოლიკულებს ვადამდე „ძილის რეჟიმში” აგზავნის.”,
+      “კარგი ამბავია: სტრეს-ინდუცირებული ცვენა ყველაზე ადვილად სამართავია სწორი, დროული მხარდაჭერით.”,
+    ],
+    “საშუალო”: [
+      “კორტიზოლის მომატება ფოლიკულის ციკლს ამოკლებს — ამიტომ მეტი თმა ხვდება სავარცხელზე.”,
+      “THAMRA-ს ადაპტოგენური კომპონენტები ნერვულ სისტემასა და ფოლიკულის ციკლს ერთდროულად მხარს უჭერს.”,
+    ],
+    “მაღალი”: [
+      “გრძელვადიანი სტრესი ჰორმონალურ ბალანსსაც ანარღვევს — ამ ორ ფაქტორს ერთდროული გადაწყვეტა სჭირდება.”,
+      “THAMRA-ს ფორმულა სტრესსა და ჰორმონალურ ცვლილებას ერთდროულად მიმართავს — სწორედ შენი სიტუაციისთვის.”,
+    ],
+  },
+  mixed: {
+    “დაბალი”: [
+      “რამდენიმე ფაქტორი ერთდროულად მოქმედებს — ეს ყველაზე გავრცელებული სიტუაციაა მენოპაუზის პერიოდში.”,
+      “THAMRA შეიქმნა ზუსტად ასეთი შემთხვევებისთვის — ერთი ფორმულა, ყველა ძირეული მიზეზი.”,
+    ],
+    “საშუალო”: [
+      “ჰორმონები, კვება და სტრესი ერთდროულად მოქმედებს — ეს ყველაზე გავრცელებული, მაგრამ მართვადი კომბინაციაა.”,
+      “THAMRA-ს ფორმულა სწორედ ასეთი მრავალფაქტორული სიტუაციისთვის შეიქმნა.”,
+    ],
+    “მაღალი”: [
+      “ჰორმონალური, კვებითი და სტრეს-ფაქტორები ერთდროულად საჭიროებს ყურადღებას — ეს ის სიტუაციაა, სადაც ერთი ინგრედიენტი ვერ გიშველის.”,
+      “THAMRA-ს კომპლექსური ფორმულა სწორედ შენი კომბინირებული პროფილისთვის შეიქმნა.”,
+    ],
+  },
+};
+
+const PROFILE_CTA: Record<Profile, string> = {
+  volume:   “THAMRA-ს ფორმულა ჰორმონალური ცვლილებით გამოწვეულ ფოლიკულის შეჭმუხვნას პირდაპირ მიმართავს. შენი ადგილი სიაში დაჯავშნულია — გამოშვებისთანავე შეგატყობინებ.”,
+  thinning: “THAMRA-ს კომპლექსი ფოლიკულის კვებასა და ზრდის ციკლის გამოღვიძებაზეა ორიენტირებული. შენი ადგილი სიაში დაჯავშნულია — პირველი გამოშვება მალე.”,
+  stress:   “THAMRA-ს ადაპტოგენური კომპლექსი კორტიზოლის დონეს ანაწესებს და ფოლიკულის ციკლს აღადგენს. შენი ადგილი სიაში დაჯავშნულია.”,
+  mixed:    “THAMRA შეიქმნა კომბინირებული ფაქტორების სამართავად. შენი ადგილი სიაში დაჯავშნულია — პირველი გამოშვება მალე.”,
+};
 
 function getBlock3(q6: string | undefined): Driver {
   if (q6 === "სპეციალური შამპუნები და სერუმები")
@@ -181,25 +276,6 @@ function getBlock3(q6: string | undefined): Driver {
   };
 }
 
-const Q7_LINES: Record<string, string> = {
-  "თმის ხილული ზრდა":
-    "შენი მიზანი, თმის ხილული ზრდა, ზუსტად აქ იწყება.",
-  "ცვენის შეჩერება":
-    "შენი მიზანი, ცვენის შეჩერება, ზუსტად აქ იწყება.",
-  "უფრო სქელი და ხშირი თმა":
-    "შენი მიზანი, უფრო სქელი და ხშირი თმა, ზუსტად აქ იწყება.",
-  "ყველაფერი ერთად, ბუნებრივად":
-    "შენი მიზანი, ყველაფერი ერთად და ბუნებრივად, ზუსტად აქ იწყება.",
-};
-
-function getResultHeadline(firstName: string, age: string | undefined): string {
-  const prefix = firstName ? `${firstName}, ` : "";
-  if (age === "46–52" || age === "53–60" || age === "60+")
-    return `${prefix}შენი პასუხები მენოპაუზაზე მიუთითებს.`;
-  if (age === "40–45")
-    return `${prefix}შენი პასუხები ჰორმონალურ ცვლილებაზე, სავარაუდოდ პერიმენოპაუზაზე, მიუთითებს.`;
-  return `${prefix}შენი პასუხები ჰორმონალურ დისბალანსზე მიუთითებს.`;
-}
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -361,7 +437,7 @@ export default function QuizClient() {
           )}
 
           {screen === "result" && (
-            <ResultScreen name={name} phone={phone} answers={answers} />
+            <ResultScreen name={name} answers={answers} />
           )}
         </div>
       </div>
@@ -582,51 +658,68 @@ function GateScreen({
 
 function ResultScreen({
   name,
-  phone,
   answers,
 }: {
   name: string;
-  phone: string;
   answers: PartialAnswers;
 }) {
-  const [d1, d2] = getDrivers(answers);
+  const profile = calcProfile(answers);
+  const stressLevel = calcStressLevel(answers);
+  const [sent1, sent2] = PROFILE_SENTENCES[profile][stressLevel];
   const block3 = getBlock3(answers.q6);
-  const q7Line =
-    answers.q7 !== undefined
-      ? (Q7_LINES[answers.q7] ?? Q7_LINES["ყველაფერი ერთად, ბუნებრივად"])
-      : Q7_LINES["ყველაფერი ერთად, ბუნებრივად"];
   const firstName = name.trim().split(" ")[0];
+  const { label, title } = PROFILE_META[profile];
+  const stressColor = STRESS_COLORS[stressLevel];
 
   return (
     <div className={styles.resultWrap}>
 
-      {/* ── Block 1 ── */}
-      <span className={styles.resultLabel}>შენი ანალიზი</span>
+      {/* ── Block 1: Profile + stress level ── */}
+      <span className={styles.resultLabel}>{label}</span>
       <h2 className={styles.resultHeadline}>
-        {getResultHeadline(firstName, answers.q1)}
+        {firstName ? `${firstName}, ` : ""}{title}
       </h2>
-      <p className={styles.resultText}>
-        შენი თმის ცვლილება ზედაპირული პრობლემა არ არის. ის შიგნიდან იწყება,
-        ჰორმონალური ცვლილებით, რომელიც ერთდროულად ოთხ პროცესს უშვებს შენს
-        სხეულში.
-      </p>
 
-      <div className={styles.resultDivider} />
-
-      {/* ── Block 2 ── */}
-      <span className={styles.driversLabel}>შენი ორი მთავარი ფაქტორი:</span>
-      <div className={styles.driverCards}>
-        {([d1, d2] as Driver[]).map((d, i) => (
-          <div key={i} className={styles.driverCard}>
-            <p className={styles.driverTitle}>{d.title}</p>
-            <p className={styles.driverText}>{d.text}</p>
-          </div>
-        ))}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18 }}>
+        <span style={{
+          fontSize: 12,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: "rgba(247,241,233,0.5)",
+          fontFamily: "var(--font-jost, sans-serif)",
+        }}>
+          თმის სტრესის დონე
+        </span>
+        <span style={{
+          fontSize: 12,
+          fontWeight: 600,
+          letterSpacing: "0.06em",
+          color: stressColor,
+          border: `1px solid ${stressColor}`,
+          borderRadius: 20,
+          padding: "2px 12px",
+          fontFamily: "var(--font-jost, sans-serif)",
+        }}>
+          {stressLevel}
+        </span>
       </div>
 
       <div className={styles.resultDivider} />
 
-      {/* ── Block 3 ── */}
+      {/* ── Block 2: Personalized sentences ── */}
+      <span className={styles.driversLabel}>რატომ ხდება ეს:</span>
+      <div className={styles.driverCards}>
+        <div className={styles.driverCard}>
+          <p className={styles.driverText}>{sent1}</p>
+        </div>
+        <div className={styles.driverCard}>
+          <p className={styles.driverText}>{sent2}</p>
+        </div>
+      </div>
+
+      <div className={styles.resultDivider} />
+
+      {/* ── Block 3: Why previous attempts failed ── */}
       <div className={styles.insightCard}>
         <p className={styles.insightTitle}>{block3.title}</p>
         <p className={styles.insightText}>{block3.text}</p>
@@ -634,32 +727,33 @@ function ResultScreen({
 
       <div className={styles.resultDivider} />
 
-      {/* ── Block 4 — Consultation ── */}
+      {/* ── Block 4: THAMRA CTA ── */}
       <div className={styles.thamraBlock}>
-        <span className={styles.thamraBlockLabel}>რეკომენდაცია</span>
+        <span className={styles.thamraBlockLabel}>THAMRA</span>
 
         <p className={styles.thamraText}>
-          თქვენი პასუხებიდან ჩანს, რომ თმის გათხელება და ცვენა შეიძლება მენოპაუზასთან დაკავშირებულ რამდენიმე პროცესს უკავშირდებოდეს. ასეთ დროს ერთი ინგრედიენტი ან შემთხვევით შერჩეული ვიტამინი ხშირად არ არის საკმარისი.
+          {PROFILE_CTA[profile]}
         </p>
 
-        <div className={styles.fields} style={{ marginTop: 24 }}>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel} style={{ color: "rgba(247,241,233,0.6)" }}>სახელი</label>
-            <input type="text" className={styles.fieldInput} defaultValue={name} />
-          </div>
-          <div className={styles.field}>
-            <label className={styles.fieldLabel} style={{ color: "rgba(247,241,233,0.6)" }}>ტელეფონის ნომერი</label>
-            <div className={styles.phoneWrap}>
-              <span className={styles.phonePrefix}>+995</span>
-              <input type="tel" className={styles.phoneInput} defaultValue={phone} />
-            </div>
-          </div>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 20,
+          padding: "14px 18px",
+          background: "rgba(201,169,110,0.10)",
+          border: "1px solid rgba(201,169,110,0.28)",
+          borderRadius: 8,
+        }}>
+          <span style={{ color: "#C9A96E", fontSize: 16 }}>✓</span>
+          <p style={{ margin: 0, fontSize: 13, color: "#C9A96E", fontFamily: "var(--font-jost, sans-serif)", lineHeight: 1.5 }}>
+            შენი ადგილი სიაში დაჯავშნულია. THAMRA გამოშვებისთანავე შეგატყობინებ.
+          </p>
         </div>
 
-        <button className={styles.ctaBtn} style={{ marginTop: 8 }}>
-          შედეგის ნახვა →
-        </button>
-
+        <a href="/" className={styles.ctaBtn} style={{ marginTop: 16, display: "inline-block", textDecoration: "none" }}>
+          THAMRA-ს შესახებ →
+        </a>
       </div>
 
       <p className={styles.footnote}>
