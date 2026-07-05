@@ -132,7 +132,8 @@ const advisors = [
     institution: "Georgia Institute of Technology, USA",
     quote:
       "როგორც ნეირომეცნიერი ვადასტურებ, რომ სტრესი, ძილის ხარისხი და ქრონიკულად მომატებული კორტიზოლი პირდაპირ აფერხებს თმის ზრდის აქტიურ ფაზას. THAMRA-ს კომპლექსურ მიდგომას სხეული ბალანსში მოჰყავს — ეს მეცნიერულად დასაბუთებული სტრატეგიაა თმის გრძელვადიანი ჯანმრთელობისთვის.",
-    photo: "/tomoyuki-amano.webp",
+    photo: "/tomoyuki-amano.jpg",
+    photoPosition: "center 22%",
     initial: "T",
   },
 ];
@@ -359,7 +360,7 @@ export default function Home() {
                         style={{
                           borderRadius: 6,
                           objectFit: "cover",
-                          objectPosition: "center top",
+                          objectPosition: ("photoPosition" in a ? a.photoPosition : "center top") as string,
                           display: "block",
                         }}
                       />
