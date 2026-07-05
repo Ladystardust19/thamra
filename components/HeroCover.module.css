@@ -11,6 +11,10 @@
   align-items: center;
 }
 
+.heroImage {
+  object-position: center center;
+}
+
 .overlay {
   display: none;
 }
@@ -133,7 +137,28 @@
     align-items: flex-end;
   }
 
+  /* Show the woman's face on the right side of the image */
+  .heroImage {
+    object-position: 72% center;
+  }
+
+  /* Dark gradient from bottom so text is always readable */
+  .overlay {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(20, 14, 12, 0.82) 0%,
+      rgba(20, 14, 12, 0.45) 45%,
+      transparent 100%
+    );
+    z-index: 0;
+  }
+
   .container {
+    position: relative;
+    z-index: 1;
     padding: 7rem 1.375rem 3.25rem;
   }
 

@@ -10,9 +10,12 @@ export default function HeroCover() {
         alt=""
         fill
         priority
-        style={{ objectFit: "cover", objectPosition: "center center" }}
+        className={styles.heroImage}
+        style={{ objectFit: "cover" }}
         sizes="100vw"
       />
+
+      <div className={styles.overlay} aria-hidden="true" />
 
       <div className={styles.container}>
         <div className={styles.content}>
@@ -28,7 +31,7 @@ export default function HeroCover() {
             <span className={styles.ctaMain}>გაიგე რა სჭირდება შენს თმას →</span>
             <span className={styles.ctaSub}>2წთ.</span>
           </a>
-          <p style={{ fontSize: 13, color: "#8A7E79", marginTop: 12 }}>
+          <p style={{ fontSize: 13, color: "rgba(247,241,233,0.65)", marginTop: 12 }}>
             500+ ქალმა უკვე გაიარა ტესტი
           </p>
         </div>
