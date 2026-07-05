@@ -217,18 +217,18 @@
 /* ── Ingredients / Formula section ── */
 .ia-section {
   background-color: #EDE5DC;
-  padding: 140px 0;
+  padding: 160px 0;
 }
 .ia-container {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 48px;
+  padding: 0 72px;
 }
 
 /* Top */
 .ia-top {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 112px;
 }
 .ia-label {
   display: block;
@@ -264,18 +264,18 @@
 .ia-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
-  margin-bottom: 80px;
+  gap: 28px;
+  margin-bottom: 100px;
 }
 .ia-card {
   grid-column: span 2;
   background-color: rgba(0, 0, 0, 0.02);
   border: 1px solid rgba(201, 169, 110, 0.25);
-  border-radius: 8px;
-  padding: 32px 28px;
+  border-radius: 12px;
+  padding: 52px 44px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   transition: background-color 0.3s, border-color 0.3s;
 }
 .ia-card:hover {
@@ -285,29 +285,34 @@
 .ia-card:nth-child(4) { grid-column: span 3; }
 .ia-card:nth-child(5) { grid-column: span 3; }
 
+.ia-card-icon {
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
 .ia-card-label {
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #6B5F5A;
+  color: #8A7E79;
 }
 .ia-complex {
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-size: clamp(1.5rem, 2.2vw, 1.9rem);
   font-style: italic;
   font-weight: 300;
   color: #8B2F3A;
   margin: 0;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 .ia-card-desc {
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 16px;
   font-weight: 300;
   color: #6B5F5A;
-  line-height: 1.8;
+  line-height: 1.9;
   margin: 0;
 }
 
@@ -380,8 +385,8 @@
   .ia-card:nth-child(5) { grid-column: span 1; }
 }
 @media (max-width: 767px) {
-  .ia-section { padding: 80px 0; }
-  .ia-container { padding: 0 24px; }
+  .ia-section { padding: 100px 0; }
+  .ia-container { padding: 0 28px; }
   .ia-headline { font-size: 36px; }
   .ia-grid {
     grid-template-columns: 1fr;
