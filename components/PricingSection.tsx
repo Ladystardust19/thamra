@@ -65,9 +65,6 @@ export default function PricingSection() {
               გაიგე რა სჭირდება შენს თმას →
             </Link>
 
-            <p style={{ fontFamily: FB, fontSize: 13, color: "#8A7E79", margin: 0 }}>
-              500+ ქალმა უკვე გაიარა ტესტი
-            </p>
 
 
           </div>
