@@ -417,14 +417,14 @@ function Part3Slider() {
         <ReactCompareSlider
           itemOne={
             <ReactCompareSliderImage
-              src="/before-thamra.png"
+              src="/before-thamra.webp"
               alt="თამრამდე"
               className="tf-slider-img"
             />
           }
           itemTwo={
             <ReactCompareSliderImage
-              src="/after-thamra.png"
+              src="/after-thamra.webp"
               alt="თამრა 6 თვის შემდეგ"
               className="tf-slider-img"
             />
