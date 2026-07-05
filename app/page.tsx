@@ -471,7 +471,7 @@ export default function Home() {
             <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
               <span className={`${LABEL} text-gold`}>ჩვენი ისტორია</span>
               <h2 className="mt-5 font-display text-[2rem] font-normal italic leading-[1.15] md:text-[3.25rem] xl:text-[3.75rem]" style={{ color: "#8B2F3A" }}>
-                შთაგონებული ბუნებრივი სიძლიერით
+                შთაგონებული შინაგანი სიძლიერით
               </h2>
               <p className="mt-6 font-body text-[17px] sm:text-[20px] font-light leading-[1.8] text-read">
                 თამრა დაიბადა მარტივი რწმენით — რომ თმის ჯანმრთელობა სხეულის შიგნიდან იწყება. ჩვენ გავაერთიანეთ თანამედროვე მეცნიერება და ბუნების ძალა ერთ ფორმულაში.
