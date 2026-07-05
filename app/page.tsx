@@ -350,19 +350,21 @@ export default function Home() {
                   }}
                 >
                   {"photo" in a && (
-                    <Image
-                      src={a.photo as string}
-                      alt={a.name}
-                      width={160}
-                      height={160}
-                      style={{
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                        objectPosition: "center top",
-                        marginBottom: 16,
-                        border: "2px solid #C9A96E",
-                      }}
-                    />
+                    <div style={{ marginBottom: 20 }}>
+                      <Image
+                        src={a.photo as string}
+                        alt={a.name}
+                        width={160}
+                        height={160}
+                        style={{
+                          borderRadius: 6,
+                          objectFit: "cover",
+                          objectPosition: "center top",
+                          display: "block",
+                        }}
+                      />
+                      <div style={{ width: 40, height: 1.5, backgroundColor: "#C9A96E", marginTop: 10 }} />
+                    </div>
                   )}
                   <span
                     className="font-display"
