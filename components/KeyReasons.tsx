@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const CAUSES = [
   {
@@ -30,81 +30,99 @@ const CAUSES = [
   },
 ];
 
+const AUTO_INTERVAL = 5000;
+
 export default function KeyReasons() {
-  const blocksRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [active, setActive] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchStartX = useRef(0);
+
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setActive((prev) => (prev + 1) % CAUSES.length);
+    }, AUTO_INTERVAL);
+  }, []);
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    startTimer();
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [startTimer]);
 
-    if (reduced) return;
+  const goTo = useCallback((i: number) => {
+    setActive(i);
+    startTimer();
+  }, [startTimer]);
 
-    blocksRef.current.forEach((b) => {
-      if (!b) return;
-      b.style.opacity = "0";
-      b.style.transform = "translateY(15px)";
-    });
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).style.opacity = "1";
-            (entry.target as HTMLElement).style.transform = "translateY(0)";
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    blocksRef.current.forEach((b) => { if (b) observer.observe(b); });
-    return () => observer.disconnect();
-  }, []);
+  const prev = () => goTo((active - 1 + CAUSES.length) % CAUSES.length);
+  const next = () => goTo((active + 1) % CAUSES.length);
 
   return (
     <section className="kr-section" style={{ backgroundColor: "#F2EBE3" }}>
       <div className="kr-wrapper">
 
-        {/* ── LEFT — sticky ── */}
+        {/* LEFT — sticky headline */}
         <div className="kr-left">
           <h2 className="kr-headline">
             რატომ იცვლება თმა მენოპაუზის დროს?
           </h2>
-
           <p className="kr-subtitle">
             მენოპაუზის პერიოდში, ერთდროულად ქალის სხეულში სხვადასხვა პროცესი მიმდინარეობს, რომელიც გავლენას ახდენს თმის სიმკვრივესა და სიჯანსაღეზე. ცალკე აღებული ინგრედიენტების მიღება არ არის საკმარისი ამ კომპლექსური პრობლემის გადასაჭრელად.
           </p>
-
           <a href="/quiz" className="key-reasons-cta" style={{ marginTop: 40 }}>
             გაიგე რა სჭირდება შენს თმას →
           </a>
         </div>
 
-        {/* ── RIGHT — scrollable list ── */}
+        {/* RIGHT — interactive slider */}
         <div className="kr-right">
-          {CAUSES.map((cause, i) => (
-            <div
-              key={cause.num}
-              ref={(el) => { blocksRef.current[i] = el; }}
-              className="kr-block"
-              style={{
-                transition: `opacity 0.6s ease ${i * 60}ms, transform 0.6s ease ${i * 60}ms`,
-              }}
-            >
-              <div className="kr-block-inner">
-                <span className="kr-num">{cause.num}</span>
-                <div className="kr-text">
-                  <h3 className="kr-title">{cause.title}</h3>
-                  <p className="kr-desc">{cause.text}</p>
-                </div>
-              </div>
-              {i < CAUSES.length - 1 && (
-                <div className="kr-divider" />
-              )}
-            </div>
-          ))}
-        </div>
 
+          {/* Step tabs */}
+          <div className="kr-tabs" role="tablist">
+            {CAUSES.map((c, i) => (
+              <button
+                key={c.num}
+                role="tab"
+                aria-selected={i === active}
+                onClick={() => goTo(i)}
+                className={"kr-tab" + (i === active ? " kr-tab--active" : "")}
+                aria-label={c.title}
+              >
+                {c.num}
+              </button>
+            ))}
+          </div>
+
+          {/* Slide */}
+          <div
+            className="kr-slide"
+            onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              const dx = e.changedTouches[0].clientX - touchStartX.current;
+              if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
+            }}
+            role="tabpanel"
+          >
+            <div key={active} className="kr-slide-content">
+              <span className="kr-num" aria-hidden="true">{CAUSES[active].num}</span>
+              <h3 className="kr-title">{CAUSES[active].title}</h3>
+              <p className="kr-desc">{CAUSES[active].text}</p>
+            </div>
+          </div>
+
+          {/* Bottom nav */}
+          <div className="kr-nav">
+            <button onClick={prev} className="kr-nav-btn" aria-label="წინა">&#8592;</button>
+            <div className="kr-progress-bar" role="progressbar" aria-valuenow={active + 1} aria-valuemax={CAUSES.length}>
+              <div
+                className="kr-progress-fill"
+                style={{ width: `${((active + 1) / CAUSES.length) * 100}%` }}
+              />
+            </div>
+            <button onClick={next} className="kr-nav-btn" aria-label="შემდეგი">&#8594;</button>
+          </div>
+
+        </div>
       </div>
     </section>
   );
