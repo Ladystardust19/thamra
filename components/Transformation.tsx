@@ -68,7 +68,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
 
       {/* Woman image */}
       <Image
-        src="/transformation-hero.png"
+        src="/transformation-hero.webp"
         alt="Thamra transformation"
         fill
         priority

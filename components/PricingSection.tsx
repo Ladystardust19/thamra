@@ -75,7 +75,7 @@ export default function PricingSection() {
           {/* ── Right — image ── */}
           <div style={{ borderRadius: 4, overflow: "hidden", position: "relative", minHeight: 400 }}>
             <Image
-              src="/sheni-akhali-tavi.png"
+              src="/sheni-akhali-tavi.webp"
               alt="THAMRA"
               fill
               style={{ objectFit: "cover" }}

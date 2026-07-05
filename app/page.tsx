@@ -105,7 +105,7 @@ const advisors = [
     institution: "თამრას მთავარი მრჩეველი",
     quote:
       "ქალებში თმის ცვლილებები მენოპაუზის პერიოდში იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი. THAMRA შეიქმნა სწორედ ამ კომპლექსური პროცესის უფრო ღრმა გაგებით — როგორც ყოველდღიური რიტუალი, რომელიც თმის სიმკვრივეს, ხარისხსა და გრძელვადიან სიჯანსაღეს ერთიანად უჭერს მხარს.",
-    photo: "/maia-sidamonidze.png",
+    photo: "/maia-sidamonidze.webp",
     initial: "მ",
   },
   {
@@ -114,7 +114,7 @@ const advisors = [
     institution: "პირველი ქართული გამაჯანსაღებელი პლატფორმა 'მინდორი'-ს დამფუძნებელი",
     quote:
       "THAMRA-ს იდეა მხოლოდ თმაზე ზრუნვა არ არის. ეს არის ქალის ყოველდღიური რესურსის, ნერვული სისტემის ბალანსისა და გრძელვადიანი კეთილდღეობის უფრო გააზრებული მიდგომა — შექმნილი იმ ეტაპისთვის, როდესაც ორგანიზმს მეტი სიზუსტე, სიმშვიდე და თანმიმდევრული ზრუნვა სჭირდება.",
-    photo: "/lasha-jakeli.jpg",
+    photo: "/lasha-jakeli.webp",
     initial: "L",
   },
   {
@@ -123,7 +123,7 @@ const advisors = [
     institution: "კვლევისა და განვითარების ხელმძღვანელი, Acenzia Inc. Ontario, Canada",
     quote:
       "THAMRA-ს სიძლიერე ერთ ინგრედიენტში არ არის — ის მთელი ფორმულის ინტელექტუალურ სინერგიაშია. ზუსტად შერჩეული და დაბალანსებული შემადგენლობა მენოპაუზის პერიოდში თმის გათხელების ერთმანეთთან დაკავშირებულ კომპლექსურ ბიოლოგიურ პროცესებზე ერთდროულად მუშაობს, რაც THAMRA-ს თმის მოვლის გამორჩეულ სისტემად აქცევს.",
-    photo: "/andries-van-riezen.png",
+    photo: "/andries-van-riezen.webp",
     initial: "A",
   },
   {
@@ -132,7 +132,7 @@ const advisors = [
     institution: "Georgia Institute of Technology, USA",
     quote:
       "როგორც ნეირომეცნიერი ვადასტურებ, რომ სტრესი, ძილის ხარისხი და ქრონიკულად მომატებული კორტიზოლი პირდაპირ აფერხებს თმის ზრდის აქტიურ ფაზას. THAMRA-ს კომპლექსურ მიდგომას სხეული ბალანსში მოჰყავს — ეს მეცნიერულად დასაბუთებული სტრატეგიაა თმის გრძელვადიანი ჯანმრთელობისთვის.",
-    photo: "/tomoyuki-amano.png",
+    photo: "/tomoyuki-amano.webp",
     initial: "T",
   },
 ];
@@ -483,7 +483,7 @@ export default function Home() {
           {/* Image — right, full-bleed, fills entire column */}
           <div className="relative min-h-[420px] lg:min-h-0 order-1 lg:order-2">
             <Image
-              src="/natural-accents.png"
+              src="/natural-accents.webp"
               alt="თამრა — ბრენდის ისტორია"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
@@ -558,7 +558,7 @@ export default function Home() {
           {/* RIGHT: full-bleed image covering the entire right side */}
           <div className="relative w-full lg:w-1/2 lg:flex-shrink-0 min-h-[400px] lg:min-h-0">
             <Image
-              src="/women-wellness.png"
+              src="/women-wellness.webp"
               alt="Thamra women wellness"
               fill
               style={{ objectFit: "cover", objectPosition: "center" }}
