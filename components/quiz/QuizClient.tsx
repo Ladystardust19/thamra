@@ -156,7 +156,9 @@ function calcProfile(a: PartialAnswers): Profile {
   const sorted = (Object.entries(s) as [string, number][]).sort((a, b) => b[1] - a[1]);
   const top = sorted[0][1];
   const second = sorted[1][1];
-  if (top === 0 || (top - second <= 2 && second > 0)) return “mixed”;
+  // mixed only when genuinely tied at a meaningful score
+  if (top === 0) return “mixed”;
+  if (top === second && top >= 3) return “mixed”;
   return sorted[0][0] as Profile;
 }
 
@@ -697,10 +699,6 @@ function ResultScreen({
       {/* Section 5 — THAMRA + confirmation */}
       <div className={styles.thamraBlock}>
         <span className={styles.thamraBlockLabel}>THAMRA</span>
-        <p className={styles.thamraText}>
-          THAMRA შეიქმნა ქალებისთვის, ვინც მენოპაუზის პერიოდში თმის სისავსის,
-          მოცულობისა და ხარისხის შიგნიდან მხარდაჭერას ეძებს.
-        </p>
 
         <div style={{
           display: "flex",
