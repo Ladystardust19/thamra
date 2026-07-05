@@ -642,14 +642,6 @@ function ResultScreen({
           თქვენი პასუხებიდან ჩანს, რომ თმის გათხელება და ცვენა შეიძლება მენოპაუზასთან დაკავშირებულ რამდენიმე პროცესს უკავშირდებოდეს. ასეთ დროს ერთი ინგრედიენტი ან შემთხვევით შერჩეული ვიტამინი ხშირად არ არის საკმარისი.
         </p>
 
-        <p className={styles.thamraText}>
-          შემდეგი ნაბიჯია თქვენი თმის მდგომარეობის უფრო ზუსტად შეფასება.
-        </p>
-
-        <p className={styles.thamraText}>
-          დაჯავშნეთ უფასო კონსულტაცია THAMRA-ს გუნდთან და მიიღეთ თმის ცვენისა და გათხელების შესაძლო მიზეზების პირველადი შეფასება — შემდეგ კი პერსონალური რეკომენდაცია THAMRA-ს რიტუალის დასაწყებად.
-        </p>
-
         <div className={styles.fields} style={{ marginTop: 24 }}>
           <div className={styles.field}>
             <label className={styles.fieldLabel} style={{ color: "rgba(247,241,233,0.6)" }}>სახელი</label>
@@ -665,12 +657,9 @@ function ResultScreen({
         </div>
 
         <button className={styles.ctaBtn} style={{ marginTop: 8 }}>
-          დაჯავშნეთ უფასო კონსულტაცია →
+          შედეგის ნახვა →
         </button>
 
-        <p className={styles.urgency}>
-          კონსულტაცია უფასოა · პერსონალური რეკომენდაცია · გადახდა არ არის საჭირო
-        </p>
       </div>
 
       <p className={styles.footnote}>
