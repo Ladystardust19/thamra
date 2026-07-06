@@ -413,7 +413,6 @@ function BackArrow() {
 function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
     <div className={styles.introWrap}>
-      <span className={styles.eyebrow}>THAMRA · ანალიზი</span>
       <h1 className={styles.introHeadline}>
         გაიგე, რა სჭირდება შენს თმას
       </h1>
