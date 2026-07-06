@@ -3,7 +3,7 @@ import QuizClient from "@/components/quiz/QuizClient";
 
 export const metadata: Metadata = {
   title: "თმის ანალიზი | THAMRA",
-  description: "7 კითხვა, 2 წუთი. მიიღე შენი პერსონალური თმის ანალიზი.",
+  description: "8 კითხვა, 2 წუთი. მიიღე შენი პერსონალური თმის ანალიზი.",
 };
 
 export default function QuizPage() {

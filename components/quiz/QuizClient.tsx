@@ -11,23 +11,24 @@ type PartialAnswers = {
   q1?: string;
   q2?: string;
   q3?: string[];
+  q_severity?: string;
   q4?: string[];
-  q5?: string;   // sleep (new Q5)
-  q6?: string;   // what tried (was Q5)
-  q7?: string;   // goal
+  q5?: string;
+  q6?: string;
+  q7?: string;
 };
 
 type Screen =
   | "intro"
-  | "q1" | "q2" | "q3" | "q4" | "q5" | "q6" | "q7"
+  | "q1" | "q2" | "q3" | "q_severity" | "q4" | "q5" | "q6" | "q7"
   | "gate"
   | "result";
 
 const SCREEN_ORDER: Screen[] = [
-  "intro", "q1", "q2", "q3", "q4", "q5", "q6", "q7", "gate", "result",
+  "intro", "q1", "q2", "q3", "q_severity", "q4", "q5", "q6", "q7", "gate", "result",
 ];
 
-const Q_SCREENS = ["q1", "q2", "q3", "q4", "q5", "q6", "q7"];
+const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q6", "q7"];
 
 // ─── Question definitions ─────────────────────────────────────────────────────
 
@@ -68,6 +69,18 @@ const QUESTIONS: Question[] = [
       "მეტი თმა რჩება სავარცხელზე და სააბაზანოში",
       "თხემზე სკალპი მოჩანს",
       "თმა ტყდება და დაკარგა ბზინვარება",
+    ],
+  },
+  {
+    id: "q_severity",
+    text: "რამდენად გაწუხებს თმის სისავსისა და მოცულობის შემცირება?",
+    type: "single",
+    options: [
+      "1 — საერთოდ არ მაწუხებს",
+      "2 — ოდნავ მაწუხებს",
+      "3 — ზომიერად მაწუხებს",
+      "4 — საკმაოდ მაწუხებს",
+      "5 — ძალიან მაწუხებს და გამოსავალს აქტიურად ვეძებ",
     ],
   },
   {
@@ -121,67 +134,71 @@ const QUESTIONS: Question[] = [
 
 // ─── Result helpers ───────────────────────────────────────────────────────────
 
-type Profile = “volume_loss” | “thinning” | “shedding” | “stress_sleep” | “mixed”;
-type StressLevel = “დაბალი” | “საშუალო” | “მაღალი”;
+type Profile = "volume_loss" | "thinning" | "shedding" | "stress_sleep" | "mixed";
+type StressLevel = "დაბალი" | "საშუალო" | "მაღალი";
 
 function calcProfile(a: PartialAnswers): Profile {
   const s = { volume_loss: 0, thinning: 0, shedding: 0, stress_sleep: 0 };
 
   // Q3 — visual symptoms (strongest signal)
   const q3 = a.q3 ?? [];
-  if (q3.includes(“გაყოფის ხაზი გაფართოვდა”))                    s.volume_loss += 2;
-  if (q3.includes(“კუდი გათხელდა”))                                s.thinning    += 2;
-  if (q3.includes(“მეტი თმა რჩება სავარცხელზე და სააბაზანოში”))   s.shedding    += 2;
-  if (q3.includes(“თხემზე სკალპი მოჩანს”))                        { s.thinning += 2; s.volume_loss += 1; }
-  if (q3.includes(“თმა ტყდება და დაკარგა ბზინვარება”))            { s.thinning += 1; s.shedding   += 1; }
+  if (q3.includes("გაყოფის ხაზი გაფართოვდა"))                    s.volume_loss += 2;
+  if (q3.includes("კუდი გათხელდა"))                                s.thinning    += 2;
+  if (q3.includes("მეტი თმა რჩება სავარცხელზე და სააბაზანოში"))   s.shedding    += 2;
+  if (q3.includes("თხემზე სკალპი მოჩანს"))                        { s.thinning += 2; s.volume_loss += 1; }
+  if (q3.includes("თმა ტყდება და დაკარგა ბზინვარება"))            { s.thinning += 1; s.shedding   += 1; }
+
+  // Q_SEVERITY — volume concern level
+  if (a.q_severity === "4 — საკმაოდ მაწუხებს")                              s.volume_loss += 1;
+  if (a.q_severity === "5 — ძალიან მაწუხებს და გამოსავალს აქტიურად ვეძებ") s.volume_loss += 2;
 
   // Q4 — accompanying symptoms
   const q4 = a.q4 ?? [];
-  if (q4.includes(“ციკლი არარეგულარული გახდა ან შეწყდა”))         s.volume_loss  += 1;
-  if (q4.includes(“სიცხის შემოტევები ან ღამის ოფლიანობა”))        { s.volume_loss += 1; s.stress_sleep += 1; }
-  if (q4.includes(“მეტი სტრესი ან შფოთვა”))                        s.stress_sleep += 3;
-  if (q4.includes(“წონის ცვლილება”))                                s.volume_loss  += 1;
+  if (q4.includes("ციკლი არარეგულარული გახდა ან შეწყდა"))         s.volume_loss  += 1;
+  if (q4.includes("სიცხის შემოტევები ან ღამის ოფლიანობა"))        { s.volume_loss += 1; s.stress_sleep += 1; }
+  if (q4.includes("მეტი სტრესი ან შფოთვა"))                        s.stress_sleep += 3;
+  if (q4.includes("წონის ცვლილება"))                                s.volume_loss  += 1;
 
   // Q5 — sleep quality
-  if (a.q5 === “ხშირად ვიღვიძებ ღამით” || a.q5 === “მიჭირს დაძინება”)
+  if (a.q5 === "ხშირად ვიღვიძებ ღამით" || a.q5 === "მიჭირს დაძინება")
     s.stress_sleep += 2;
-  else if (a.q5 === “ღამის ოფლიანობა მაღვიძებს”)
+  else if (a.q5 === "ღამის ოფლიანობა მაღვიძებს")
     { s.stress_sleep += 2; s.volume_loss += 1; }
 
   // Q7 — goal (light signal)
-  if (a.q7 === “ცვენის შეჩერება”)         s.shedding    += 1;
-  if (a.q7 === “უფრო სქელი და ხშირი თმა”) s.volume_loss += 1;
-  if (a.q7 === “თმის ხილული ზრდა”)        s.thinning    += 1;
+  if (a.q7 === "ცვენის შეჩერება")         s.shedding    += 1;
+  if (a.q7 === "უფრო სქელი და ხშირი თმა") s.volume_loss += 1;
+  if (a.q7 === "თმის ხილული ზრდა")        s.thinning    += 1;
 
   const sorted = (Object.entries(s) as [string, number][]).sort((a, b) => b[1] - a[1]);
   const top = sorted[0][1];
   const second = sorted[1][1];
   // mixed only when genuinely tied at a meaningful score
-  if (top === 0) return “mixed”;
-  if (top === second && top >= 3) return “mixed”;
+  if (top === 0) return "mixed";
+  if (top === second && top >= 3) return "mixed";
   return sorted[0][0] as Profile;
 }
 
 function calcStressLevel(a: PartialAnswers): StressLevel {
   let n = 0;
   // Duration
-  if (a.q2 === “3 წელზე მეტი ხნის წინ”) n += 3;
-  else if (a.q2 === “1–3 წლის წინ”)      n += 2;
-  else if (a.q2 === “6–12 თვის წინ”)     n += 1;
+  if (a.q2 === "3 წელზე მეტი ხნის წინ") n += 3;
+  else if (a.q2 === "1–3 წლის წინ")      n += 2;
+  else if (a.q2 === "6–12 თვის წინ")     n += 1;
   // Symptom count
   n += (a.q3 ?? []).length;
-  n += (a.q4 ?? []).filter((x) => x !== “არცერთი”).length;
+  n += (a.q4 ?? []).filter((x) => x !== "არცერთი").length;
   // Sleep factor
-  if (a.q5 && a.q5 !== “კარგად, ვისვენებ”) n += 2;
-  if (n <= 2) return “დაბალი”;
-  if (n <= 5) return “საშუალო”;
-  return “მაღალი”;
+  if (a.q5 && a.q5 !== "კარგად, ვისვენებ") n += 2;
+  if (n <= 2) return "დაბალი";
+  if (n <= 5) return "საშუალო";
+  return "მაღალი";
 }
 
 const STRESS_COLORS: Record<StressLevel, string> = {
-  “დაბალი”:  “#5C8A6B”,
-  “საშუალო”: “#C9A96E”,
-  “მაღალი”:  “#8B2F3A”,
+  "დაბალი":  "#5C8A6B",
+  "საშუალო": "#C9A96E",
+  "მაღალი":  "#8B2F3A",
 };
 
 type ProfileMeta = {
@@ -192,43 +209,43 @@ type ProfileMeta = {
 
 const PROFILE_META: Record<Profile, ProfileMeta> = {
   volume_loss: {
-    label: “მოცულობის შემცირება”,
-    insight: “შენი თმა მოცულობასა და სისავსეს კარგავს — ეს ჩვეულებრივ ჰორმონების ცვლილების პირველი სიგნალია.”,
+    label: "მოცულობის შემცირება",
+    insight: "შენი თმა მოცულობასა და სისავსეს კარგავს — ეს ჩვეულებრივ ჰორმონების ცვლილების პირველი სიგნალია.",
     explanation: [
-      “მენოპაუზის პერიოდში ესტროგენის შემცირება ფოლიკულს ვიწროებს, თმა კი სიმოცულოვეს კარგავს.”,
-      “ეს პროცესი შეჩერებადია — თუ ფოლიკულს შესაბამისი კვება და მხარდაჭერა მიეწოდება.”,
+      "მენოპაუზის პერიოდში ესტროგენის შემცირება ფოლიკულს ვიწროებს, თმა კი სიმოცულოვეს კარგავს.",
+      "ეს პროცესი შეჩერებადია — თუ ფოლიკულს შესაბამისი კვება და მხარდაჭერა მიეწოდება.",
     ],
   },
   thinning: {
-    label: “თანდათანი გათხელება”,
-    insight: “თმის სიმჭიდროვე თანდათან მცირდება — ეს ფოლიკულის ნელ-ნელა შეჭმუხვნაზე მიუთითებს.”,
+    label: "თანდათანი გათხელება",
+    insight: "თმის სიმჭიდროვე თანდათან მცირდება — ეს ფოლიკულის ნელ-ნელა შეჭმუხვნაზე მიუთითებს.",
     explanation: [
-      “ფოლიკულის შეჭმუხვნა ნიშნავს, რომ მას კვება და ჰორმონალური ბალანსი სჭირდება.”,
-      “ადრეული მხარდაჭერა ყველაზე ეფექტურია — ფოლიკული ჯერ კიდევ „გამოღვიძებადია”.”,
+      "ფოლიკულის შეჭმუხვნა ნიშნავს, რომ მას კვება და ჰორმონალური ბალანსი სჭირდება.",
+      "ადრეული მხარდაჭერა ყველაზე ეფექტურია — ფოლიკული ჯერ კიდევ „გამოღვიძებადია”.",
     ],
   },
   shedding: {
-    label: “გაძლიერებული ცვენა”,
-    insight: “ნორმაზე მეტი ცვენა ყველაზე შემჩნეული სიმპტომია — ეს ხშირად ჰორმონებსა ან სტრესსაც ემთხვევა.”,
+    label: "გაძლიერებული ცვენა",
+    insight: "ნორმაზე მეტი ცვენა ყველაზე შემჩნეული სიმპტომია — ეს ხშირად ჰორმონებსა ან სტრესსაც ემთხვევა.",
     explanation: [
-      “ნორმაზე მეტი ცვენა ხშირად ნიშნავს, რომ ფოლიკული ვადამდე „ძილის ფაზაში” გადადის.”,
-      “ამის მიზეზი შეიძლება სტრესი, ჰორმონები ან კვებითი ნაკლებობა იყოს — ხშირად ყველა ერთად.”,
+      "ნორმაზე მეტი ცვენა ხშირად ნიშნავს, რომ ფოლიკული ვადამდე „ძილის ფაზაში\" გადადის.",
+      "ამის მიზეზი შეიძლება სტრესი, ჰორმონები ან კვებითი ნაკლებობა იყოს — ხშირად ყველა ერთად.",
     ],
   },
   stress_sleep: {
-    label: “სტრეს-ძილის პროფილი”,
-    insight: “სტრესი და ძილის ხარისხი პირდაპირ მოქმედებს თმის ზრდის ციკლზე — ეს შენი პასუხებიდან ყველაზე მეტად ჩანს.”,
+    label: "სტრეს-ძილის პროფილი",
+    insight: "სტრესი და ძილის ხარისხი პირდაპირ მოქმედებს თმის ზრდის ციკლზე — ეს შენი პასუხებიდან ყველაზე მეტად ჩანს.",
     explanation: [
-      “კორტიზოლის მაღალი დონე ფოლიკულის ციკლს ამოკლებს — მეტი თმა ვადამდე ხდება ცვენის ფაზაში.”,
-      “ძილის ხარისხი და სტრეს-ადაპტოგენები ამ ციკლს დაიცავს.”,
+      "კორტიზოლის მაღალი დონე ფოლიკულის ციკლს ამოკლებს — მეტი თმა ვადამდე ხდება ცვენის ფაზაში.",
+      "ძილის ხარისხი და სტრეს-ადაპტოგენები ამ ციკლს დაიცავს.",
     ],
   },
   mixed: {
-    label: “კომბინირებული პროფილი”,
-    insight: “შენი სიმპტომები რამდენიმე ფაქტორს ერთდროულად უკავშირდება — ეს ყველაზე გავრცელებული სიტუაციაა.”,
+    label: "კომბინირებული პროფილი",
+    insight: "შენი სიმპტომები რამდენიმე ფაქტორს ერთდროულად უკავშირდება — ეს ყველაზე გავრცელებული სიტუაციაა.",
     explanation: [
-      “ჰორმონები, კვება და სტრესი ერთდროულად მოქმედებს — ეს ყველაზე გავრცელებული სიტუაციაა მენოპაუზის პერიოდში.”,
-      “ასეთ შემთხვევაში ერთი ინგრედიენტი საკმარისი ვერ იქნება — კომპლექსური მიდგომა გჭირდება.”,
+      "ჰორმონები, კვება და სტრესი ერთდროულად მოქმედებს — ეს ყველაზე გავრცელებული სიტუაციაა მენოპაუზის პერიოდში.",
+      "ასეთ შემთხვევაში ერთი ინგრედიენტი საკმარისი ვერ იქნება — კომპლექსური მიდგომა გჭირდება.",
     ],
   },
 };
@@ -339,12 +356,12 @@ export default function QuizClient() {
       {showProgress && (
         <div className={styles.progressWrap}>
           <span className={styles.progressLabel}>
-            კითხვა {questionIndex + 1} / 7
+            კითხვა {questionIndex + 1} / 8
           </span>
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
-              style={{ width: `${((questionIndex + 1) / 7) * 100}%` }}
+              style={{ width: `${((questionIndex + 1) / 8) * 100}%` }}
             />
           </div>
         </div>
