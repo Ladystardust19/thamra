@@ -146,9 +146,8 @@
     align-items: flex-end;
   }
 
-  /* Show the woman's face on the right side of the image */
   .heroImage {
-    object-position: 72% center;
+    object-position: center top;
   }
 
   /* Dark gradient from bottom so text is always readable */

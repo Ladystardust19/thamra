@@ -10,9 +10,10 @@ export default function HeroCover() {
         alt=""
         fill
         priority
+        quality={85}
         className={styles.heroImage}
         style={{ objectFit: "cover" }}
-        sizes="100vw"
+        sizes="(max-width: 768px) 100vw, 100vw"
       />
 
       <div className={styles.overlay} aria-hidden="true" />
