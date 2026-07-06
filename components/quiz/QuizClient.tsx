@@ -134,118 +134,93 @@ const QUESTIONS: Question[] = [
 
 // ─── Result helpers ───────────────────────────────────────────────────────────
 
-type Profile = "volume_loss" | "thinning" | "shedding" | "stress_sleep" | "mixed";
-function calcProfile(a: PartialAnswers): Profile {
-  const s = { volume_loss: 0, thinning: 0, shedding: 0, stress_sleep: 0 };
+type CategoryKey = "HairDensity" | "Shedding" | "HairQuality" | "HormonalTransition" | "StressSleep";
 
-  // Q3 — visual symptoms (strongest signal)
-  const q3 = a.q3 ?? [];
-  if (q3.includes("გაყოფის ხაზი გაფართოვდა"))                    s.volume_loss += 2;
-  if (q3.includes("კუდი გათხელდა"))                                s.thinning    += 2;
-  if (q3.includes("მეტი თმა რჩება სავარცხელზე და სააბაზანოში"))   s.shedding    += 2;
-  if (q3.includes("თხემზე სკალპი მოჩანს"))                        { s.thinning += 2; s.volume_loss += 1; }
-  if (q3.includes("თმა ტყდება და დაკარგა ბზინვარება"))            { s.thinning += 1; s.shedding   += 1; }
+const CATEGORY_PRIORITY: CategoryKey[] = [
+  "HairDensity", "Shedding", "HormonalTransition", "StressSleep", "HairQuality",
+];
 
-  // Q_SEVERITY — volume concern level
-  if (a.q_severity === "4 — საკმაოდ მაწუხებს")                              s.volume_loss += 1;
-  if (a.q_severity === "5 — ძალიან მაწუხებს და გამოსავალს აქტიურად ვეძებ") s.volume_loss += 2;
-
-  // Q4 — accompanying symptoms
-  const q4 = a.q4 ?? [];
-  if (q4.includes("ციკლი არარეგულარული გახდა ან შეწყდა"))         s.volume_loss  += 1;
-  if (q4.includes("სიცხის შემოტევები ან ღამის ოფლიანობა"))        { s.volume_loss += 1; s.stress_sleep += 1; }
-  if (q4.includes("მეტი სტრესი ან შფოთვა"))                        s.stress_sleep += 3;
-  if (q4.includes("წონის ცვლილება"))                                s.volume_loss  += 1;
-
-  // Q5 — sleep quality
-  if (a.q5 === "ხშირად ვიღვიძებ ღამით" || a.q5 === "მიჭირს დაძინება")
-    s.stress_sleep += 2;
-  else if (a.q5 === "ღამის ოფლიანობა მაღვიძებს")
-    { s.stress_sleep += 2; s.volume_loss += 1; }
-
-  // Q7 — goal (light signal)
-  if (a.q7 === "ცვენის შეჩერება")         s.shedding    += 1;
-  if (a.q7 === "უფრო სქელი და ხშირი თმა") s.volume_loss += 1;
-  if (a.q7 === "თმის ხილული ზრდა")        s.thinning    += 1;
-
-  const sorted = (Object.entries(s) as [string, number][]).sort((a, b) => b[1] - a[1]);
-  const top = sorted[0][1];
-  const second = sorted[1][1];
-  // mixed only when genuinely tied at a meaningful score
-  if (top === 0) return "mixed";
-  if (top === second && top >= 3) return "mixed";
-  return sorted[0][0] as Profile;
-}
-
-// ─── Driver cards ────────────────────────────────────────────────────────────
-
-type DriverKey = "DHT" | "CORTISOL" | "NUTRIENT" | "SCALP";
-
-const DRIVER_META: Record<DriverKey, { title: string; body: string }> = {
-  DHT: {
-    title: "DHT-ის მიმართ მგრძნობელობა",
-    body: "მენოპაუზის პერიოდში ზოგი ქალის თმა უფრო მგრძნობიარე ხდება ჰორმონალური ცვლილებების მიმართ, რაც დროთა განმავლობაში შეიძლება აისახოს სიმკვრივესა და მოცულობაზე.",
+const CATEGORY_META: Record<CategoryKey, { title: string; body: string }> = {
+  HairDensity: {
+    title: "თმის სიმკვრივე და სისავსე",
+    body: "შენი პასუხები მიანიშნებს თმის სიმკვრივისა და სისავსის ხილულ ცვლილებებზე.",
   },
-  CORTISOL: {
+  Shedding: {
+    title: "თმის ცვენა",
+    body: "შენი პასუხები მიანიშნებს ყოველდღიური მოვლისას გაზრდილ თმის ცვენაზე.",
+  },
+  HairQuality: {
+    title: "თმის ხარისხი და სტრუქტურა",
+    body: "შენი პასუხები ხაზს უსვამს თმის ტექსტურის, სიძლიერისა და გარეგნობის ცვლილებებს.",
+  },
+  HormonalTransition: {
+    title: "ჰორმონალური გარდამავალი პერიოდი",
+    body: "შენი პასუხები გვაჩვენებს, რომ მენოპაუზასთან დაკავშირებული ცვლილებები შეიძლება მნიშვნელოვანი ნაწილი იყოს საერთო სურათის.",
+  },
+  StressSleep: {
     title: "სტრესი და ძილი",
-    body: "ხანგრძლივმა სტრესმა და ძილის გაუარესებამ შეიძლება გავლენა მოახდინოს თმის ბუნებრივ ზრდის ციკლზე.",
-  },
-  NUTRIENT: {
-    title: "საკვები ნივთიერებების საჭიროება",
-    body: "ჰორმონალური ცვლილებების პერიოდში ორგანიზმის მოთხოვნილებები იცვლება და თმას შეიძლება მეტი მხარდაჭერა სჭირდებოდეს.",
-  },
-  SCALP: {
-    title: "სკალპისა და ფოლიკულის გარემო",
-    body: "თმის ხარისხი მხოლოდ თავად ღერზე არ არის დამოკიდებული. მნიშვნელობა აქვს იმ გარემოსაც, სადაც თმა იზრდება.",
+    body: "შენი პასუხები ხაზს უსვამს სტრესსა და ძილთან დაკავშირებულ ფაქტორებს, რომლებიც გავლენას ახდენს ზოგადი კეთილდღეობისა და თმის ჯანმრთელობაზე.",
   },
 };
 
-function calcDrivers(a: PartialAnswers): [DriverKey, DriverKey] {
-  const s: Record<DriverKey, number> = { DHT: 0, CORTISOL: 0, NUTRIENT: 0, SCALP: 0 };
+function calcCategories(a: PartialAnswers): [CategoryKey, CategoryKey] {
+  const s: Record<CategoryKey, number> = {
+    HairDensity: 0, Shedding: 0, HairQuality: 0, HormonalTransition: 0, StressSleep: 0,
+  };
+
   const q3 = a.q3 ?? [];
   const q4 = a.q4 ?? [];
 
-  if (q3.includes("გაყოფის ხაზი გაფართოვდა"))                  { s.DHT += 2; s.SCALP += 1; }
-  if (q3.includes("კუდი გათხელდა"))                              { s.DHT += 2; s.NUTRIENT += 1; }
-  if (q3.includes("მეტი თმა რჩება სავარცხელზე და სააბაზანოში")) { s.NUTRIENT += 2; }
-  if (q3.includes("თხემზე სკალპი მოჩანს"))                      { s.DHT += 2; s.SCALP += 2; }
-  if (q3.includes("თმა ტყდება და დაკარგა ბზინვარება"))          { s.NUTRIENT += 2; s.SCALP += 1; }
+  if (q3.includes("გაყოფის ხაზი გაფართოვდა"))                    s.HairDensity += 2;
+  if (q3.includes("კუდი გათხელდა"))                                s.HairDensity += 2;
+  if (q3.includes("თხემზე სკალპი მოჩანს"))                        s.HairDensity += 3;
+  if (q3.includes("მეტი თმა რჩება სავარცხელზე და სააბაზანოში"))   s.Shedding    += 3;
+  if (q3.includes("თმა ტყდება და დაკარგა ბზინვარება"))            s.HairQuality += 3;
 
-  if (q4.includes("ციკლი არარეგულარული გახდა ან შეწყდა"))       s.DHT += 2;
-  if (q4.includes("სიცხის შემოტევები ან ღამის ოფლიანობა"))      { s.DHT += 1; s.CORTISOL += 1; }
-  if (q4.includes("მეტი სტრესი ან შფოთვა"))                      s.CORTISOL += 3;
-  if (q4.includes("წონის ცვლილება"))                              { s.NUTRIENT += 1; s.DHT += 1; }
+  if (q4.includes("ციკლი არარეგულარული გახდა ან შეწყდა"))         s.HormonalTransition += 3;
+  if (q4.includes("სიცხის შემოტევები ან ღამის ოფლიანობა"))        s.HormonalTransition += 2;
+  if (q4.includes("მეტი სტრესი ან შფოთვა"))                        s.StressSleep        += 3;
 
-  if (a.q5 === "ხშირად ვიღვიძებ ღამით" || a.q5 === "მიჭირს დაძინება")
-    s.CORTISOL += 2;
-  else if (a.q5 === "ღამის ოფლიანობა მაღვიძებს")
-    { s.CORTISOL += 1; s.DHT += 1; }
+  if (a.q5 === "ხშირად ვიღვიძებ ღამით")     s.StressSleep += 2;
+  if (a.q5 === "მიჭირს დაძინება")            s.StressSleep += 2;
+  if (a.q5 === "ღამის ოფლიანობა მაღვიძებს") s.StressSleep += 2;
 
-  const sorted = (Object.entries(s) as [DriverKey, number][]).sort((a, b) => b[1] - a[1]);
-  return [sorted[0][0], sorted[1][0]];
+  const sorted = CATEGORY_PRIORITY.slice().sort((x, y) => s[y] - s[x]);
+  return [sorted[0], sorted[1]];
 }
 
-function calcInsight(a: PartialAnswers): string {
-  if (a.q2 === "3 წელზე მეტი ხნის წინ")
-    return "შენ აღნიშნე, რომ თმის ცვლილება უკვე დიდი ხანია გრძელდება.";
-  const profile = calcProfile(a);
-  if (profile === "shedding")
-    return "შენ აღნიშნე, რომ თმის ცვენა უფრო შესამჩნევი გახდა.";
-  if (profile === "stress_sleep")
-    return "შენ აღნიშნე, რომ სტრესი ან ძილის ხარისხი შეიძლება მნიშვნელოვან გავლენას ახდენდეს შენს ყოველდღიურ მდგომარეობაზე.";
-  if (profile === "volume_loss")
-    return "შენ აღნიშნე, რომ თმის მოცულობის კლება ყველაზე მეტად გაწუხებს.";
-  if (profile === "thinning")
-    return "შენ აღნიშნე, რომ თმა თანდათან თხელდება და სიმკვრივე შეიცვალა.";
-  return "შენ აღნიშნე, რომ თმის ცვლილება ერთზე მეტ ფაქტორს შეიძლება უკავშირდებოდეს.";
+function getSeveritySummary(qSeverity: string | undefined): string {
+  if (!qSeverity) return "";
+  if (qSeverity.startsWith("1") || qSeverity.startsWith("2"))
+    return "ამ ეტაპზე ცვლილებები შედარებით მსუბუქია, თუმცა ბევრი ქალი ამჯობინებს მათ ადრევე გაიგოს.";
+  if (qSeverity.startsWith("3"))
+    return "შენი პასუხები გვაჩვენებს, რომ თმის ცვლილება შესამჩნევი გახდა და იწყებს გავლენის მოხდენას შენს განცდებზე.";
+  if (qSeverity.startsWith("4"))
+    return "შენი პასუხები მიანიშნებს, რომ თმის ცვლილება მნიშვნელოვანი შეშფოთების წყარო გახდა და გავლენას ახდენს შენს თავდაჯერებულობაზე.";
+  return "შენი პასუხები მიანიშნებს, რომ ეს ცვლილებები შენზე მნიშვნელოვნად ახდენს გავლენას და გამოსავალს აქტიურად ეძებ.";
+}
+
+function getPreviousAttemptText(q6: string | undefined): string {
+  if (!q6) return "";
+  if (q6.includes("შამპუნები"))
+    return "შენ უკვე სცადე გარეგანი მოვლის საშუალებები, თუმცა თმის ცვლილებებზე ხშირად ზედაპირულ მოვლაზე მეტი ფაქტორი ახდენს გავლენას.";
+  if (q6.includes("ვიტამინები") || q6.includes("ბიოტინი"))
+    return "შენ უკვე სცადე ცალკეული დანამატები, თუმცა თმის ცვლილებებს ხშირად ერთდროულად რამდენიმე ფაქტორი განსაზღვრავს.";
+  if (q6.includes("პლაზმათერაპია"))
+    return "შენ უკვე გამოიყენე უფრო ინტენსიური მიდგომა, რაც გვიჩვენებს, რამდენად სერიოზულად უდგები ამ საკითხს.";
+  if (q6.includes("არაფერი"))
+    return "ეს შეიძლება სასარგებლო შესაძლებლობა იყოს უკეთ გაიგო სხვადასხვა ფაქტორები, რომლებიც შეიძლება გავლენას ახდენდნენ თმის ცვლილებებზე.";
+  if (q6.includes("რამდენიმე"))
+    return "შენი პასუხები გვაჩვენებს, რომ გაუმჯობესების ძიებაში უკვე სცადე სხვადასხვა მიდგომები.";
+  return "";
 }
 
 function getHeadline(firstName: string, q1: string | undefined): string {
   if (!q1 || q1 === "40-მდე")
-    return firstName + ", შენი პასუხები ჰორმონალურ დისბალანსზე მიუთითებს.";
+    return firstName + ", შენი პასუხები ჰორმონალური ცვლილებების ნიშნებს ავლენს.";
   if (q1 === "40–45")
-    return firstName + ", შენი პასუხები ჰორმონალურ ცვლილებაზე, სავარაუდოდ პერიმენოპაუზაზე, მიუთითებს.";
-  return firstName + ", შენი პასუხები მენოპაუზაზე მიუთითებს.";
+    return firstName + ", შენი პასუხები ჰორმონალურ ცვლილებებს, სავარაუდოდ პერიმენოპაუზას, მიანიშნებს.";
+  return firstName + ", შენი პასუხები მენოპაუზასთან დაკავშირებულ ცვლილებებს მიანიშნებს.";
 }
 
 
@@ -637,69 +612,57 @@ function ResultScreen({
 }) {
   const [earlyAccessConfirmed, setEarlyAccessConfirmed] = useState(false);
 
-  const firstName = name.trim().split(" ")[0];
-  const headline  = getHeadline(firstName, answers.q1);
-  const insight   = calcInsight(answers);
-  const [driver1, driver2] = calcDrivers(answers);
+  const firstName      = name.trim().split(" ")[0];
+  const headline       = getHeadline(firstName, answers.q1);
+  const severitySummary = getSeveritySummary(answers.q_severity);
+  const [cat1, cat2]   = calcCategories(answers);
+  const previousText   = getPreviousAttemptText(answers.q6);
 
   return (
     <div className={styles.resultWrap}>
 
-      {/* Section 1 — Age-aware headline */}
+      {/* Section 1 — Headline + severity summary */}
       <h2 className={styles.resultHeadline}>{headline}</h2>
       <div className={styles.resultDivider} />
-      <p className={styles.resultText}>
-        შენი თმის ცვლილება ზედაპირული პრობლემა არ არის.
-      </p>
-      <p className={styles.resultText} style={{ marginTop: 10 }}>
-        ის ხშირად ერთზე მეტ ფაქტორს უკავშირდება და დროთა განმავლობაში აისახება თმის სისავსეზე, მოცულობასა და ხარისხზე.
-      </p>
+      {severitySummary && (
+        <p className={styles.resultText}>{severitySummary}</p>
+      )}
 
       <div className={styles.resultDivider} />
 
-      {/* Section 2 — Personalized insight */}
-      <div className={styles.insightCard}>
-        <p className={styles.insightTitle}>
-          შენი პასუხებიდან ყველაზე მეტად ყურადღებას იპყრობს:
-        </p>
-        <p className={styles.insightText}>{insight}</p>
-      </div>
-
-      <div className={styles.resultDivider} />
-
-      {/* Section 3 — Two main drivers */}
-      <span className={styles.driversLabel}>შენი ორი მთავარი ფაქტორი</span>
+      {/* Section 2 — Main areas identified */}
+      <span className={styles.driversLabel}>შენი პასუხებიდან გამოვლენილი ძირითადი სფეროები:</span>
       <div className={styles.driverCards} style={{ marginTop: 10 }}>
         <div className={styles.driverCard}>
-          <p className={styles.driverTitle}>{DRIVER_META[driver1].title}</p>
-          <p className={styles.driverText}>{DRIVER_META[driver1].body}</p>
+          <p className={styles.driverTitle}>{CATEGORY_META[cat1].title}</p>
+          <p className={styles.driverText}>{CATEGORY_META[cat1].body}</p>
         </div>
         <div className={styles.driverCard}>
-          <p className={styles.driverTitle}>{DRIVER_META[driver2].title}</p>
-          <p className={styles.driverText}>{DRIVER_META[driver2].body}</p>
+          <p className={styles.driverTitle}>{CATEGORY_META[cat2].title}</p>
+          <p className={styles.driverText}>{CATEGORY_META[cat2].body}</p>
         </div>
       </div>
-      <p className={styles.driverText} style={{ marginTop: 14 }}>
-        თმის ცვლილება ხშირად ერთზე მეტ ფაქტორს უკავშირდება.
-      </p>
-      <p className={styles.driverText} style={{ marginTop: 8 }}>
-        სწორედ ამიტომ ბევრი ქალი ვერ იღებს სასურველ შედეგს მხოლოდ ერთი მიდგომით.
-      </p>
 
       <div className={styles.resultDivider} />
+
+      {/* Section 3 — Previous attempts */}
+      {previousText && (
+        <>
+          <span className={styles.driversLabel}>წინა მიდგომები</span>
+          <p className={styles.driverText} style={{ marginTop: 10 }}>{previousText}</p>
+          <div className={styles.resultDivider} />
+        </>
+      )}
 
       {/* Section 4 — Why THAMRA */}
       <span className={styles.driversLabel}>რატომ THAMRA?</span>
       <p className={styles.driverText} style={{ marginTop: 10 }}>
-        THAMRA შეიქმნა იმ იდეაზე, რომ მენოპაუზის პერიოდში თმის ცვლილება იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი.
-      </p>
-      <p className={styles.driverText} style={{ marginTop: 10 }}>
-        სწორედ ამიტომ THAMRA აერთიანებს რამდენიმე მიმართულებას ერთ ყოველდღიურ რიტუალში — რათა ქალებს აღარ უწევდეთ სხვადასხვა დანამატების, ვიტამინებისა და მიდგომების ცალკე შერჩევა.
+        THAMRA შეიქმნა იმ იდეაზე, რომ მენოპაუზის პერიოდში თმის ცვლილება იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი. შენი პასუხებიც გვაჩვენებს, რომ ერთდროულად რამდენიმე განსხვავებული ფაქტორი შეიძლება იყოს. სწორედ ამიტომ THAMRA აერთიანებს მრავალ მტკიცებულებებზე დაფუძნებულ მიდგომას ერთ ყოველდღიურ რიტუალში.
       </p>
 
       <div className={styles.resultDivider} />
 
-      {/* Section 5 — Early access */}
+      {/* Early access */}
       <span className={styles.driversLabel}>შენ ახლა THAMRA-ს ადრეული წვდომის სიაში ხარ.</span>
       <p className={styles.driverText} style={{ marginTop: 10 }}>
         შენთვის შენარჩუნდება 20%-იანი შეთავაზება პირველ გამოშვებაზე.
