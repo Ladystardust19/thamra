@@ -291,7 +291,10 @@ export default function QuizClient() {
       setPhoneError("");
     }
 
-    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    if (!email.trim()) {
+      setEmailError("ელ.ფოსტა სავალდებულოა");
+      valid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setEmailError("შეიყვანე სწორი ელ.ფოსტა");
       valid = false;
     } else {
@@ -584,7 +587,7 @@ function GateScreen({
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             autoComplete="email"
-            placeholder="ელ.ფოსტა (არასავალდებულო)"
+            placeholder="ელ.ფოსტა"
           />
           {emailError && <span className={styles.fieldError}>{emailError}</span>}
         </div>
