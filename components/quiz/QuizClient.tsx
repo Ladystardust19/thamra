@@ -204,49 +204,28 @@ const STRESS_COLORS: Record<StressLevel, string> = {
 type ProfileMeta = {
   label: string;
   insight: string;
-  explanation: [string, string];
 };
 
 const PROFILE_META: Record<Profile, ProfileMeta> = {
   volume_loss: {
     label: "მოცულობის შემცირება",
-    insight: "შენი თმა მოცულობასა და სისავსეს კარგავს — ეს ჩვეულებრივ ჰორმონების ცვლილების პირველი სიგნალია.",
-    explanation: [
-      "მენოპაუზის პერიოდში ესტროგენის შემცირება ფოლიკულს ვიწროებს, თმა კი სიმოცულოვეს კარგავს.",
-      "ეს პროცესი შეჩერებადია — თუ ფოლიკულს შესაბამისი კვება და მხარდაჭერა მიეწოდება.",
-    ],
+    insight: "შენ აღნიშნე, რომ თმის სისავსე და მოცულობა შეიცვალა და ეს ცვლილება უკვე გაწუხებს.",
   },
   thinning: {
     label: "თანდათანი გათხელება",
-    insight: "თმის სიმჭიდროვე თანდათან მცირდება — ეს ფოლიკულის ნელ-ნელა შეჭმუხვნაზე მიუთითებს.",
-    explanation: [
-      "ფოლიკულის შეჭმუხვნა ნიშნავს, რომ მას კვება და ჰორმონალური ბალანსი სჭირდება.",
-      "ადრეული მხარდაჭერა ყველაზე ეფექტურია — ფოლიკული ჯერ კიდევ „გამოღვიძებადია”.",
-    ],
+    insight: "შენ აღნიშნე, რომ თმა თანდათან თხელდება და სიმკვრივე აღარ არის ისეთი, როგორიც ადრე იყო.",
   },
   shedding: {
     label: "გაძლიერებული ცვენა",
-    insight: "ნორმაზე მეტი ცვენა ყველაზე შემჩნეული სიმპტომია — ეს ხშირად ჰორმონებსა ან სტრესსაც ემთხვევა.",
-    explanation: [
-      "ნორმაზე მეტი ცვენა ხშირად ნიშნავს, რომ ფოლიკული ვადამდე „ძილის ფაზაში\" გადადის.",
-      "ამის მიზეზი შეიძლება სტრესი, ჰორმონები ან კვებითი ნაკლებობა იყოს — ხშირად ყველა ერთად.",
-    ],
+    insight: "შენ აღნიშნე, რომ თმის ცვენა უფრო შესამჩნევი გახდა და ეს შენთვის მთავარი საზრუნავია.",
   },
   stress_sleep: {
     label: "სტრეს-ძილის პროფილი",
-    insight: "სტრესი და ძილის ხარისხი პირდაპირ მოქმედებს თმის ზრდის ციკლზე — ეს შენი პასუხებიდან ყველაზე მეტად ჩანს.",
-    explanation: [
-      "კორტიზოლის მაღალი დონე ფოლიკულის ციკლს ამოკლებს — მეტი თმა ვადამდე ხდება ცვენის ფაზაში.",
-      "ძილის ხარისხი და სტრეს-ადაპტოგენები ამ ციკლს დაიცავს.",
-    ],
+    insight: "შენ აღნიშნე, რომ სტრესი ან ძილის ხარისხი შეიძლება თმის მდგომარეობაზეც აისახებოდეს.",
   },
   mixed: {
     label: "კომბინირებული პროფილი",
-    insight: "შენი სიმპტომები რამდენიმე ფაქტორს ერთდროულად უკავშირდება — ეს ყველაზე გავრცელებული სიტუაციაა.",
-    explanation: [
-      "ჰორმონები, კვება და სტრესი ერთდროულად მოქმედებს — ეს ყველაზე გავრცელებული სიტუაციაა მენოპაუზის პერიოდში.",
-      "ასეთ შემთხვევაში ერთი ინგრედიენტი საკმარისი ვერ იქნება — კომპლექსური მიდგომა გჭირდება.",
-    ],
+    insight: "შენი პასუხები აჩვენებს, რომ თმის ცვლილება ერთზე მეტ ფაქტორს შეიძლება უკავშირდებოდეს.",
   },
 };
 
@@ -630,6 +609,14 @@ function GateScreen({
 
 // ─── Result page ──────────────────────────────────────────────────────────────
 
+const PURCHASE_OPTIONS = [
+  "აუცილებლად ვცდიდი",
+  "სავარაუდოდ ვცდიდი",
+  "ჯერ არ ვარ დარწმუნებული",
+  "ნაკლებად სავარაუდოა",
+  "არ ვცდიდი",
+];
+
 function ResultScreen({
   name,
   answers,
@@ -637,9 +624,11 @@ function ResultScreen({
   name: string;
   answers: PartialAnswers;
 }) {
+  const [purchaseIntent, setPurchaseIntent] = useState<string | undefined>();
+
   const profile     = calcProfile(answers);
   const stressLevel = calcStressLevel(answers);
-  const { label, insight, explanation } = PROFILE_META[profile];
+  const { label, insight } = PROFILE_META[profile];
   const stressColor = STRESS_COLORS[stressLevel];
   const firstName   = name.trim().split(" ")[0];
 
@@ -693,7 +682,7 @@ function ResultScreen({
       {/* Section 3 — Personalized insight */}
       <div className={styles.insightCard}>
         <p className={styles.insightTitle}>
-          შენი პასუხებიდან ყველაზე მეტად ყურადღებას იპყრობს:
+          შენი პასუხებიდან ყველაზე მეტად ყურადღებს იპყრობს:
         </p>
         <p className={styles.insightText}>{insight}</p>
       </div>
@@ -702,18 +691,40 @@ function ResultScreen({
 
       {/* Section 4 — What it means */}
       <span className={styles.driversLabel}>რას ნიშნავს ეს?</span>
-      <div className={styles.driverCards} style={{ marginTop: 10 }}>
-        <div className={styles.driverCard}>
-          <p className={styles.driverText}>{explanation[0]}</p>
-        </div>
-        <div className={styles.driverCard}>
-          <p className={styles.driverText}>{explanation[1]}</p>
-        </div>
-      </div>
-
-      <p className={styles.footnote}>
-        ეს ტესტი საინფორმაციო ხასიათისაა და არ წარმოადგენს სამედიცინო დიაგნოზს.
+      <p className={styles.driverText} style={{ marginTop: 10 }}>
+        მენოპაუზის პერიოდში თმის მოცულობასა და ხარისხზე ხშირად ერთდროულად მოქმედებს რამდენიმე ფაქტორი.
       </p>
+      <p className={styles.driverText} style={{ marginTop: 10 }}>
+        ამიტომ თმის ცვლილება იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი.
+      </p>
+
+      <div className={styles.resultDivider} />
+
+      {/* Section 5 — THAMRA brand */}
+      <span className={styles.driversLabel}>THAMRA</span>
+      <p className={styles.driverText} style={{ marginTop: 10 }}>
+        სწორედ ამ იდეაზე შეიქმნა THAMRA — ქალებისთვის, რომლებიც მენოპაუზის პერიოდში თმის სისავსისა და ხარისხის მხარდასაჭერად უფრო გააზრებულ მიდგომას ეძებენ.
+      </p>
+
+      <div className={styles.resultDivider} />
+
+      {/* Section 6 — Purchase intent */}
+      <p className={styles.insightTitle}>
+        თუ THAMRA შენს მოლოდინებს გაამართლებს, რამდენად სავარაუდოა, რომ სცადო 6-თვიანი პროგრამა?
+      </p>
+      <div className={styles.options} style={{ marginTop: 16 }}>
+        {PURCHASE_OPTIONS.map((opt) => (
+          <button
+            key={opt}
+            className={purchaseIntent === opt ? `${styles.option} ${styles.selected}` : styles.option}
+            onClick={() => setPurchaseIntent(opt)}
+            aria-pressed={purchaseIntent === opt}
+          >
+            <span className={styles.indicator} aria-hidden />
+            {opt}
+          </button>
+        ))}
+      </div>
 
     </div>
   );
