@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: "მეცნიერება",   href: "#science" },
   { label: "ტესტი",         href: "/quiz" },
   { label: "კონტაქტი",     href: "#footer" },
+  { label: "კაბინეტი",     href: "/cabinet" },
 ];
 
 export default function SiteHeader() {
@@ -26,7 +27,7 @@ export default function SiteHeader() {
 
   if (pathname === "/quiz") return null;
 
-  const dark = scrolled || menuOpen;
+  const dark = scrolled || menuOpen || pathname?.startsWith("/cabinet");
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
