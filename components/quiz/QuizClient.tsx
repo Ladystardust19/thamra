@@ -1,9 +1,16 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import styles from "./Quiz.module.css";
 import { supabase } from "@/lib/supabase";
+import { scoreQuiz } from "@/lib/scoring";
+import {
+  CAUSE_BLOCKS,
+  AGE_FRAMING,
+  DRIVER_CARDS,
+  buildMirrorLine,
+} from "@/lib/resultContent";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -14,21 +21,22 @@ type PartialAnswers = {
   q_severity?: string;
   q4?: string[];
   q5?: string;
+  q_stress?: string;
   q6?: string;
   q7?: string;
 };
 
 type Screen =
   | "intro"
-  | "q1" | "q2" | "q3" | "q_severity" | "q4" | "q5" | "q6" | "q7"
+  | "q1" | "q2" | "q3" | "q_severity" | "q4" | "q5" | "q_stress" | "q6" | "q7"
   | "gate"
   | "result";
 
 const SCREEN_ORDER: Screen[] = [
-  "intro", "q1", "q2", "q3", "q_severity", "q4", "q5", "q6", "q7", "gate", "result",
+  "intro", "q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7", "gate", "result",
 ];
 
-const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q6", "q7"];
+const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7"];
 
 // ─── Question definitions ─────────────────────────────────────────────────────
 
@@ -109,6 +117,12 @@ const QUESTIONS: Question[] = [
     ],
   },
   {
+    id: "q_stress",
+    text: "ბოლო თვეებში როგორ შეაფასებდი შენს სტრესის დონეს?",
+    type: "single",
+    options: ["დაბალი", "ზომიერი", "მაღალი", "ძალიან მაღალი"],
+  },
+  {
     id: "q6",
     text: "რა სცადე აქამდე?",
     type: "single",
@@ -132,56 +146,6 @@ const QUESTIONS: Question[] = [
     ],
   },
 ];
-
-// ─── Result helpers ───────────────────────────────────────────────────────────
-
-type DriverKey = "DHT" | "Cortisol" | "Nutrient" | "Scalp";
-
-const DRIVER_META: Record<DriverKey, { title: string; body: string }> = {
-  DHT: {
-    title: "ჰორმონი DHT აქტიურდება.",
-    body: "მენოპაუზისას მატულობს ჰორმონი DHT, რომელიც თმის ფესვს ასუსტებს. ადრე ესტროგენი აკავებდა, ახლა კი აღარ. ამიტომ თხელდება თმა ზუსტად იქ, სადაც შენ ამჩნევ.",
-  },
-  Cortisol: {
-    title: "სტრესის ჰორმონი კორტიზოლი მაღლა რჩება.",
-    body: "ცუდი ძილი და სტრესი ზრდის კორტიზოლს, სტრესის ჰორმონს. ის თმის ფესვებს ვადამდე ასვენებს. ამიტომ რჩება მეტი თმა სავარცხელზე.",
-  },
-  Nutrient: {
-    title: "სხეული თმას საკვებ ნივთიერებებს აკლებს.",
-    body: "ჰორმონალური ცვლილებისას მცირდება ის მასალა, რისგანაც თმა შენდება. სხეული ჯერ სასიცოცხლო ორგანოებს კვებავს, თმა ბოლო რიგში რჩება.",
-  },
-  Scalp: {
-    title: "თმის ფესვის ნიადაგი სუსტდება.",
-    body: "სკალპი, სადაც თმა იზრდება, კარგავს სიმტკიცეს. სუსტ ნიადაგზე ძლიერი თმა ვერ დგება. სუსტი ფესვი, სუსტი თმა.",
-  },
-};
-
-function calcDrivers(a: PartialAnswers): [DriverKey, DriverKey] {
-  const q3 = a.q3 ?? [];
-  const q4 = a.q4 ?? [];
-  const q5 = a.q5;
-  const matches: DriverKey[] = [];
-
-  if (q3.includes("გაყოფის ხაზი გაფართოვდა") || q3.includes("თხემზე სკალპი მოჩანს"))
-    matches.push("DHT");
-  if ((q5 !== undefined && q5 !== "კარგად, ვისვენებ") || q4.includes("მეტი სტრესი ან შფოთვა"))
-    matches.push("Cortisol");
-  if (q3.includes("თმა ტყდება და დაკარგა ბზინვარება") || q3.includes("კუდი გათხელდა"))
-    matches.push("Nutrient");
-
-  const d1: DriverKey = matches[0] ?? "Scalp";
-  const d2: DriverKey = matches[1] ?? "Scalp";
-  return [d1, d2];
-}
-
-function getHeadline(firstName: string, q1: string | undefined): string {
-  if (q1 === "46–52" || q1 === "53–60" || q1 === "60+")
-    return `${firstName}, შენი პასუხები მენოპაუზაზე მიუთითებს.`;
-  if (q1 === "40–45")
-    return `${firstName}, შენი პასუხები ჰორმონალურ ცვლილებაზე, სავარაუდოდ პერიმენოპაუზაზე, მიუთითებს.`;
-  return `${firstName}, შენი პასუხები ჰორმონალურ დისბალანსზე მიუთითებს.`;
-}
-
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -291,12 +255,12 @@ export default function QuizClient() {
       {showProgress && (
         <div className={styles.progressWrap}>
           <span className={styles.progressLabel}>
-            კითხვა {questionIndex + 1} / 8
+            კითხვა {questionIndex + 1} / {Q_SCREENS.length}
           </span>
           <div className={styles.progressBar}>
             <div
               className={styles.progressFill}
-              style={{ width: `${((questionIndex + 1) / 8) * 100}%` }}
+              style={{ width: `${((questionIndex + 1) / Q_SCREENS.length) * 100}%` }}
             />
           </div>
         </div>
@@ -495,11 +459,8 @@ function GateScreen({
       <h2 className={styles.emailHeadline}>შენი ანალიზი მზადაა</h2>
 
       <div className={styles.fields}>
-        {/* Name */}
         <div className={styles.field}>
-          <label className={styles.fieldLabel} htmlFor="quiz-name">
-            სახელი
-          </label>
+          <label className={styles.fieldLabel} htmlFor="quiz-name">სახელი</label>
           <input
             id="quiz-name"
             type="text"
@@ -512,11 +473,8 @@ function GateScreen({
           {nameError && <span className={styles.fieldError}>{nameError}</span>}
         </div>
 
-        {/* Phone */}
         <div className={styles.field}>
-          <label className={styles.fieldLabel} htmlFor="quiz-phone">
-            ტელეფონის ნომერი
-          </label>
+          <label className={styles.fieldLabel} htmlFor="quiz-phone">ტელეფონის ნომერი</label>
           <div className={`${styles.phoneWrap} ${phoneError ? styles.phoneError : ""}`}>
             <span className={styles.phonePrefix}>+995</span>
             <input
@@ -533,11 +491,8 @@ function GateScreen({
           {phoneError && <span className={styles.fieldError}>{phoneError}</span>}
         </div>
 
-        {/* Email — optional */}
         <div className={styles.field}>
-          <label className={styles.fieldLabel} htmlFor="quiz-email">
-            ელ.ფოსტა
-          </label>
+          <label className={styles.fieldLabel} htmlFor="quiz-email">ელ.ფოსტა</label>
           <input
             id="quiz-email"
             type="email"
@@ -577,61 +532,88 @@ function ResultScreen({
 }) {
   const [waitlisted, setWaitlisted] = useState(false);
 
-  const firstName = name.trim().split(" ")[0];
-  const headline  = getHeadline(firstName, answers.q1);
-  const [d1, d2]  = calcDrivers(answers);
+  const { primaryCause, secondaryCause, ageGroup } = scoreQuiz(answers);
+  const framing = AGE_FRAMING[ageGroup];
+  const primaryBlock = CAUSE_BLOCKS[primaryCause];
+  const secondaryBlock = CAUSE_BLOCKS[secondaryCause];
+  const mirrorLine = buildMirrorLine(answers, primaryCause);
+
+  function isHighlighted(causes: string[]) {
+    return causes.includes(primaryCause) || causes.includes(secondaryCause);
+  }
 
   function handleWaitlist() {
-    const lead = {
-      name: name.trim(),
-      phone,
-      email: email || null,
-      answers,
-      waitlisted: true,
-    };
-    console.log(lead);
-    // TODO: supabase.from("quiz_leads").update({ waitlisted: true }).eq("phone", lead.phone)
+    supabase.from("quiz_leads")
+      .update({ waitlisted: true })
+      .eq("phone", `+995${phone.replace(/\s+/g, "")}`)
+      .then(({ error }) => { if (error) console.error(error.message); });
     setWaitlisted(true);
   }
 
   return (
     <div className={styles.resultWrap}>
 
-      {/* Section 1 — Headline */}
-      <h2 className={styles.resultHeadline}>{headline}</h2>
-      <p className={styles.resultText} style={{ marginTop: 12 }}>
-        შენი თმის ცვლილება ზედაპირული პრობლემა არ არის. ის შიგნიდან იწყება და ერთდროულად რამდენიმე პროცესზე აისახება.
-      </p>
+      {/* 1 — Age profile + headline */}
+      <span className={styles.driversLabel}>შენი პროფილი</span>
+      <h2 className={styles.resultHeadline} style={{ marginTop: 6 }}>{framing.profileName}</h2>
+      <p className={styles.resultText} style={{ marginTop: 10 }}>{framing.headline}</p>
 
       <div className={styles.resultDivider} />
 
-      {/* Section 2 — Two primary drivers */}
-      <span className={styles.driversLabel}>შენი ორი მთავარი ფაქტორი:</span>
-      <div className={styles.driverCards} style={{ marginTop: 10 }}>
-        <div className={styles.driverCard}>
-          <p className={styles.driverTitle}>{DRIVER_META[d1].title}</p>
-          <p className={styles.driverText}>{DRIVER_META[d1].body}</p>
-        </div>
-        <div className={styles.driverCard}>
-          <p className={styles.driverTitle}>{DRIVER_META[d2].title}</p>
-          <p className={styles.driverText}>{DRIVER_META[d2].body}</p>
-        </div>
+      {/* 2 — Mirror line */}
+      <p className={styles.driverText} style={{ fontStyle: "italic" }}>{mirrorLine}</p>
+
+      <div className={styles.resultDivider} />
+
+      {/* 3 — Primary cause */}
+      <span className={styles.driversLabel}>{primaryBlock.title}</span>
+      <p className={styles.driverText} style={{ marginTop: 10 }}>{primaryBlock.body}</p>
+
+      <div className={styles.resultDivider} />
+
+      {/* 4 — Secondary cause */}
+      <span className={styles.driversLabel} style={{ fontSize: 11, opacity: 0.65 }}>
+        ასევე შეიძლება მოქმედებდეს
+      </span>
+      <p className={styles.driverTitle} style={{ marginTop: 6 }}>{secondaryBlock.title}</p>
+      <p className={styles.driverText} style={{ marginTop: 6, opacity: 0.8 }}>{secondaryBlock.body}</p>
+
+      <div className={styles.resultDivider} />
+
+      {/* 5 — Driver cards */}
+      <span className={styles.driversLabel}>რა სჭირდება შენს თმას</span>
+      <div className={styles.driverCards} style={{ marginTop: 12 }}>
+        {DRIVER_CARDS.map((card) => {
+          const highlighted = isHighlighted(card.causes);
+          return (
+            <div
+              key={card.key}
+              className={styles.driverCard}
+              style={highlighted
+                ? { border: "1.5px solid #8B2F3A" }
+                : { opacity: 0.65 }
+              }
+            >
+              {!highlighted && (
+                <span className={styles.driversLabel} style={{ fontSize: 9, display: "block", marginBottom: 4 }}>
+                  სრული მიდგომა
+                </span>
+              )}
+              <p className={styles.driverTitle}>{card.title}</p>
+              <p className={styles.driverText} style={{ marginTop: 4 }}>{card.body}</p>
+            </div>
+          );
+        })}
       </div>
-      <p className={styles.resultText} style={{ marginTop: 16 }}>
-        ეს ფაქტორები ერთმანეთს კვებავს. ამიტომ ერთი ვიტამინი ან ერთი შამპუნი ვერ აგვარებს პრობლემას. THAMRA ერთდროულად რამდენიმე მიმართულებაზე მუშაობს, სწორედ ამიტომ.
-      </p>
 
       <div className={styles.resultDivider} />
 
-      {/* Section 3 — Early access framing */}
+      {/* 6 — CTA / waitlist */}
       <span className={styles.driversLabel}>შენ ახლა THAMRA-ს ადრეული წვდომის სიაში ხარ.</span>
       <p className={styles.driverText} style={{ marginTop: 10 }}>
         ეს 20% მხოლოდ იმ ქალებისთვისაა, ვინც ტესტი უკვე დაასრულა. ჩვეულებრივ ფასში ის აღარ იქნება.
       </p>
 
-      <div className={styles.resultDivider} />
-
-      {/* Section 4 — Single action */}
       {waitlisted ? (
         <div style={{ marginTop: 8 }}>
           <p className={styles.driverTitle}>მზადაა. შენი ადგილი დაცულია.</p>
@@ -641,11 +623,7 @@ function ResultScreen({
         </div>
       ) : (
         <>
-          <button
-            className={styles.primaryBtn}
-            style={{ marginTop: 8 }}
-            onClick={handleWaitlist}
-          >
+          <button className={styles.primaryBtn} style={{ marginTop: 8 }} onClick={handleWaitlist}>
             დამიმაგრე ჩემი 20% ფასდაკლება
           </button>
           <p className={styles.driverText} style={{ marginTop: 12 }}>
@@ -656,7 +634,7 @@ function ResultScreen({
 
       <div className={styles.resultDivider} />
 
-      {/* Section 5 — რატომ THAMRA */}
+      {/* 7 — რატომ THAMRA */}
       <span className={styles.driversLabel}>რატომ THAMRA</span>
       <p className={styles.driverText} style={{ marginTop: 10 }}>
         THAMRA-ს ბიოაქტიური კომპლექსი დაეხმარება შენს ორგანიზმს შექმნას უკეთესი შიდა გარემო თმის ზრდისთვის, რათა:
@@ -672,7 +650,6 @@ function ResultScreen({
           <li key={item} className={styles.driverText} style={{ listStyle: "disc" }}>{item}</li>
         ))}
       </ul>
-
       <p className={styles.driverText} style={{ marginTop: 16 }}>
         თმის ზრდა ნელი ბიოლოგიური პროცესია, ამიტომ შედეგებიც ეტაპობრივად ვითარდება.
       </p>
@@ -682,7 +659,7 @@ function ResultScreen({
         <p className={styles.driverText}><strong>6+ თვე</strong> — THAMRA გეხმარება დაგროვილი შედეგის შენარჩუნებასა და თმის ცვენის გამომწვევი მიზეზების გრძელვადიან მართვაში.</p>
       </div>
 
-      {/* Footer */}
+      {/* 8 — Footnote */}
       <p className={styles.footnote} style={{ marginTop: 24 }}>
         ეს ტესტი საინფორმაციო ხასიათისაა და არ წარმოადგენს სამედიცინო დიაგნოზს.
       </p>
