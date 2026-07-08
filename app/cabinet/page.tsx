@@ -322,11 +322,12 @@ export default function CabinetPage() {
     );
   }
 
-  const displayName =
+  const fullName =
     profile?.full_name ??
     user?.user_metadata?.full_name ??
     user?.email?.split("@")[0] ??
     "მომხმარებელო";
+  const displayName = fullName.split(" ")[0] || "მომხმარებელო";
 
   return (
     <main className="min-h-screen bg-cream pt-24 pb-20 px-6 sm:px-12">
