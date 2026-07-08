@@ -100,35 +100,35 @@ const testimonials = [
 
 const advisors = [
   {
-    name: "Maia Sidamonishvili",
-    title: "გინეკოლოგი, რადიოლოგი",
-    institution: "თამრას მთავარი მრჩეველი",
-    quote:
-      "ქალებში თმის ცვლილებები მენოპაუზის პერიოდში იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი. THAMRA შეიქმნა სწორედ ამ კომპლექსური პროცესის უფრო ღრმა გაგებით — როგორც ყოველდღიური რიტუალი, რომელიც თმის სიმკვრივეს, ხარისხსა და გრძელვადიან სიჯანსაღეს ერთიანად უჭერს მხარს.",
-    photo: "/maia-sidamonidze.webp",
-    initial: "მ",
-  },
-  {
-    name: "Lasha Jakeli",
-    title: "ექიმი ნევროლოგი",
-    institution: "პირველი ქართული გამაჯანსაღებელი პლატფორმა 'მინდორი'-ს დამფუძნებელი",
-    quote:
-      "THAMRA-ს იდეა მხოლოდ თმაზე ზრუნვა არ არის. ეს არის ქალის ყოველდღიური რესურსის, ნერვული სისტემის ბალანსისა და გრძელვადიანი კეთილდღეობის უფრო გააზრებული მიდგომა — შექმნილი იმ ეტაპისთვის, როდესაც ორგანიზმს მეტი სიზუსტე, სიმშვიდე და თანმიმდევრული ზრუნვა სჭირდება.",
-    photo: "/lasha-jakeli.webp",
-    initial: "L",
-  },
-  {
     name: "Andries Van Riezen",
-    title: "ბიოქიმიკოსი, ფორმულაციების განვითარების მთავარი მეცნიერი",
-    institution: "კვლევისა და განვითარების ხელმძღვანელი, Acenzia Inc. Ontario, Canada",
+    title: "ბიოქიმიკოსი, ინოვაციური საკვები დანამატების კვლევისა და განვითარების მთავარი მეცნიერი",
+    institution: "Acenzia Bio-Science R&D. Ontario, Canada",
     quote:
       "THAMRA-ს სიძლიერე ერთ ინგრედიენტში არ არის — ის მთელი ფორმულის ინტელექტუალურ სინერგიაშია. ზუსტად შერჩეული და დაბალანსებული შემადგენლობა მენოპაუზის პერიოდში თმის გათხელების ერთმანეთთან დაკავშირებულ კომპლექსურ ბიოლოგიურ პროცესებზე ერთდროულად მუშაობს, რაც THAMRA-ს თმის მოვლის გამორჩეულ სისტემად აქცევს.",
     photo: "/andries-van-riezen.webp",
     initial: "A",
   },
   {
+    name: "Lasha Jakeli",
+    title: "ნევროლოგი",
+    institution: "პირველი ქართული გამაჯანსაღებელი პლატფორმა 'მინდორი'-ს დამფუძნებელი",
+    quote:
+      "THAMRA-ს იდეა მხოლოდ თმაზე ზრუნვა არ არის. ეს არის ქალის ყოველდღიური რესურსის, ნერვული სისტემის ბალანსისა და გრძელვადიანი კეთილდღეობის უფრო გააზრებული მიდგომა — შექმნილი იმ ეტაპისთვის, როდესაც ორგანიზმს მეტი სიზუსტე, სიმშვიდე და თანმიმდევრული ზრუნვა სჭირდება.",
+    photo: "/lasha-jakeli-2.webp",
+    initial: "L",
+  },
+  {
+    name: "Maia Sidamonishvili-Jakeli",
+    title: "გინეკოლოგი, რადიოლოგი",
+    institution: "თამრას მთავარი მრჩეველი",
+    quote:
+      "ქალებში თმის ცვლილებები მენოპაუზის პერიოდში იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი. THAMRA შეიქმნა სწორედ ამ კომპლექსური პროცესის უფრო ღრმა გაგებით — როგორც ყოველდღიური რიტუალი, რომელიც თმის სიმკვრივეს, ხარისხსა და გრძელვადიან სიჯანსაღეს ერთიანად უჭერს მხარს.",
+    photo: "/maia-sidamonishvili-jakeli.webp",
+    initial: "მ",
+  },
+  {
     name: "Tomoyuki Amano",
-    title: "ნეირომეცნიერი, ბიომედიცინის ინჟინერი და მკვლევარი",
+    title: "ნეირომეცნიერი, ბიომედიცინის მკვლევარი",
     institution: "Georgia Institute of Technology, USA",
     quote:
       "როგორც ნეირომეცნიერი ვადასტურებ, რომ სტრესი, ძილის ხარისხი და ქრონიკულად მომატებული კორტიზოლი პირდაპირ აფერხებს თმის ზრდის აქტიურ ფაზას. THAMRA-ს კომპლექსურ მიდგომას სხეული ბალანსში მოჰყავს — ეს მეცნიერულად დასაბუთებული სტრატეგიაა თმის გრძელვადიანი ჯანმრთელობისთვის.",
@@ -336,7 +336,7 @@ export default function Home() {
           <Reveal>
             <span className={`${LABEL} text-gold`}>სამეცნიერო ხედვა</span>
             <p className="mt-5 max-w-2xl font-body text-[18px] font-light leading-[1.8] text-read">
-              THAMRA აერთიანებს გინეკოლოგიის, ნევროლოგიის, ნეირომეცნიერებისა და ფორმულაციების განვითარების გამოცდილებას — ქალების თმის სიჯანსაღეზე კომპლექსური ზრუნვისთვის მენოპაუზის გარდამავალ ეტაპზე.
+              THAMRA აერთიანებს გინეკოლოგიის, ნევროლოგიის, ნეირომეცნიერებისა და ფორმულაციების განვითარების გამოცდილებას — ქალების თმის სიჯანსაღეზე კომპლექსური ზრუნვისთვის.
             </p>
           </Reveal>
 
@@ -356,11 +356,11 @@ export default function Home() {
                         src={a.photo as string}
                         alt={a.name}
                         width={160}
-                        height={160}
+                        height={210}
                         style={{
                           borderRadius: 6,
                           objectFit: "cover",
-                          objectPosition: ("photoPosition" in a ? a.photoPosition : "center top") as string,
+                          objectPosition: "center top",
                           display: "block",
                         }}
                       />
@@ -624,12 +624,29 @@ export default function Home() {
               </ul>
             </div>
 
+            {/* contact */}
+            <div>
+              <h4 className={`${LABEL} text-cream-soft/70`}>კონტაქტი</h4>
+              <ul className="mt-5 space-y-3">
+                <li>
+                  <a
+                    href="mailto:infothamra@gmail.com"
+                    className="font-body text-[16px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
+                  >
+                    infothamra@gmail.com
+                  </a>
+                </li>
+              </ul>
+            </div>
+
             {/* social */}
             <div>
               <h4 className={`${LABEL} text-cream-soft/70`}>გამოგვყევი</h4>
               <div className="mt-5 flex gap-3">
                 <a
-                  href="#"
+                  href="https://www.facebook.com/profile.php?id=61591199567325"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Facebook"
                   className="flex h-11 w-11 items-center justify-center rounded-full border border-cream-soft/25 text-cream-soft/70 transition-colors hover:border-cream-soft hover:text-cream-soft"
                 >
