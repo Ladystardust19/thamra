@@ -255,11 +255,12 @@ export default function CabinetPage() {
     );
   }
 
-  const displayName =
+  const rawName =
     profile?.full_name ??
     user?.user_metadata?.full_name ??
     user?.email?.split("@")[0] ??
-    "კაბინეტი";
+    "";
+  const displayName = rawName.split(" ")[0] || "მომხმარებელო";
 
   return (
     <main className="min-h-screen bg-cream pt-24 pb-20 px-6 sm:px-12">
@@ -267,9 +268,17 @@ export default function CabinetPage() {
 
         {/* Top bar */}
         <div className="flex items-start justify-between mb-14">
-          <h1 className="font-display text-[32px] italic text-oxblood leading-tight">
-            გამარჯობა, {displayName}
-          </h1>
+          <div className="flex flex-col gap-3">
+            <a
+              href="/"
+              className="font-body text-[12px] uppercase tracking-[0.12em] text-muted hover:text-oxblood transition-colors"
+            >
+              ← მთავარზე გადასვლა
+            </a>
+            <h1 className="font-display text-[32px] italic text-oxblood leading-tight">
+              გამარჯობა, {displayName}
+            </h1>
+          </div>
           <button
             onClick={logout}
             className="font-body text-[12px] uppercase tracking-[0.12em] text-muted hover:text-oxblood transition-colors mt-2"

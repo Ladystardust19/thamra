@@ -25,7 +25,7 @@ export default function HeroCover() {
           </h1>
 
           <p className={styles.description}>
-            მენოპაუზის გარდამავალ ეტაპზე თმის სისავსეზე და ხარისხზე ზრუნვის ბიოაქტიური კომპლექსი.
+            თმის ჯანმრთელობაზე ზრუნვა მენოპაუზის გარდამავალ ეტაპზე
           </p>
 
           <a href="/quiz" className={styles.cta}>
