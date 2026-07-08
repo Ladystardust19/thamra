@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 const NAV_LINKS = [
   { label: "ჩვენ შესახებ", href: "#story" },
   { label: "მეცნიერება",   href: "#science" },
-  { label: "ტესტი",         href: "/quiz" },
   { label: "კონტაქტი",     href: "#footer" },
-  { label: "კაბინეტი",     href: "/cabinet" },
+  { label: "ჩემი ოთახი",    href: "/cabinet" },
 ];
+
 
 export default function SiteHeader() {
   const pathname = usePathname();
@@ -28,6 +28,7 @@ export default function SiteHeader() {
   if (pathname === "/quiz") return null;
 
   const dark = scrolled || menuOpen || pathname?.startsWith("/cabinet");
+  const links = NAV_LINKS;
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -42,7 +43,7 @@ export default function SiteHeader() {
 
           {/* Desktop nav links */}
           <div className="hidden items-center gap-8 lg:flex">
-            {NAV_LINKS.map((l) => (
+            {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
@@ -57,18 +58,6 @@ export default function SiteHeader() {
 
           {/* Right actions */}
           <div className="ml-auto flex items-center gap-4">
-            {/* CTA — hidden on very small screens, shown sm+ */}
-            <a
-              href="/quiz"
-              className={`hidden sm:inline-block font-body text-[13px] font-normal uppercase tracking-[0.15em] px-4 py-2.5 border transition-colors duration-500 ${
-                dark
-                  ? "border-oxblood text-oxblood hover:bg-oxblood hover:text-cream-soft"
-                  : "border-cream-soft/70 text-cream-soft/90 hover:border-white hover:text-white"
-              }`}
-            >
-              ტესტის გავლა
-            </a>
-
             {/* Hamburger — mobile only */}
             <button
               className="flex lg:hidden flex-col justify-center items-center w-9 h-9 gap-[5px] shrink-0"
@@ -89,7 +78,7 @@ export default function SiteHeader() {
           } bg-cream/98 backdrop-blur-sm border-t border-gold/10`}
         >
           <div className="px-6 pb-6 pt-3 flex flex-col gap-1">
-            {NAV_LINKS.map((l) => (
+            {links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
@@ -99,13 +88,6 @@ export default function SiteHeader() {
                 {l.label}
               </a>
             ))}
-            <a
-              href="/quiz"
-              onClick={() => setMenuOpen(false)}
-              className="mt-4 block text-center font-body text-[14px] font-normal uppercase tracking-[0.15em] px-5 py-3.5 bg-oxblood text-cream-soft hover:bg-oxblood/80 transition-colors rounded-sm"
-            >
-              ტესტის გავლა
-            </a>
           </div>
         </div>
       </nav>
