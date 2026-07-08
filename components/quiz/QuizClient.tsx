@@ -653,6 +653,34 @@ function ResultScreen({
         </>
       )}
 
+      <div className={styles.resultDivider} />
+
+      {/* Section 5 — რატომ THAMRA */}
+      <span className={styles.driversLabel}>რატომ THAMRA</span>
+      <p className={styles.driverText} style={{ marginTop: 10 }}>
+        THAMRA-ს ბიოაქტიური კომპლექსი დაეხმარება შენს ორგანიზმს შექმნას უკეთესი შიდა გარემო თმის ზრდისთვის, რათა:
+      </p>
+      <ul style={{ marginTop: 10, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6 }}>
+        {[
+          "ნაკლები ფოლიკული გადავიდეს ნაადრევი ცვენის ფაზაში",
+          "მეტი ფოლიკული დარჩეს აქტიური ზრდის ფაზაში",
+          "ახალი თმა გაიზარდოს უფრო ძლიერი და სავსე",
+          "თმის ღერი გახდეს ვიზუალურად მკვრივი",
+          "ყოველდღიური ცვენა ეტაპობრივად შემცირდეს",
+        ].map((item) => (
+          <li key={item} className={styles.driverText} style={{ listStyle: "disc" }}>{item}</li>
+        ))}
+      </ul>
+
+      <p className={styles.driverText} style={{ marginTop: 16 }}>
+        თმის ზრდა ნელი ბიოლოგიური პროცესია, ამიტომ შედეგებიც ეტაპობრივად ვითარდება.
+      </p>
+      <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+        <p className={styles.driverText}><strong>1–3 თვე</strong> — შეამჩნევ ნაკლებ ცვენას: ჯაგრისზე, ბალიშზე ან შხაპის შემდეგ.</p>
+        <p className={styles.driverText}><strong>3–6 თვე</strong> — თმა გახდება უფრო სავსე, მკვრივი და ჯანსაღი.</p>
+        <p className={styles.driverText}><strong>6+ თვე</strong> — THAMRA გეხმარება დაგროვილი შედეგის შენარჩუნებასა და თმის ცვენის გამომწვევი მიზეზების გრძელვადიან მართვაში.</p>
+      </div>
+
       {/* Footer */}
       <p className={styles.footnote} style={{ marginTop: 24 }}>
         ეს ტესტი საინფორმაციო ხასიათისაა და არ წარმოადგენს სამედიცინო დიაგნოზს.
