@@ -30,8 +30,16 @@ interface Analysis {
   uploaded_at: string;
 }
 
+interface Photo {
+  id: string;
+  file_url: string;
+  file_name: string;
+  uploaded_at: string;
+}
+
 const ACCEPTED_RECEIPT = ".jpg,.jpeg,.png,.pdf";
 const ACCEPTED_ANALYSIS = ".jpg,.jpeg,.png,.pdf,.docx";
+const ACCEPTED_PHOTO = ".jpg,.jpeg,.png,.webp";
 const MAX_SIZE = 10 * 1024 * 1024;
 
 function fmt(iso: string) {
@@ -80,6 +88,12 @@ export default function CabinetPage() {
   const [analysisMsg, setAnalysisMsg] = useState("");
   const analysisInputRef = useRef<HTMLInputElement>(null);
 
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoMsg, setPhotoMsg] = useState("");
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
@@ -92,7 +106,7 @@ export default function CabinetPage() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function loadAll(userId: string) {
-    const [profileRes, receiptsRes, analysesRes] = await Promise.all([
+    const [profileRes, receiptsRes, analysesRes, photosRes] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", userId).maybeSingle(),
       supabase
         .from("receipts")
@@ -104,6 +118,11 @@ export default function CabinetPage() {
         .select("*")
         .eq("user_id", userId)
         .order("uploaded_at", { ascending: false }),
+      supabase
+        .from("photos")
+        .select("*")
+        .eq("user_id", userId)
+        .order("uploaded_at", { ascending: false }),
     ]);
     if (profileRes.data) {
       setProfile(profileRes.data);
@@ -112,6 +131,7 @@ export default function CabinetPage() {
     }
     if (receiptsRes.data) setReceipts(receiptsRes.data);
     if (analysesRes.data) setAnalyses(analysesRes.data);
+    if (photosRes.data) setPhotos(photosRes.data);
     setBooting(false);
   }
 
@@ -242,6 +262,53 @@ export default function CabinetPage() {
     setAnalyses((prev) => prev.filter((x) => x.id !== a.id));
   }
 
+  function onPhotoFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setPhotoMsg("");
+    if (file && !validateFile(file, setPhotoMsg)) {
+      setPhotoFile(null);
+      e.target.value = "";
+    } else {
+      setPhotoFile(file);
+    }
+  }
+
+  async function uploadPhoto() {
+    if (!photoFile || !user) return;
+    setPhotoUploading(true);
+    setPhotoMsg("");
+    const path = `${user.id}/${Date.now()}-${photoFile.name}`;
+    const { error: upErr } = await supabase.storage
+      .from("photos")
+      .upload(path, photoFile);
+    if (upErr) {
+      setPhotoMsg("ატვირთვა ვერ მოხდა.");
+      setPhotoUploading(false);
+      return;
+    }
+    const { error: dbErr, data } = await supabase
+      .from("photos")
+      .insert({ user_id: user.id, file_url: path, file_name: photoFile.name })
+      .select()
+      .single();
+    if (dbErr) {
+      setPhotoMsg("ჩანაწერის შენახვა ვერ მოხდა.");
+    } else {
+      setPhotos((prev) => [data, ...prev]);
+      setPhotoFile(null);
+      if (photoInputRef.current) photoInputRef.current.value = "";
+      setPhotoMsg("ატვირთულია ✓");
+      setTimeout(() => setPhotoMsg(""), 3000);
+    }
+    setPhotoUploading(false);
+  }
+
+  async function deletePhoto(p: Photo) {
+    await supabase.storage.from("photos").remove([p.file_url]);
+    await supabase.from("photos").delete().eq("id", p.id);
+    setPhotos((prev) => prev.filter((x) => x.id !== p.id));
+  }
+
   async function logout() {
     await supabase.auth.signOut();
     router.push("/cabinet/login");
@@ -255,12 +322,11 @@ export default function CabinetPage() {
     );
   }
 
-  const rawName =
+  const displayName =
     profile?.full_name ??
     user?.user_metadata?.full_name ??
     user?.email?.split("@")[0] ??
-    "";
-  const displayName = rawName.split(" ")[0] || "მომხმარებელო";
+    "მომხმარებელო";
 
   return (
     <main className="min-h-screen bg-cream pt-24 pb-20 px-6 sm:px-12">
@@ -276,7 +342,7 @@ export default function CabinetPage() {
               ← მთავარზე გადასვლა
             </a>
             <h1 className="font-display text-[32px] italic text-oxblood leading-tight">
-              გამარჯობა, {displayName}
+              გამარჯობა {displayName}
             </h1>
           </div>
           <button
@@ -414,7 +480,77 @@ export default function CabinetPage() {
           )}
         </section>
 
-        {/* ── Section 3: ანალიზების ატვირთვა ── */}
+        {/* ── Section 3: სურათების ატვირთვა ── */}
+        <section className="mb-16">
+          <h2 className={sectionHeadingClass}>სურათების ატვირთვა</h2>
+          <div className="flex flex-col gap-4 max-w-[480px]">
+            <div className="flex flex-col gap-1.5">
+              <label className={labelClass}>ფაილი (jpg, png, webp — max 10MB)</label>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept={ACCEPTED_PHOTO}
+                onChange={onPhotoFileChange}
+                className="font-body text-[14px] text-ink
+                  file:mr-4 file:bg-oxblood file:text-cream-soft file:border-0
+                  file:px-4 file:py-2 file:font-body file:text-[12px]
+                  file:uppercase file:tracking-[0.12em] file:cursor-pointer
+                  file:hover:bg-oxblood-dark file:transition-colors"
+              />
+              {photoFile && (
+                <p className="font-body text-[13px] text-muted">
+                  {photoFile.name} — {fmtSize(photoFile.size)}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={uploadPhoto}
+                disabled={photoUploading || !photoFile}
+                className={btnClass}
+              >
+                {photoUploading ? "..." : "ატვირთვა →"}
+              </button>
+              {photoMsg && (
+                <span
+                  className={`font-body text-[13px] ${
+                    photoMsg.includes("✓") ? "text-emerald-700" : "text-red-700"
+                  }`}
+                >
+                  {photoMsg}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {photos.length > 0 && (
+            <div className="mt-8 max-w-[680px]">
+              <p className={`${labelClass} mb-3`}>ატვირთული სურათები</p>
+              <div className="flex flex-col gap-2">
+                {photos.map((p) => (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between bg-paper border border-gold/20 px-4 py-3"
+                  >
+                    <div>
+                      <p className="font-body text-[14px] text-ink">{p.file_name}</p>
+                      <p className="font-body text-[12px] text-muted">{fmt(p.uploaded_at)}</p>
+                    </div>
+                    <button
+                      onClick={() => deletePhoto(p)}
+                      aria-label="წაშლა"
+                      className="text-muted hover:text-red-600 transition-colors ml-4 shrink-0"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* ── Section 4: ანალიზების ატვირთვა ── */}
         <section className="mb-16">
           <h2 className={sectionHeadingClass}>ანალიზების ატვირთვა</h2>
           <div className="flex flex-col gap-4 max-w-[480px]">
