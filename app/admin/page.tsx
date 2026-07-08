@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Trash2 } from "lucide-react";
 
-const ADMIN_EMAIL = "mindori.world@gmail.com";
+const ADMIN_EMAIL = "nino.jakeli270@gmail.com";
 
 interface Profile {
   id: string;
