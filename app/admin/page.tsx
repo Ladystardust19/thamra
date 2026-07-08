@@ -66,7 +66,7 @@ export default function AdminPage() {
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) {
-        router.replace("/cabinet/login");
+        router.replace("/cabinet/login?next=/admin");
         return;
       }
       if (data.user.email !== ADMIN_EMAIL) {

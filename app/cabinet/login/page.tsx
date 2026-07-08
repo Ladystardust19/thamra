@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 type Tab = "login" | "register";
 
 export default function CabinetLoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "/cabinet";
   const [tab, setTab] = useState<Tab>("login");
 
   const [loginEmail, setLoginEmail] = useState("");
@@ -38,7 +40,7 @@ export default function CabinetLoginPage() {
         password: loginPassword,
       });
       if (error) throw error;
-      router.push("/cabinet");
+      router.push(next);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "შეცდომა. სცადეთ თავიდან.");
     } finally {
@@ -66,7 +68,7 @@ export default function CabinetLoginPage() {
           full_name: regName,
           phone: regPhone,
         });
-        router.push("/cabinet");
+        router.push(next);
       } else {
         setMessage("შეამოწმეთ ელფოსტა — გამოგზავნილია დადასტურების ბმული.");
       }
