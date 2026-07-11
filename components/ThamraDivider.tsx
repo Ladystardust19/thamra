@@ -21,7 +21,7 @@ export default function ThamraDivider() {
           textTransform: "uppercase",
           color: "rgba(139,47,58,0.5)",
         }}>
-          THAMRA
+          Thamra
         </span>
         <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden>
           <rect x="1" y="1" width="8" height="8" transform="rotate(45 5 5)" fill="#C9A96E" fillOpacity="0.55" />

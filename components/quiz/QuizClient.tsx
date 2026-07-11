@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import styles from "./Quiz.module.css";
 import { supabase } from "@/lib/supabase";
 import { scoreQuiz } from "@/lib/scoring";
 import {
   CAUSE_BLOCKS,
   AGE_FRAMING,
-  DRIVER_CARDS,
   buildMirrorLine,
 } from "@/lib/resultContent";
 
@@ -22,18 +22,27 @@ type PartialAnswers = {
   q4?: string[];
   q5?: string;
   q_stress?: string;
-  q6?: string;
-  q7?: string;
+  q6?: string[];
+  q7?: string[];
 };
 
 type Screen =
   | "intro"
   | "q1" | "q2" | "q3" | "q_severity" | "q4" | "q5" | "q_stress" | "q6" | "q7"
   | "gate"
+  | "processing"
   | "result";
 
 const SCREEN_ORDER: Screen[] = [
-  "intro", "q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7", "gate", "result",
+  "intro", "q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7", "gate", "processing", "result",
+];
+
+const PROCESSING_MS = 4000;
+const PROCESSING_TEXTS = [
+  "ვამუშავებ შენს პასუხებს...",
+  "ვაანალიზებ თმის ცვლილების ტიპს...",
+  "ვადგენ დომინანტ მიზეზს...",
+  "ვამზადებ შენს პერსონალურ შედეგს...",
 ];
 
 const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7"];
@@ -118,18 +127,19 @@ const QUESTIONS: Question[] = [
   },
   {
     id: "q_stress",
-    text: "ბოლო თვეებში როგორ შეაფასებდი შენს სტრესის დონეს?",
+    text: "ბოლო თვეებში როგორ შეაფასებდი შენი სტრესის დონეს?",
     type: "single",
     options: ["დაბალი", "ზომიერი", "მაღალი", "ძალიან მაღალი"],
   },
   {
     id: "q6",
     text: "რა სცადე აქამდე?",
-    type: "single",
+    sub: "მონიშნე ყველა, რაც შეესაბამება",
+    type: "multi",
     options: [
       "სპეციალური შამპუნები და სერუმები",
       "ჩვეულებრივი ვიტამინები (ბიოტინი და სხვა)",
-      "პლაზმათერაპია",
+      "პლაზმოთერაპია",
       "ჯერ არაფერი",
       "რამდენიმე ერთად",
     ],
@@ -137,7 +147,8 @@ const QUESTIONS: Question[] = [
   {
     id: "q7",
     text: "რა არის შენთვის ყველაზე მნიშვნელოვანი?",
-    type: "single",
+    sub: "მონიშნე ყველა, რაც შეესაბამება",
+    type: "multi",
     options: [
       "თმის ხილული ზრდა",
       "ცვენის შეჩერება",
@@ -200,7 +211,7 @@ export default function QuizClient() {
     let valid = true;
 
     if (!name.trim()) {
-      setNameError("სახელი სავალდებულოა");
+      setNameError("სახელი და გვარი სავალდებულოა");
       valid = false;
     } else {
       setNameError("");
@@ -240,7 +251,7 @@ export default function QuizClient() {
       (window as any).fbq("track", "Lead");
     }
 
-    navigate("result", "forward");
+    navigate("processing", "forward");
   }
 
   const questionIndex = Q_SCREENS.indexOf(screen);
@@ -249,7 +260,7 @@ export default function QuizClient() {
   return (
     <div className={styles.page}>
       <Link href="/" className={styles.logo}>
-        THAMRA
+        Thamra
       </Link>
 
       {showProgress && (
@@ -307,6 +318,10 @@ export default function QuizClient() {
               onSubmit={handleGateSubmit}
               onBack={goBack}
             />
+          )}
+
+          {screen === "processing" && (
+            <ProcessingScreen onDone={() => navigate("result", "forward")} />
           )}
 
           {screen === "result" && (
@@ -433,6 +448,79 @@ function QuestionScreen({
   );
 }
 
+// ─── Processing screen ────────────────────────────────────────────────────────
+
+function ProcessingScreen({ onDone }: { onDone: () => void }) {
+  const [textIndex, setTextIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+
+  useEffect(() => {
+    const step = Math.floor(PROCESSING_MS / PROCESSING_TEXTS.length);
+    const interval = setInterval(() => {
+      setTextIndex((i) => (i + 1 < PROCESSING_TEXTS.length ? i + 1 : i));
+    }, step);
+    const timer = setTimeout(() => onDoneRef.current(), PROCESSING_MS);
+    return () => { clearInterval(interval); clearTimeout(timer); };
+  }, []);
+
+  return (
+    <div className={styles.processingWrap}>
+
+      {/* Monogram + pulse rings */}
+      <div className={styles.processingLogoWrap}>
+        {!prefersReducedMotion && (
+          <>
+            <motion.div
+              className={styles.processingPulse}
+              animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut", delay: 0 }}
+            />
+            <motion.div
+              className={styles.processingPulse}
+              animate={{ scale: [1, 2.5], opacity: [0.5, 0] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut", delay: 1.0 }}
+            />
+          </>
+        )}
+        <div className={styles.processingLogoInner}>
+          <span className={styles.processingMonogram}>T</span>
+        </div>
+      </div>
+
+      {/* Phase text */}
+      <AnimatePresence mode="wait">
+        <motion.p
+          key={textIndex}
+          initial={{ opacity: 0, y: 9 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -9 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className={styles.processingText}
+        >
+          {PROCESSING_TEXTS[textIndex]}
+        </motion.p>
+      </AnimatePresence>
+
+      {/* Non-linear progress bar: fast 0→60%, slow 60→90%, fast 90→100% */}
+      <div className={styles.processingBarWrap}>
+        <motion.div
+          className={styles.processingBar}
+          initial={{ width: "0%" }}
+          animate={{ width: ["0%", "60%", "90%", "100%"] }}
+          transition={{
+            duration: PROCESSING_MS / 1000,
+            times: [0, 0.30, 0.80, 1.0],
+            ease: "easeInOut",
+          }}
+        />
+      </div>
+
+    </div>
+  );
+}
+
 // ─── Gate (contact collection) ────────────────────────────────────────────────
 
 function GateScreen({
@@ -456,19 +544,19 @@ function GateScreen({
         უკან
       </button>
 
-      <h2 className={styles.emailHeadline}>შენი ანალიზი მზადაა</h2>
+      <h2 className={styles.emailHeadline}>შენი შეფასება</h2>
 
       <div className={styles.fields}>
         <div className={styles.field}>
-          <label className={styles.fieldLabel} htmlFor="quiz-name">სახელი</label>
+          <label className={styles.fieldLabel} htmlFor="quiz-name">სახელი და გვარი</label>
           <input
             id="quiz-name"
             type="text"
             className={nameError ? `${styles.fieldInput} ${styles.hasError}` : styles.fieldInput}
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
-            autoComplete="given-name"
-            placeholder="შენი სახელი"
+            autoComplete="name"
+            placeholder="შენი სახელი და გვარი"
           />
           {nameError && <span className={styles.fieldError}>{nameError}</span>}
         </div>
@@ -517,6 +605,70 @@ function GateScreen({
   );
 }
 
+// ─── Pricing data ─────────────────────────────────────────────────────────────
+
+const PRICING = [
+  {
+    id: "signature",
+    icon: null as string | null,
+    badge: "რეკომენდებული" as string | null,
+    title: "Thamra Signature",
+    subtitle: "90-დღიანი პროგრამა",
+    price: "399",
+    perMonth: "≈133 ₾ / თვეში",
+    saveBadge: null as string | null,
+    desc: "ქალებისთვის, ვისაც სურს თმის ცვენაზე, შეთხელებასა და ხარისხის ცვლილებაზე ზრუნვა დაიწყოს თანმიმდევრულად და გააზრებულად.",
+    features: [
+      "3 თვის THAMRA",
+      "შენი პასუხების საფუძველზე შექმნილი პერსონალური შეფასება",
+      "საწყისი კონსულტაცია THAMRA-ს გუნდთან",
+      "90-დღიანი ზრუნვის გზამკვლევი",
+      "პროგრესის შეფასება 3 თვის შემდეგ",
+    ],
+    footer: null as string | null,
+    featured: true,
+  },
+  {
+    id: "foundation",
+    icon: null as string | null,
+    badge: null as string | null,
+    title: "Thamra Foundation",
+    subtitle: "",
+    price: "149",
+    perMonth: null as string | null,
+    saveBadge: null as string | null,
+    desc: "დასაწყისისთვის, ვისაც სურს Thamra გაიცნოს.",
+    features: [
+      "1 თვის Thamra",
+      "პერსონალური შეფასების კითხვარი",
+      "თმისა და საერთო ჯანმრთელობის საწყისი შეფასება",
+      "ინდივიდუალური 30-დღიანი რეკომენდაციები",
+    ],
+    footer: null as string | null,
+    featured: false,
+  },
+  {
+    id: "longevity",
+    icon: null as string | null,
+    badge: null as string | null,
+    title: "Thamra Hair Longevity",
+    subtitle: "6-თვიანი სრული პროგრამა",
+    price: "749",
+    perMonth: "≈125 ₾ / თვეში",
+    saveBadge: null as string | null,
+    desc: "მიღებული შედეგის შენარჩუნება. თმის ჯანმრთელობაზე გრძელვადიანი ზრუნვა.",
+    features: [
+      "6 თვის Thamra",
+      "სიღრმისეული პერსონალური შეფასება",
+      "საწყისი კონსულტაცია",
+      "180-დღიანი ინდივიდუალური გეგმა",
+    ],
+    footer: null as string | null,
+    featured: false,
+  },
+];
+
+
 // ─── Result page ──────────────────────────────────────────────────────────────
 
 function ResultScreen({
@@ -530,24 +682,27 @@ function ResultScreen({
   email: string;
   answers: PartialAnswers;
 }) {
-  const [waitlisted, setWaitlisted] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+  const pricingRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   const { primaryCause, secondaryCause, ageGroup } = scoreQuiz(answers);
+
   const framing = AGE_FRAMING[ageGroup];
   const primaryBlock = CAUSE_BLOCKS[primaryCause];
   const secondaryBlock = CAUSE_BLOCKS[secondaryCause];
   const mirrorLine = buildMirrorLine(answers, primaryCause);
+  const selectedPlan = PRICING.find((p) => p.id === selectedProgram) ?? null;
 
-  function isHighlighted(causes: string[]) {
-    return causes.includes(primaryCause) || causes.includes(secondaryCause);
+  function selectPlan(id: string) {
+    setSelectedProgram(id);
   }
 
-  function handleWaitlist() {
-    supabase.from("quiz_leads")
-      .update({ waitlisted: true })
-      .eq("phone", `+995${phone.replace(/\s+/g, "")}`)
-      .then(({ error }) => { if (error) console.error(error.message); });
-    setWaitlisted(true);
+  function copyText(value: string, key: string) {
+    navigator.clipboard.writeText(value);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 2000);
   }
 
   return (
@@ -573,93 +728,217 @@ function ResultScreen({
 
       {/* 4 — Secondary cause */}
       <span className={styles.driversLabel} style={{ fontSize: 11, opacity: 0.65 }}>
-        ასევე შეიძლება მოქმედებდეს
+        ასევე შეიძლება მოქმედებს
       </span>
       <p className={styles.driverTitle} style={{ marginTop: 6 }}>{secondaryBlock.title}</p>
       <p className={styles.driverText} style={{ marginTop: 6, opacity: 0.8 }}>{secondaryBlock.body}</p>
 
       <div className={styles.resultDivider} />
 
-      {/* 5 — Driver cards */}
-      <span className={styles.driversLabel}>რა სჭირდება შენს თმას</span>
-      <div className={styles.driverCards} style={{ marginTop: 12 }}>
-        {DRIVER_CARDS.map((card) => {
-          const highlighted = isHighlighted(card.causes);
-          return (
-            <div
-              key={card.key}
-              className={styles.driverCard}
-              style={highlighted
-                ? { border: "1.5px solid #8B2F3A" }
-                : { opacity: 0.65 }
-              }
-            >
-              {!highlighted && (
-                <span className={styles.driversLabel} style={{ fontSize: 9, display: "block", marginBottom: 4 }}>
-                  სრული მიდგომა
-                </span>
-              )}
-              <p className={styles.driverTitle}>{card.title}</p>
-              <p className={styles.driverText} style={{ marginTop: 4 }}>{card.body}</p>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className={styles.resultDivider} />
-
-      {/* 6 — CTA / waitlist */}
-      <span className={styles.driversLabel}>შენ ახლა THAMRA-ს ადრეული წვდომის სიაში ხარ.</span>
-      <p className={styles.driverText} style={{ marginTop: 10 }}>
-        ეს 20% მხოლოდ იმ ქალებისთვისაა, ვინც ტესტი უკვე დაასრულა. ჩვეულებრივ ფასში ის აღარ იქნება.
+      {/* 7 — Thamra-ს მიდგომა */}
+      <span className={styles.driversLabel}>როგორია Thamra-ს მიდგომა?</span>
+      <p className={styles.driverText} style={{ marginTop: 10, marginBottom: 14 }}>
+        Thamra-ს ბიოაქტიური კომპლექსი ეხმარება ორგანიზმს შექმნას უკეთესი შიდა გარემო თმის ზრდისთვის რათა:
       </p>
-
-      {waitlisted ? (
-        <div style={{ marginTop: 8 }}>
-          <p className={styles.driverTitle}>მზადაა. შენი ადგილი დაცულია.</p>
-          <p className={styles.driverText} style={{ marginTop: 8 }}>
-            როცა შემდეგი გამოშვება მზად იქნება, პირველი შენ შეიტყობ.
-          </p>
-        </div>
-      ) : (
-        <>
-          <button className={styles.primaryBtn} style={{ marginTop: 8 }} onClick={handleWaitlist}>
-            დამიმაგრე ჩემი 20% ფასდაკლება
-          </button>
-          <p className={styles.driverText} style={{ marginTop: 12 }}>
-            შეუერთდი ლისტს და შემდეგი გამოშვება პირველმა შენ მიიღე.
-          </p>
-        </>
-      )}
-
-      <div className={styles.resultDivider} />
-
-      {/* 7 — რატომ THAMRA */}
-      <span className={styles.driversLabel}>რატომ THAMRA</span>
-      <p className={styles.driverText} style={{ marginTop: 10 }}>
-        THAMRA-ს ბიოაქტიური კომპლექსი დაეხმარება შენს ორგანიზმს შექმნას უკეთესი შიდა გარემო თმის ზრდისთვის, რათა:
-      </p>
-      <ul style={{ marginTop: 10, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 6 }}>
-        {[
-          "ნაკლები ფოლიკული გადავიდეს ნაადრევი ცვენის ფაზაში",
-          "მეტი ფოლიკული დარჩეს აქტიური ზრდის ფაზაში",
-          "ახალი თმა გაიზარდოს უფრო ძლიერი და სავსე",
-          "თმის ღერი გახდეს ვიზუალურად მკვრივი",
-          "ყოველდღიური ცვენა ეტაპობრივად შემცირდეს",
-        ].map((item) => (
-          <li key={item} className={styles.driverText} style={{ listStyle: "disc" }}>{item}</li>
-        ))}
+      <ul className={styles.approachList}>
+        <li>ნაკლები ფოლიკული გადავიდეს ნაადრევი ცვენის ფაზაში</li>
+        <li>მეტი ფოლიკული დარჩეს აქტიური ზრდის ფაზაში</li>
+        <li>ახალი თმა გაიზარდოს უფრო ძლიერი და სავსე</li>
+        <li>თმის ღერი გახდეს ვიზუალურად უფრო მკვრივი</li>
+        <li>ყოველდღიური ცვენა ეტაპობრივად შემცირდეს</li>
       </ul>
-      <p className={styles.driverText} style={{ marginTop: 16 }}>
-        თმის ზრდა ნელი ბიოლოგიური პროცესია, ამიტომ შედეგებიც ეტაპობრივად ვითარდება.
-      </p>
-      <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-        <p className={styles.driverText}><strong>1–3 თვე</strong> — შეამჩნევ ნაკლებ ცვენას: ჯაგრისზე, ბალიშზე ან შხაპის შემდეგ.</p>
-        <p className={styles.driverText}><strong>3–6 თვე</strong> — თმა გახდება უფრო სავსე, მკვრივი და ჯანსაღი.</p>
-        <p className={styles.driverText}><strong>6+ თვე</strong> — THAMRA გეხმარება დაგროვილი შედეგის შენარჩუნებასა და თმის ცვენის გამომწვევი მიზეზების გრძელვადიან მართვაში.</p>
+
+      <div className={styles.timeline}>
+        {[
+          { num: "01", period: "1–3 თვე", desc: "ამჩნევ ნაკლებ ცვენას ჯაგრისზე, ბალიშზე ან შხაპის შემდეგ." },
+          { num: "02", period: "3–6 თვე", desc: "თმა ხდება უფრო სავსე, მკვრივი და ჯანსაღი." },
+          { num: "03", period: "6+ თვე", desc: "Thamra გეხმარება მიღებული შედეგის შენარჩუნებაში." },
+        ].map((item) => (
+          <div key={item.num} className={styles.timelineItem}>
+            <span className={styles.timelineNum}>{item.num}</span>
+            <div>
+              <p className={styles.timelinePeriod}>{item.period}</p>
+              <p className={styles.timelineDesc}>{item.desc}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* 8 — Footnote */}
+      {/* A — Pricing Preview */}
+      <div ref={pricingRef}>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <div className={styles.pricingGrid}>
+            {PRICING.map((plan) => {
+              const isSelected = selectedProgram === plan.id;
+              const isDark = plan.featured;
+
+              const cardClass = [
+                styles.pricingCard,
+                isDark ? styles.pricingCardFeatured : "",
+                isSelected && !isDark ? styles.pricingCardSelected : "",
+                isSelected && isDark ? styles.pricingCardFeaturedSelected : "",
+              ].filter(Boolean).join(" ");
+
+              const btnClass = [
+                styles.reserveBtn,
+                isDark && !isSelected ? styles.reserveBtnDark : "",
+                !isDark && isSelected ? styles.reserveBtnSelected : "",
+                isDark && isSelected ? styles.reserveBtnDarkSelected : "",
+              ].filter(Boolean).join(" ");
+
+              return (
+                <motion.div
+                  key={plan.id}
+                  className={cardClass}
+                  onClick={() => selectPlan(plan.id)}
+                  whileTap={{ scale: 0.985 }}
+                  transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ cursor: "pointer" }}
+                >
+                  {plan.badge && (
+                    <span
+                      className={styles.pricingBadge}
+                      style={isDark ? { background: "#c9a96e", color: "#3d2226" } : undefined}
+                    >
+                      {plan.badge}
+                    </span>
+                  )}
+                  <p
+                    className={styles.pricingTitle}
+                    style={isDark ? { color: "#f2ebe3" } : undefined}
+                  >
+                    {plan.title}
+                  </p>
+                  <p
+                    className={styles.pricingSubtitle}
+                    style={isDark ? { color: "rgba(242,235,227,0.58)" } : undefined}
+                  >
+                    {plan.subtitle}
+                  </p>
+                  <hr
+                    className={styles.pricingDivider}
+                    style={isDark ? { background: "rgba(242,235,227,0.14)" } : undefined}
+                  />
+                  <p
+                    className={styles.pricingPrice}
+                    style={isDark ? { color: "#c9a96e" } : undefined}
+                  >
+                    {plan.price} <span className={styles.pricingCurrency}>₾</span>
+                  </p>
+                  {plan.perMonth && (
+                    <p
+                      className={styles.perMonth}
+                      style={isDark ? { color: "rgba(242,235,227,0.5)" } : undefined}
+                    >
+                      {plan.perMonth}
+                    </p>
+                  )}
+                  <p
+                    className={styles.pricingDesc}
+                    style={isDark ? { color: "rgba(242,235,227,0.78)" } : undefined}
+                  >
+                    {plan.desc}
+                  </p>
+                  <ul className={styles.pricingFeatures}>
+                    {plan.features.map((f) => (
+                      <li key={f} className={isDark ? styles.pricingFeatureDark : styles.pricingFeature}>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <motion.button
+                    className={btnClass}
+                    onClick={(e) => { e.stopPropagation(); selectPlan(plan.id); }}
+                    whileTap={{ scale: 0.96 }}
+                  >
+                    <AnimatePresence mode="wait" initial={false}>
+                      {isSelected ? (
+                        <motion.span
+                          key="sel"
+                          initial={{ opacity: 0, y: 7 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -7 }}
+                          transition={{ duration: 0.15 }}
+                          style={{ display: "block" }}
+                        >
+                          ✓ არჩეულია
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="def"
+                          initial={{ opacity: 0, y: 7 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -7 }}
+                          transition={{ duration: 0.15 }}
+                          style={{ display: "block" }}
+                        >
+                          არჩევა
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* 8 — Bank details (appears after plan selection) */}
+      <AnimatePresence>
+        {selectedPlan && (
+          <motion.div
+            key="bank"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className={styles.bankBlock}
+            style={{ marginTop: 24 }}
+          >
+            <p className={styles.bankAmount}>გადასარიცხი: {selectedPlan.price} ₾</p>
+            <div className={styles.bankFields}>
+              {[
+                { label: "ბანკი", value: "თიბისი ბანკი", key: "bank" },
+                { label: "ანგარიში (IBAN)", value: "GE80TB0614545060622348", key: "iban" },
+                { label: "მიმღები", value: "მარიამ ჯაყელი", key: "owner" },
+              ].map(({ label, value, key }) => (
+                <div key={key} className={styles.bankField}>
+                  <span className={styles.bankFieldLabel}>{label}</span>
+                  <div className={styles.bankFieldRow}>
+                    <span className={styles.bankFieldValue}>{value}</span>
+                    <button
+                      className={copied === key ? styles.copyBtnDone : styles.copyBtn}
+                      onClick={() => copyText(value, key)}
+                    >
+                      {copied === key ? "✓" : "კოპირება"}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className={styles.bankSendText}>
+              გადარიცხვის შემდეგ გამოგვიგზავნე ქვითარი WhatsApp-ზე — დავადასტურებთ ადგილს.
+            </p>
+            <a
+              href="https://wa.me/995598511112"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.waBtn}
+            >
+              ქვითრის გამოგზავნა
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 9 — Footnote */}
       <p className={styles.footnote} style={{ marginTop: 24 }}>
         ეს ტესტი საინფორმაციო ხასიათისაა და არ წარმოადგენს სამედიცინო დიაგნოზს.
       </p>

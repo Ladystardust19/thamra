@@ -45,7 +45,7 @@ export default function PricingSection() {
               lineHeight: 1.2,
               margin: 0,
             }}>
-              მიიღე THAMRA პირველმა
+              მიიღე Thamra პირველმა
             </h2>
 
             <p style={{
@@ -55,7 +55,7 @@ export default function PricingSection() {
               lineHeight: 1.7,
               margin: 0,
             }}>
-              გაიარე 2 წუთიანი ტესტი — გაიგე რატომ ცვივა შენი თმა და როგორ დაგეხმარება THAMRA.
+              გაიარე 2 წუთიანი ტესტი — გაიგე რატომ ცვივა შენი თმა და როგორ დაგეხმარება Thamra.
             </p>
 
             <Link
@@ -73,7 +73,7 @@ export default function PricingSection() {
           <div style={{ borderRadius: 4, overflow: "hidden", position: "relative", minHeight: 400 }}>
             <Image
               src="/sheni-akhali-tavi.webp"
-              alt="THAMRA"
+              alt="Thamra"
               fill
               style={{ objectFit: "cover" }}
               sizes="(max-width: 768px) 100vw, 50vw"

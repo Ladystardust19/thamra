@@ -96,7 +96,7 @@ function LoginContent() {
     <main className="min-h-screen bg-cream flex items-center justify-center px-4 pt-20 pb-12">
       <div className="w-full max-w-[450px]">
         <a href="/" className="block text-center font-display text-[42px] italic text-oxblood mb-3 tracking-wider hover:opacity-80 transition-opacity">
-          THAMRA
+          Thamra
         </a>
         <a href="/" className="block text-center font-body text-[12px] uppercase tracking-[0.12em] text-muted hover:text-oxblood transition-colors mb-8">
           &larr; მთავარზე გადასვლა

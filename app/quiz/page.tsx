@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import QuizClient from "@/components/quiz/QuizClient";
 
 export const metadata: Metadata = {
-  title: "თმის ანალიზი | THAMRA",
+  title: "თმის ანალიზი | Thamra",
   description: "8 კითხვა, 2 წუთი. მიიღე შენი პერსონალური თმის ანალიზი.",
 };
 

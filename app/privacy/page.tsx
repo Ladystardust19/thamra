@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "კონფიდენციალურობის პოლიტიკა | THAMRA",
+  title: "კონფიდენციალურობის პოლიტიკა | Thamra",
 };
 
 export default function PrivacyPage() {
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
             marginBottom: 48,
           }}
         >
-          ← THAMRA
+          ← Thamra
         </Link>
 
         <h1
@@ -42,11 +42,11 @@ export default function PrivacyPage() {
         <div style={{ fontSize: 17, fontWeight: 300, lineHeight: 1.85, color: "#3D3335" }}>
 
           <p style={{ marginBottom: 24 }}>
-            THAMRA პატივს სცემს თქვენი პერსონალური მონაცემების კონფიდენციალურობას.
+            Thamra პატივს სცემს თქვენი პერსონალური მონაცემების კონფიდენციალურობას.
           </p>
 
           <p style={{ marginBottom: 24 }}>
-            ჩვენს ვებგვერდზე, Facebook Instant Form-ის ან სხვა საკომუნიკაციო არხების მეშვეობით მოწოდებული ინფორმაცია — მათ შორის სახელი, ტელეფონის ნომერი და თქვენ მიერ გაზიარებული სხვა მონაცემები — გამოიყენება მხოლოდ თქვენი მოთხოვნის დამუშავების, კონსულტაციასთან დაკავშირების და THAMRA-ს გუნდის მიერ თქვენთან კომუნიკაციის მიზნით.
+            ჩვენს ვებგვერდზე, Facebook Instant Form-ის ან სხვა საკომუნიკაციო არხების მეშვეობით მოწოდებული ინფორმაცია — მათ შორის სახელი, ტელეფონის ნომერი და თქვენ მიერ გაზიარებული სხვა მონაცემები — გამოიყენება მხოლოდ თქვენი მოთხოვნის დამუშავების, კონსულტაციასთან დაკავშირების და Thamra-ს გუნდის მიერ თქვენთან კომუნიკაციის მიზნით.
           </p>
 
           <p style={{ marginBottom: 40 }}>
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
 
           <p style={{ marginBottom: 8, fontWeight: 400 }}>კითხვების შემთხვევაში დაგვიკავშირდით:</p>
 
-          <p style={{ marginBottom: 4 }}>THAMRA</p>
+          <p style={{ marginBottom: 4 }}>Thamra</p>
           <p style={{ marginBottom: 4 }}>მისამართი: თბილისი, ვაჟა-ფშაველას 41</p>
           <p>ტელეფონი: 598 51 11 12</p>
 

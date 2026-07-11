@@ -33,7 +33,7 @@ const CARDS = [
   {
     problem: "ჰორმონალური ცვლილებები",
     complex: "Hormonal Balance Support",
-    desc: "მენოპაუზის პერიოდში თმის ბუნებრივი სიმკვრივის მხარდაჭერა.",
+    desc: "მენოპაუზის პერიოდში თმის ბუნებრივი სიმკვრივის ზრუნვა.",
   },
   {
     problem: "თმის კვებითი საჭიროება",
@@ -43,12 +43,12 @@ const CARDS = [
   {
     problem: "ფიზიოლოგიური დატვირთვა",
     complex: "Inner Balance Complex",
-    desc: "სტრესისა და შინაგანი ბალანსის მხარდაჭერა.",
+    desc: "სტრესისა და შინაგანი ბალანსის ზრუნვა.",
   },
   {
     problem: "სკალპის გარემოს ბალანსი",
     complex: "Scalp Vitality Complex",
-    desc: "სკალპის ჯანსაღი გარემოს მხარდაჭერა.",
+    desc: "სკალპის ჯანსაღი გარემოს ზრუნვა.",
   },
 ];
 
@@ -102,9 +102,9 @@ export default function IngredientsAccordion() {
     marginBottom: "0.55em",
     textTransform: "none",
   }}>
-    THAMRA Hair Longevity Complex™
+    Thamra Hair Longevity Complex™
   </span>
-  THAMRA ერთდროულად მუშაობს იმ პროცესებზე, რომლებიც მენოპაუზის პერიოდში თმის ცვლილებებთან არის დაკავშირებული.
+  Thamra ერთდროულად მუშაობს იმ პროცესებზე, რომლებიც მენოპაუზის პერიოდში თმის ცვლილებებთან არის დაკავშირებული.
 </h2>
         </div>
 

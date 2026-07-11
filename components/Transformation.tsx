@@ -130,7 +130,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
           margin: "0 0 28px",
           maxWidth: 380,
         }}>
-          თმის განახლება პროცესია — და ჩვენ გეხმარებით, ეს პროცესი ეტაპობრივად დაინახოთ. <span style={{ color: GOLD, fontStyle: "italic" }}>THAMRA</span><span style={{ fontStyle: "normal" }}>-სთან ერთად თმა ხდება უფრო სავსე, ძლიერი და მოვლილი დროთა განმავლობაში.</span>
+          თმის განახლება პროცესია — და ჩვენ გეხმარებით, ეს პროცესი ეტაპობრივად დაინახოთ. <span style={{ color: GOLD, fontStyle: "italic" }}>Thamra</span><span style={{ fontStyle: "normal" }}>-სთან ერთად თმა ხდება უფრო სავსე, ძლიერი და მოვლილი დროთა განმავლობაში.</span>
         </p>
 
         <div style={{ width: 48, height: 1, background: GOLD, marginBottom: 20, opacity: 0.5 }} />
@@ -447,7 +447,7 @@ function Part3Slider() {
           className="tf-slider"
         />
 
-        <div style={sliderLabel("left")}>THAMRA-მდე</div>
+        <div style={sliderLabel("left")}>Thamra-მდე</div>
         <div style={sliderLabel("right")}>6 თვის შემდეგ</div>
       </div>
 
