@@ -45,6 +45,10 @@ const PROCESSING_TEXTS = [
   "ვამზადებ შენს პერსონალურ შედეგს...",
 ];
 
+// ─── Preorder configuration — edit these two values to update dates ──────────
+const PREORDER_DELIVERY_PERIOD = "2025 წლის ოქტომბერი – დეკემბერი";
+const PREORDER_CONFIRMATION_DEADLINE = "2025 წლის 1 სექტემბერი";
+
 const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7"];
 
 // ─── Question definitions ─────────────────────────────────────────────────────
@@ -669,6 +673,94 @@ const PRICING = [
 ];
 
 
+// ─── Preorder confirmation step ───────────────────────────────────────────────
+
+function PreorderConfirmScreen({
+  plan,
+  termsChecked,
+  onTermsChange,
+  onProceed,
+  onChangePlan,
+}: {
+  plan: typeof PRICING[0];
+  termsChecked: boolean;
+  onTermsChange: (v: boolean) => void;
+  onProceed: () => void;
+  onChangePlan: () => void;
+}) {
+  return (
+    <div className={styles.preorderWrap}>
+      <span className={styles.preorderLabel}>წინასწარი შეკვეთა</span>
+      <h3 className={styles.preorderHeadline}>
+        დაადასტურე შენი ადგილი THAMRA-ს პირველ ჯგუფში
+      </h3>
+      <p className={styles.preorderBody}>
+        THAMRA-ს პირველი წარმოება იაპონიაში მზადდება წინასწარი შეკვეთების პირველი ჯგუფისთვის. არჩეული პაკეტის დადასტურებით შენთვის გამოიყოფა შესაბამისი რაოდენობის THAMRA პირველი წარმოებიდან.
+      </p>
+
+      <div className={styles.preorderSummary}>
+        <div>
+          <p className={styles.preorderSummaryName}>{plan.title}</p>
+          {plan.subtitle ? (
+            <p className={styles.preorderSummaryDetail}>{plan.subtitle}</p>
+          ) : null}
+        </div>
+        <p className={styles.preorderSummaryPrice}>{plan.price} ₾</p>
+      </div>
+
+      <div className={styles.preorderInfoBlock}>
+        <span className={styles.preorderInfoLabel}>მნიშვნელოვანი ინფორმაცია</span>
+        <p className={styles.preorderInfoText}>
+          ეს არის წინასწარი შეკვეთა. პროდუქტი ჯერ წარმოების პროცესში არ არის. წარმოება დაიწყება პირველი ჯგუფისთვის საჭირო რაოდენობის წინასწარი შეკვეთების დადასტურების შემდეგ.
+        </p>
+        <p className={styles.preorderInfoText} style={{ marginTop: 10 }}>
+          სავარაუდო მიწოდების პერიოდი: {PREORDER_DELIVERY_PERIOD}
+        </p>
+        <p className={styles.preorderInfoText} style={{ marginTop: 10 }}>
+          თუ წარმოება {PREORDER_CONFIRMATION_DEADLINE}-მდე ვერ დადასტურდება, გადახდილი თანხა სრულად დაგიბრუნდება.
+        </p>
+      </div>
+
+      <label className={styles.preorderCheckboxRow}>
+        <input
+          type="checkbox"
+          className={styles.preorderCheckboxInput}
+          checked={termsChecked}
+          onChange={(e) => onTermsChange(e.target.checked)}
+        />
+        <span className={termsChecked
+          ? `${styles.preorderCheckboxBox} ${styles.preorderCheckboxBoxChecked}`
+          : styles.preorderCheckboxBox
+        }>
+          {termsChecked && (
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+              <path d="M1 4L4 7.5L10 1" stroke="#f2ebe3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
+        </span>
+        <span className={styles.preorderCheckboxLabel}>
+          გავეცანი წინასწარი შეკვეთის, მიწოდებისა და თანხის დაბრუნების პირობებს.
+        </span>
+      </label>
+
+      <button
+        className={styles.preorderProceedBtn}
+        disabled={!termsChecked}
+        onClick={onProceed}
+      >
+        გავაგრძელო გადახდაზე
+      </button>
+
+      <button
+        className={styles.preorderChangePlanBtn}
+        onClick={onChangePlan}
+      >
+        პაკეტის შეცვლა
+      </button>
+    </div>
+  );
+}
+
 // ─── Result page ──────────────────────────────────────────────────────────────
 
 function ResultScreen({
@@ -683,6 +775,8 @@ function ResultScreen({
   answers: PartialAnswers;
 }) {
   const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
+  const [preorderStep, setPreorderStep] = useState<"none" | "confirm" | "payment">("none");
+  const [preorderTermsChecked, setPreorderTermsChecked] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const pricingRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
@@ -697,6 +791,31 @@ function ResultScreen({
 
   function selectPlan(id: string) {
     setSelectedProgram(id);
+    setPreorderStep("confirm");
+    setPreorderTermsChecked(false);
+  }
+
+  function changePlan() {
+    setSelectedProgram(null);
+    setPreorderStep("none");
+    setPreorderTermsChecked(false);
+    setTimeout(() => {
+      pricingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  }
+
+  function handleProceedToPayment() {
+    const now = new Date().toISOString();
+    supabase
+      .from("quiz_leads")
+      .update({
+        preorder_terms_accepted: true,
+        preorder_terms_accepted_at: now,
+        selected_plan: selectedProgram,
+      })
+      .eq("phone", `+995${phone.replace(/\s+/g, "")}`)
+      .then(({ error }) => { if (error) console.error(error.message); });
+    setPreorderStep("payment");
   }
 
   function copyText(value: string, key: string) {
@@ -890,9 +1009,27 @@ function ResultScreen({
         </motion.div>
       </div>
 
-      {/* 8 — Bank details (appears after plan selection) */}
-      <AnimatePresence>
-        {selectedPlan && (
+      {/* 8 — Preorder confirmation → Bank details */}
+      <AnimatePresence mode="wait">
+        {selectedPlan && preorderStep === "confirm" && (
+          <motion.div
+            key="preorder"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            style={{ marginTop: 24 }}
+          >
+            <PreorderConfirmScreen
+              plan={selectedPlan}
+              termsChecked={preorderTermsChecked}
+              onTermsChange={setPreorderTermsChecked}
+              onProceed={handleProceedToPayment}
+              onChangePlan={changePlan}
+            />
+          </motion.div>
+        )}
+        {selectedPlan && preorderStep === "payment" && (
           <motion.div
             key="bank"
             initial={{ opacity: 0, y: 16 }}
