@@ -664,6 +664,20 @@
 
 /* ─── Pricing Preview ─────────────────────────────────────────────────────── */
 
+.pricingIntro {
+  margin-bottom: 28px;
+  padding: 0 2px;
+}
+
+.pricingIntroText {
+  font-size: 13.5px;
+  line-height: 1.78;
+  color: rgba(61, 34, 38, 0.58);
+  letter-spacing: 0.012em;
+  text-align: center;
+  font-style: italic;
+}
+
 .pricingGrid {
   display: flex;
   flex-direction: column;

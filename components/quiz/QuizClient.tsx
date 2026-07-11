@@ -46,7 +46,7 @@ const PROCESSING_TEXTS = [
 ];
 
 // ─── Preorder configuration — edit these two values to update dates ──────────
-const PREORDER_DELIVERY_PERIOD = "2026 წლის 1 სექტემბერი";
+const PREORDER_DELIVERY_PERIOD = "2026 წლის 10 სექტემბერი";
 const PREORDER_CONFIRMATION_DEADLINE = "2025 წლის 1 სექტემბერი";
 
 const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7"];
@@ -694,10 +694,6 @@ function PreorderConfirmScreen({
       <h3 className={styles.preorderHeadline}>
         დაადასტურე შენი ადგილი Thamra-ს პირველ ჯგუფში
       </h3>
-      <p className={styles.preorderBody}>
-        Thamra-ს პირველი წარმოება იაპონიაში მზადდება წინასწარი შეკვეთების პირველი ჯგუფისთვის. არჩეული პაკეტის დადასტურებით შენთვის გამოიყოფა შესაბამისი რაოდენობის Thamra პირველი წარმოებიდან.
-      </p>
-
       <div className={styles.preorderSummary}>
         <div>
           <p className={styles.preorderSummaryName}>{plan.title}</p>
@@ -709,15 +705,12 @@ function PreorderConfirmScreen({
       </div>
 
       <div className={styles.preorderInfoBlock}>
-        <span className={styles.preorderInfoLabel}>მნიშვნელოვანი ინფორმაცია</span>
-        <p className={styles.preorderInfoText}>
-          ეს არის წინასწარი შეკვეთა. პროდუქტი ჯერ წარმოების პროცესში არ არის. წარმოება დაიწყება პირველი ჯგუფისთვის საჭირო რაოდენობის წინასწარი შეკვეთების დადასტურების შემდეგ.
+        <p className={styles.preorderInfoText}>ეს არის წინასწარი შეკვეთა.</p>
+        <p className={styles.preorderInfoText} style={{ marginTop: 8 }}>
+          სავარაუდო მიწოდების პერიოდია {PREORDER_DELIVERY_PERIOD}.
         </p>
-        <p className={styles.preorderInfoText} style={{ marginTop: 10 }}>
-          სავარაუდო მიწოდების პერიოდი: {PREORDER_DELIVERY_PERIOD}
-        </p>
-        <p className={styles.preorderInfoText} style={{ marginTop: 10 }}>
-          თუ წარმოება {PREORDER_CONFIRMATION_DEADLINE}-მდე ვერ დადასტურდება, გადახდილი თანხა სრულად დაგიბრუნდება.
+        <p className={styles.preorderInfoText} style={{ marginTop: 8 }}>
+          თუ მიწოდება 10 სექტემბრამდე ვერ დადასტურდება, გადახდილი თანხა სრულად დაგიბრუნდება.
         </p>
       </div>
 
@@ -891,6 +884,12 @@ function ResultScreen({
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
+          <div className={styles.pricingIntro}>
+            <p className={styles.pricingIntroText}>
+              Thamra-ს პირველი, შეზღუდული წარმოება იაპონიაში მზადდება სპეციალურად პირველი 50 ქალისთვის. წინასწარი შეკვეთით შენთვის გამოიყოფა არჩეული პაკეტი პირველი წარმოებიდან და დადასტურდება შენი ადგილი Thamra-ს პირველ ჯგუფში.
+            </p>
+          </div>
+
           <div className={styles.pricingGrid}>
             {PRICING.map((plan) => {
               const isSelected = selectedProgram === plan.id;
