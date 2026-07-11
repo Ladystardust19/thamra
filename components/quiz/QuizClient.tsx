@@ -46,7 +46,7 @@ const PROCESSING_TEXTS = [
 ];
 
 // ─── Preorder configuration — edit these two values to update dates ──────────
-const PREORDER_DELIVERY_PERIOD = "2025 წლის ოქტომბერი – დეკემბერი";
+const PREORDER_DELIVERY_PERIOD = "2026 წლის 1 სექტემბერი";
 const PREORDER_CONFIRMATION_DEADLINE = "2025 წლის 1 სექტემბერი";
 
 const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7"];
@@ -623,9 +623,9 @@ const PRICING = [
     saveBadge: null as string | null,
     desc: "ქალებისთვის, რომელთაც სურთ, თმის ცვენასა და ხარისხის ცვლილებაზე ზრუნვა გააზრებულად და თანმიმდევრულად დაიწყონ.",
     features: [
-      "3 თვის THAMRA",
+      "3 თვის Thamra",
       "შენი პასუხების საფუძველზე შექმნილი პერსონალური შეფასება",
-      "საწყისი კონსულტაცია THAMRA-ს გუნდთან",
+      "საწყისი კონსულტაცია Thamra-ს გუნდთან",
       "90-დღიანი ზრუნვის გზამკვლევი",
       "პროგრესის შეფასება 3 თვის შემდეგ",
     ],
@@ -692,10 +692,10 @@ function PreorderConfirmScreen({
     <div className={styles.preorderWrap}>
       <span className={styles.preorderLabel}>წინასწარი შეკვეთა</span>
       <h3 className={styles.preorderHeadline}>
-        დაადასტურე შენი ადგილი THAMRA-ს პირველ ჯგუფში
+        დაადასტურე შენი ადგილი Thamra-ს პირველ ჯგუფში
       </h3>
       <p className={styles.preorderBody}>
-        THAMRA-ს პირველი წარმოება იაპონიაში მზადდება წინასწარი შეკვეთების პირველი ჯგუფისთვის. არჩეული პაკეტის დადასტურებით შენთვის გამოიყოფა შესაბამისი რაოდენობის THAMRA პირველი წარმოებიდან.
+        Thamra-ს პირველი წარმოება იაპონიაში მზადდება წინასწარი შეკვეთების პირველი ჯგუფისთვის. არჩეული პაკეტის დადასტურებით შენთვის გამოიყოფა შესაბამისი რაოდენობის Thamra პირველი წარმოებიდან.
       </p>
 
       <div className={styles.preorderSummary}>
