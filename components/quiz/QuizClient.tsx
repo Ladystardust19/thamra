@@ -620,6 +620,7 @@ const PRICING = [
     subtitle: "90-დღიანი პროგრამა",
     price: "399",
     perMonth: "≈133 ₾ / თვეში",
+    perDay: "≈4.43 ₾ / დღეში",
     saveBadge: null as string | null,
     desc: "ქალებისთვის, რომელთაც სურთ, თმის ცვენასა და ხარისხის ცვლილებაზე ზრუნვა გააზრებულად და თანმიმდევრულად დაიწყონ.",
     features: [
@@ -640,6 +641,7 @@ const PRICING = [
     subtitle: "",
     price: "149",
     perMonth: null as string | null,
+    perDay: "≈4.97 ₾ / დღეში",
     saveBadge: null as string | null,
     desc: "დასაწყისისთვის, ვისაც სურს Thamra გაიცნოს.",
     features: [
@@ -659,6 +661,7 @@ const PRICING = [
     subtitle: "6-თვიანი სრული პროგრამა",
     price: "749",
     perMonth: "≈125 ₾ / თვეში",
+    perDay: "≈4.16 ₾ / დღეში",
     saveBadge: null as string | null,
     desc: "მიღებული შედეგის შენარჩუნება. თმის ჯანმრთელობაზე გრძელვადიანი ზრუნვა.",
     features: [
@@ -954,6 +957,14 @@ function ResultScreen({
                       style={isDark ? { color: "rgba(242,235,227,0.5)" } : undefined}
                     >
                       {plan.perMonth}
+                    </p>
+                  )}
+                  {plan.perDay && (
+                    <p
+                      className={styles.perMonth}
+                      style={isDark ? { color: "rgba(242,235,227,0.5)" } : undefined}
+                    >
+                      {plan.perDay}
                     </p>
                   )}
                   <p
