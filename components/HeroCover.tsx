@@ -25,7 +25,7 @@ export default function HeroCover() {
           </h1>
 
           <p className={styles.description}>
-            თმის ჯანმრთელობაზე ზრუნვა მენოპაუზის გარდამავალ ეტაპზე
+            თმის ჯანმრთელობაზე ზრუნვა მენოპაუზის დროს
           </p>
 
           <a href="/quiz" className={styles.cta}>
