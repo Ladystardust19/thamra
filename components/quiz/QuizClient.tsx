@@ -301,9 +301,11 @@ export default function QuizClient() {
 
   return (
     <div className={styles.page}>
-      <Link href="/" className={styles.logo}>
-        Thamra
-      </Link>
+      {screen === "result" ? (
+        <span className={styles.logo}>Thamra</span>
+      ) : (
+        <Link href="/" className={styles.logo}>Thamra</Link>
+      )}
 
       {showProgress && (
         <div className={styles.progressWrap}>
