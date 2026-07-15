@@ -40,6 +40,16 @@ interface Photo {
   uploaded_at: string;
 }
 
+interface QuizLead {
+  id: string;
+  name: string;
+  phone: string;
+  email: string | null;
+  submitted_at: string;
+  selected_plan: string | null;
+  preorder_terms_accepted: boolean | null;
+}
+
 function fmt(iso: string) {
   return new Date(iso).toLocaleDateString("ka-GE", {
     day: "2-digit",
@@ -62,6 +72,7 @@ export default function AdminPage() {
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [analyses, setAnalyses] = useState<Analysis[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [quizLeads, setQuizLeads] = useState<QuizLead[]>([]);
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
@@ -74,16 +85,18 @@ export default function AdminPage() {
         setBooting(false);
         return;
       }
-      const [pRes, rRes, aRes, phRes] = await Promise.all([
+      const [pRes, rRes, aRes, phRes, qlRes] = await Promise.all([
         supabase.from("profiles").select("*").order("full_name"),
         supabase.from("receipts").select("*").order("uploaded_at", { ascending: false }),
         supabase.from("analyses").select("*").order("uploaded_at", { ascending: false }),
         supabase.from("photos").select("*").order("uploaded_at", { ascending: false }),
+        supabase.from("quiz_leads").select("id,name,phone,email,submitted_at,selected_plan,preorder_terms_accepted").order("submitted_at", { ascending: false }),
       ]);
       if (pRes.data) setProfiles(pRes.data);
       if (rRes.data) setReceipts(rRes.data);
       if (aRes.data) setAnalyses(aRes.data);
       if (phRes.data) setPhotos(phRes.data);
+      if (qlRes.data) setQuizLeads(qlRes.data);
       setBooting(false);
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -144,11 +157,49 @@ export default function AdminPage() {
         <div className="flex items-center justify-between mb-14">
           <h1 className="font-display text-[36px] italic text-oxblood">Admin</h1>
           <div className="flex gap-8">
+            <span className={labelClass}>ლიდები — {quizLeads.length}</span>
             <span className={labelClass}>ქვითრები — {receipts.length}</span>
             <span className={labelClass}>ანალიზები — {analyses.length}</span>
             <span className={labelClass}>სურათები — {photos.length}</span>
           </div>
         </div>
+
+        {/* ── Quiz Leads ── */}
+        <section className="mb-16">
+          <h2 className={headingClass}>ლიდები (Quiz)</h2>
+          {quizLeads.length === 0 ? (
+            <p className="font-body text-[14px] text-muted">არაფერი შემოსული.</p>
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className={thClass}>სახელი</th>
+                  <th className={thClass}>ტელეფონი</th>
+                  <th className={thClass}>ელ.ფოსტა</th>
+                  <th className={thClass}>თარიღი</th>
+                  <th className={thClass}>პლანი</th>
+                </tr>
+              </thead>
+              <tbody>
+                {quizLeads.map((l) => (
+                  <tr key={l.id}>
+                    <td className={tdClass}>{l.name}</td>
+                    <td className={tdClass}>{l.phone}</td>
+                    <td className={`${tdClass} text-muted`}>{l.email ?? "—"}</td>
+                    <td className={`${tdClass} text-muted`}>{fmt(l.submitted_at)}</td>
+                    <td className={tdClass}>
+                      {l.selected_plan ? (
+                        <span className="font-body text-[11px] uppercase tracking-[0.08em] px-2.5 py-1 border bg-emerald-50 text-emerald-700 border-emerald-200">
+                          {l.selected_plan}
+                        </span>
+                      ) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </section>
 
         {/* ── Receipts ── */}
         <section className="mb-16">
