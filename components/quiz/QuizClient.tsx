@@ -175,6 +175,14 @@ export default function QuizClient() {
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fbcRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const fbclid = new URLSearchParams(window.location.search).get("fbclid");
+    if (fbclid) {
+      fbcRef.current = `fb.1.${Date.now()}.${fbclid}`;
+    }
+  }, []);
 
   function navigate(target: Screen, dir: "forward" | "back") {
     setDirection(dir);
@@ -241,9 +249,12 @@ export default function QuizClient() {
 
     if (!valid) return;
 
+    const fullPhone = `+995${rawPhone}`;
+    const eventId = crypto.randomUUID();
+
     supabase.from("quiz_leads").insert({
       name: name.trim(),
-      phone: `+995${rawPhone}`,
+      phone: fullPhone,
       email: email.trim() || null,
       answers,
       submitted_at: new Date().toISOString(),
@@ -251,8 +262,16 @@ export default function QuizClient() {
       if (error) console.error("Supabase insert error:", error.message);
     });
 
+    // Server-side Conversions API — runs even when browser pixel is blocked
+    fetch("/api/meta-lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name.trim(), phone: fullPhone, email: email.trim() || null, eventId, fbc: fbcRef.current }),
+    }).catch(() => {});
+
+    // Browser pixel — same eventId deduplicates against the CAPI event above
     if (typeof window !== "undefined" && (window as any).fbq) {
-      (window as any).fbq("track", "Lead");
+      (window as any).fbq("track", "Lead", {}, { eventID: eventId });
     }
 
     navigate("processing", "forward");
