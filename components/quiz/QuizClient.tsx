@@ -182,6 +182,19 @@ export default function QuizClient() {
     if (fbclid) {
       fbcRef.current = `fb.1.${Date.now()}.${fbclid}`;
     }
+
+    // Restore result on reload so users don't lose their quiz result
+    try {
+      const saved = sessionStorage.getItem("thamra_quiz_result");
+      if (saved) {
+        const { name: n, phone: p, email: e, answers: a } = JSON.parse(saved);
+        setName(n);
+        setPhone(p);
+        setEmail(e);
+        setAnswers(a);
+        setScreen("result");
+      }
+    } catch {}
   }, []);
 
   function navigate(target: Screen, dir: "forward" | "back") {
@@ -273,6 +286,12 @@ export default function QuizClient() {
     if (typeof window !== "undefined" && (window as any).fbq) {
       (window as any).fbq("track", "Lead", {}, { eventID: eventId });
     }
+
+    try {
+      sessionStorage.setItem("thamra_quiz_result", JSON.stringify({
+        name: name.trim(), phone: fullPhone, email: email.trim() || null, answers,
+      }));
+    } catch {}
 
     navigate("processing", "forward");
   }
