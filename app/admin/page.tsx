@@ -1,81 +1,42 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { Trash2 } from "lucide-react";
+import { Preset, presetRange } from "@/lib/adminData";
+import DateFilter from "@/components/admin/DateFilter";
+import QuizTab from "@/components/admin/QuizTab";
+import ResultTab from "@/components/admin/ResultTab";
+import LeadsTab from "@/components/admin/LeadsTab";
 
 const ADMIN_EMAIL = "nino.jakeli270@gmail.com";
 
-interface Profile {
-  id: string;
-  full_name: string | null;
-  phone: string | null;
-  age: number | null;
-}
+type Tab = "quiz" | "result" | "leads";
 
-interface Receipt {
-  id: string;
-  user_id: string;
-  file_url: string;
-  file_name: string;
-  status: string;
-  uploaded_at: string;
-}
-
-interface Analysis {
-  id: string;
-  user_id: string;
-  file_url: string;
-  file_name: string;
-  file_type: string;
-  uploaded_at: string;
-}
-
-interface Photo {
-  id: string;
-  user_id: string;
-  file_url: string;
-  file_name: string;
-  uploaded_at: string;
-}
-
-interface QuizLead {
-  id: string;
-  name: string;
-  phone: string;
-  email: string | null;
-  submitted_at: string;
-  selected_plan: string | null;
-  preorder_terms_accepted: boolean | null;
-}
-
-function fmt(iso: string) {
-  return new Date(iso).toLocaleDateString("ka-GE", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-const labelClass = "font-body text-[12px] uppercase tracking-[0.12em] text-muted";
-const headingClass = "font-display text-[28px] italic text-oxblood mb-6 pb-3 border-b border-gold/30";
-const thClass = "font-body text-[11px] uppercase tracking-[0.12em] text-muted text-left py-2 pr-6";
-const tdClass = "font-body text-[14px] text-ink py-3 pr-6 border-t border-gold/10 align-top";
+const TABS: { key: Tab; label: string }[] = [
+  { key: "quiz", label: "ქვიზი" },
+  { key: "result", label: "შედეგის გვერდი" },
+  { key: "leads", label: "ლიდები" },
+];
 
 export default function AdminPage() {
   const router = useRouter();
   const [booting, setBooting] = useState(true);
   const [denied, setDenied] = useState(false);
 
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [receipts, setReceipts] = useState<Receipt[]>([]);
-  const [analyses, setAnalyses] = useState<Analysis[]>([]);
-  const [photos, setPhotos] = useState<Photo[]>([]);
-  const [quizLeads, setQuizLeads] = useState<QuizLead[]>([]);
+  const [tab, setTab] = useState<Tab>("quiz");
+  const [preset, setPreset] = useState<Preset>("today");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+
+  // Recomputed only when the filter changes (freezes "now" until then).
+  const range = useMemo(
+    () => presetRange(preset, customFrom, customTo),
+    [preset, customFrom, customTo],
+  );
 
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data }) => {
+    supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
         router.replace("/cabinet/login?next=/admin");
         return;
@@ -85,54 +46,9 @@ export default function AdminPage() {
         setBooting(false);
         return;
       }
-      const [pRes, rRes, aRes, phRes, qlRes] = await Promise.all([
-        supabase.from("profiles").select("*").order("full_name"),
-        supabase.from("receipts").select("*").order("uploaded_at", { ascending: false }),
-        supabase.from("analyses").select("*").order("uploaded_at", { ascending: false }),
-        supabase.from("photos").select("*").order("uploaded_at", { ascending: false }),
-        supabase.from("quiz_leads").select("id,name,phone,email,submitted_at,selected_plan,preorder_terms_accepted").order("submitted_at", { ascending: false }),
-      ]);
-      if (pRes.data) setProfiles(pRes.data);
-      if (rRes.data) setReceipts(rRes.data);
-      if (aRes.data) setAnalyses(aRes.data);
-      if (phRes.data) setPhotos(phRes.data);
-      if (qlRes.data) setQuizLeads(qlRes.data);
       setBooting(false);
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function profileName(userId: string) {
-    const p = profiles.find((x) => x.id === userId);
-    return p?.full_name || "—";
-  }
-
-  async function openFile(bucket: string, path: string) {
-    const { data } = await supabase.storage.from(bucket).createSignedUrl(path, 60 * 60);
-    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
-  }
-
-  async function setReceiptStatus(id: string, status: string) {
-    await supabase.from("receipts").update({ status }).eq("id", id);
-    setReceipts((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
-  }
-
-  async function deleteReceipt(r: Receipt) {
-    await supabase.storage.from("receipts").remove([r.file_url]);
-    await supabase.from("receipts").delete().eq("id", r.id);
-    setReceipts((prev) => prev.filter((x) => x.id !== r.id));
-  }
-
-  async function deleteAnalysis(a: Analysis) {
-    await supabase.storage.from("analyses").remove([a.file_url]);
-    await supabase.from("analyses").delete().eq("id", a.id);
-    setAnalyses((prev) => prev.filter((x) => x.id !== a.id));
-  }
-
-  async function deletePhoto(p: Photo) {
-    await supabase.storage.from("photos").remove([p.file_url]);
-    await supabase.from("photos").delete().eq("id", p.id);
-    setPhotos((prev) => prev.filter((x) => x.id !== p.id));
-  }
 
   if (booting) {
     return (
@@ -153,203 +69,46 @@ export default function AdminPage() {
   return (
     <main className="min-h-screen bg-cream pt-24 pb-20 px-6 sm:px-12">
       <div className="max-w-[1100px] mx-auto">
-
-        <div className="flex items-center justify-between mb-14">
+        <div className="flex items-center justify-between mb-8">
           <h1 className="font-display text-[36px] italic text-oxblood">Admin</h1>
-          <div className="flex gap-8">
-            <span className={labelClass}>ლიდები — {quizLeads.length}</span>
-            <span className={labelClass}>ქვითრები — {receipts.length}</span>
-            <span className={labelClass}>ანალიზები — {analyses.length}</span>
-            <span className={labelClass}>სურათები — {photos.length}</span>
-          </div>
         </div>
 
-        {/* ── Quiz Leads ── */}
-        <section className="mb-16">
-          <h2 className={headingClass}>ლიდები (Quiz)</h2>
-          {quizLeads.length === 0 ? (
-            <p className="font-body text-[14px] text-muted">არაფერი შემოსული.</p>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className={thClass}>სახელი</th>
-                  <th className={thClass}>ტელეფონი</th>
-                  <th className={thClass}>ელ.ფოსტა</th>
-                  <th className={thClass}>თარიღი</th>
-                  <th className={thClass}>პლანი</th>
-                </tr>
-              </thead>
-              <tbody>
-                {quizLeads.map((l) => (
-                  <tr key={l.id}>
-                    <td className={tdClass}>{l.name}</td>
-                    <td className={tdClass}>{l.phone}</td>
-                    <td className={`${tdClass} text-muted`}>{l.email ?? "—"}</td>
-                    <td className={`${tdClass} text-muted`}>{fmt(l.submitted_at)}</td>
-                    <td className={tdClass}>
-                      {l.selected_plan ? (
-                        <span className="font-body text-[11px] uppercase tracking-[0.08em] px-2.5 py-1 border bg-emerald-50 text-emerald-700 border-emerald-200">
-                          {l.selected_plan}
-                        </span>
-                      ) : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
+        {/* Tabs */}
+        <div className="flex gap-1 border-b border-gold/25 mb-6">
+          {TABS.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`font-body text-[14px] uppercase tracking-[0.1em] px-4 py-2.5 border-b-2 -mb-px transition-colors ${
+                tab === t.key
+                  ? "border-oxblood text-oxblood"
+                  : "border-transparent text-muted hover:text-ink"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-        {/* ── Receipts ── */}
-        <section className="mb-16">
-          <h2 className={headingClass}>ქვითრები</h2>
-          {receipts.length === 0 ? (
-            <p className="font-body text-[14px] text-muted">არაფერი ატვირთული.</p>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className={thClass}>მომხმარებელი</th>
-                  <th className={thClass}>ფაილი</th>
-                  <th className={thClass}>თარიღი</th>
-                  <th className={thClass}>სტატუსი</th>
-                  <th className={thClass}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {receipts.map((r) => (
-                  <tr key={r.id}>
-                    <td className={tdClass}>{profileName(r.user_id)}</td>
-                    <td className={tdClass}>
-                      <button
-                        onClick={() => openFile("receipts", r.file_url)}
-                        className="text-oxblood hover:underline text-left"
-                      >
-                        {r.file_name}
-                      </button>
-                    </td>
-                    <td className={`${tdClass} text-muted`}>{fmt(r.uploaded_at)}</td>
-                    <td className={tdClass}>
-                      <button
-                        onClick={() =>
-                          setReceiptStatus(r.id, r.status === "verified" ? "pending" : "verified")
-                        }
-                        className={`font-body text-[11px] uppercase tracking-[0.08em] px-2.5 py-1 border transition-colors ${
-                          r.status === "verified"
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                            : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
-                        }`}
-                      >
-                        {r.status === "verified" ? "დადასტურებული" : "მოლოდინში"}
-                      </button>
-                    </td>
-                    <td className={tdClass}>
-                      <button
-                        onClick={() => deleteReceipt(r)}
-                        className="text-muted hover:text-red-600 transition-colors"
-                        aria-label="წაშლა"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
+        {/* Date filter — analytics tabs only */}
+        {tab !== "leads" && (
+          <div className="mb-8">
+            <DateFilter
+              preset={preset}
+              customFrom={customFrom}
+              customTo={customTo}
+              onChange={(n) => {
+                setPreset(n.preset);
+                setCustomFrom(n.customFrom);
+                setCustomTo(n.customTo);
+              }}
+            />
+          </div>
+        )}
 
-        {/* ── Analyses ── */}
-        <section className="mb-16">
-          <h2 className={headingClass}>ანალიზები</h2>
-          {analyses.length === 0 ? (
-            <p className="font-body text-[14px] text-muted">არაფერი ატვირთული.</p>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className={thClass}>მომხმარებელი</th>
-                  <th className={thClass}>ფაილი</th>
-                  <th className={thClass}>სახეობა</th>
-                  <th className={thClass}>თარიღი</th>
-                  <th className={thClass}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {analyses.map((a) => (
-                  <tr key={a.id}>
-                    <td className={tdClass}>{profileName(a.user_id)}</td>
-                    <td className={tdClass}>
-                      <button
-                        onClick={() => openFile("analyses", a.file_url)}
-                        className="text-oxblood hover:underline text-left"
-                      >
-                        {a.file_name}
-                      </button>
-                    </td>
-                    <td className={`${tdClass} text-muted`}>{a.file_type}</td>
-                    <td className={`${tdClass} text-muted`}>{fmt(a.uploaded_at)}</td>
-                    <td className={tdClass}>
-                      <button
-                        onClick={() => deleteAnalysis(a)}
-                        className="text-muted hover:text-red-600 transition-colors"
-                        aria-label="წაშლა"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
-
-        {/* ── Photos ── */}
-        <section className="mb-16">
-          <h2 className={headingClass}>სურათები</h2>
-          {photos.length === 0 ? (
-            <p className="font-body text-[14px] text-muted">არაფერი ატვირთული.</p>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className={thClass}>მომხმარებელი</th>
-                  <th className={thClass}>ფაილი</th>
-                  <th className={thClass}>თარიღი</th>
-                  <th className={thClass}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {photos.map((p) => (
-                  <tr key={p.id}>
-                    <td className={tdClass}>{profileName(p.user_id)}</td>
-                    <td className={tdClass}>
-                      <button
-                        onClick={() => openFile("photos", p.file_url)}
-                        className="text-oxblood hover:underline text-left"
-                      >
-                        {p.file_name}
-                      </button>
-                    </td>
-                    <td className={`${tdClass} text-muted`}>{fmt(p.uploaded_at)}</td>
-                    <td className={tdClass}>
-                      <button
-                        onClick={() => deletePhoto(p)}
-                        className="text-muted hover:text-red-600 transition-colors"
-                        aria-label="წაშლა"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
-
+        {tab === "quiz" && <QuizTab range={range} />}
+        {tab === "result" && <ResultTab range={range} />}
+        {tab === "leads" && <LeadsTab />}
       </div>
     </main>
   );
