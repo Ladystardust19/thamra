@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import styles from "./Quiz.module.css";
 import { supabase } from "@/lib/supabase";
@@ -11,6 +10,13 @@ import {
   AGE_FRAMING,
   buildMirrorLine,
 } from "@/lib/resultContent";
+import {
+  track,
+  captureAttribution,
+  getAttribution,
+  getSessionId,
+  oncePerSession,
+} from "@/lib/analytics";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,6 +56,9 @@ const PREORDER_DELIVERY_PERIOD = "2026 წლის 10 სექტემბე�
 const PREORDER_CONFIRMATION_DEADLINE = "2025 წლის 1 სექტემბერი";
 
 const Q_SCREENS = ["q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7"];
+
+// sessionStorage key holding the visitor's in-progress quiz state (survives refresh)
+const STATE_KEY = "thamra_quiz_state";
 
 // ─── Question definitions ─────────────────────────────────────────────────────
 
@@ -176,6 +185,8 @@ export default function QuizClient() {
   const [emailError, setEmailError] = useState("");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fbcRef = useRef<string | null>(null);
+  const enteredAtRef = useRef<number>(Date.now());
+  const skipPersist = useRef(true);
 
   useEffect(() => {
     const fbclid = new URLSearchParams(window.location.search).get("fbclid");
@@ -183,21 +194,66 @@ export default function QuizClient() {
       fbcRef.current = `fb.1.${Date.now()}.${fbclid}`;
     }
 
-    // Restore result on reload so users don't lose their quiz result
+    // Capture the ad / campaign that brought this visitor (fbclid + utm_*)
+    captureAttribution();
+
+    // Restore progress on reload so users stay on the same screen instead of
+    // being sent back to the start (or the homepage).
     try {
-      const saved = sessionStorage.getItem("thamra_quiz_result");
+      const saved = sessionStorage.getItem(STATE_KEY);
       if (saved) {
-        const { name: n, phone: p, email: e, answers: a } = JSON.parse(saved);
-        setName(n);
-        setPhone(p);
-        setEmail(e);
-        setAnswers(a);
-        setScreen("result");
+        const st = JSON.parse(saved);
+        if (st.answers) setAnswers(st.answers);
+        if (st.name) setName(st.name);
+        if (st.phone) setPhone(st.phone);
+        if (st.email) setEmail(st.email);
+        let target: Screen = st.screen ?? "intro";
+        if (target === "processing") target = "result"; // don't re-run the loader
+        setScreen(target);
       }
     } catch {}
+
+    // Landing — counted once per session so a refresh doesn't inflate it.
+    if (oncePerSession("quiz_start")) {
+      track({ event_type: "quiz_start", screen: "intro", attribution: getAttribution() });
+    }
+    enteredAtRef.current = Date.now();
   }, []);
 
+  // Persist progress on every change so a refresh survives. Skips the initial
+  // mount run so it can't clobber restored state before it's applied.
+  useEffect(() => {
+    if (skipPersist.current) {
+      skipPersist.current = false;
+      return;
+    }
+    try {
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({ screen, answers, name, phone, email }));
+    } catch {}
+  }, [screen, answers, name, phone, email]);
+
+  // Result page view — only counts if they stay 3+ seconds, once per session.
+  useEffect(() => {
+    if (screen !== "result") return;
+    const t = setTimeout(() => {
+      if (oncePerSession("result_view")) {
+        track({ event_type: "result_view", screen: "result" });
+      }
+    }, 3000);
+    return () => clearTimeout(t);
+  }, [screen]);
+
   function navigate(target: Screen, dir: "forward" | "back") {
+    const now = Date.now();
+    const qi = Q_SCREENS.indexOf(target);
+    track({
+      event_type: "screen_view",
+      screen: target,
+      question_index: qi === -1 ? null : qi,
+      prev_screen: screen,
+      prev_duration_ms: now - enteredAtRef.current,
+    });
+    enteredAtRef.current = now;
     setDirection(dir);
     setScreen(target);
   }
@@ -271,9 +327,14 @@ export default function QuizClient() {
       email: email.trim() || null,
       answers,
       submitted_at: new Date().toISOString(),
+      attribution: getAttribution(),
+      session_id: getSessionId(),
     }).then(({ error }) => {
       if (error) console.error("Supabase insert error:", error.message);
     });
+
+    // Funnel event — the visitor became a lead (email + phone captured)
+    track({ event_type: "lead_submit", screen: "gate", attribution: getAttribution() });
 
     // Server-side Conversions API — runs even when browser pixel is blocked
     fetch("/api/meta-lead", {
@@ -287,12 +348,6 @@ export default function QuizClient() {
       (window as any).fbq("track", "Lead", {}, { eventID: eventId });
     }
 
-    try {
-      sessionStorage.setItem("thamra_quiz_result", JSON.stringify({
-        name: name.trim(), phone: fullPhone, email: email.trim() || null, answers,
-      }));
-    } catch {}
-
     navigate("processing", "forward");
   }
 
@@ -301,11 +356,9 @@ export default function QuizClient() {
 
   return (
     <div className={styles.page}>
-      {screen === "result" ? (
-        <span className={styles.logo}>Thamra</span>
-      ) : (
-        <Link href="/" className={styles.logo}>Thamra</Link>
-      )}
+      {/* Logo is intentionally NOT a link on any quiz screen so visitors stay
+          in the funnel and don't jump back to the homepage. */}
+      <span className={styles.logo}>Thamra</span>
 
       {showProgress && (
         <div className={styles.progressWrap}>
@@ -829,6 +882,7 @@ function ResultScreen({
     setSelectedProgram(id);
     setPreorderStep("confirm");
     setPreorderTermsChecked(false);
+    track({ event_type: "plan_selected", screen: "result", meta: { plan: id } });
   }
 
   function changePlan() {
@@ -851,6 +905,7 @@ function ResultScreen({
       })
       .eq("phone", `+995${phone.replace(/\s+/g, "")}`)
       .then(({ error }) => { if (error) console.error(error.message); });
+    track({ event_type: "bank_reached", screen: "result", meta: { plan: selectedProgram } });
     setPreorderStep("payment");
   }
 
