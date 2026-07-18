@@ -161,13 +161,13 @@
   background-color: #8b2f3a;
   color: #f7f1e9;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 17px;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   transition: background-color 0.3s, transform 0.2s;
 }
 
@@ -196,42 +196,54 @@
 
 /* ── Option cards ── */
 
+/* Seed-style pill chips: hug their text, left-aligned, checkmark when selected */
 .options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 24px;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .option {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 16px 18px;
-  background-color: rgba(253, 250, 247, 0.92);
-  border: 1.5px solid rgba(201, 169, 110, 0.22);
-  border-radius: 6px;
+  gap: 9px;
+  max-width: 100%;
+  padding: 14px 24px;
+  background-color: #fdfaf7;
+  border: 1.5px solid rgba(201, 169, 110, 0.3);
+  border-radius: 999px;
   cursor: pointer;
   text-align: left;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 18px;
-  font-weight: 300;
-  color: #3d3335;
-  line-height: 1.4;
+  font-size: 17px;
+  font-weight: 400;
+  color: #4a3f3c;
+  line-height: 1.35;
   transition: border-color 0.2s, background-color 0.2s, color 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .option:hover {
   border-color: rgba(139, 47, 58, 0.45);
-  background-color: rgba(139, 47, 58, 0.03);
+  background-color: rgba(139, 47, 58, 0.04);
 }
 
 .option.selected {
-  border-color: #8b2f3a;
-  background-color: rgba(139, 47, 58, 0.06);
+  border-color: transparent;
+  background-color: rgba(201, 169, 110, 0.34);
+  color: #7a2530;
+  font-weight: 500;
+}
+
+.optionCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #8b2f3a;
+  flex-shrink: 0;
+  margin-left: -6px;
 }
 
 /* Radio dot */
@@ -285,7 +297,7 @@
   background-color: #8b2f3a;
 }
 
-/* Next / submit buttons */
+/* Next / submit buttons — Seed-style rounded pill */
 .nextBtn {
   display: block;
   width: 100%;
@@ -293,13 +305,13 @@
   background-color: #8b2f3a;
   color: #f7f1e9;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 17px;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   transition: background-color 0.3s, transform 0.2s, opacity 0.25s;
 }
 
@@ -443,12 +455,12 @@
   background-color: #8b2f3a;
   color: #f7f1e9;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 17px;
   font-weight: 400;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.02em;
   transition: background-color 0.3s, transform 0.2s;
 }
 
@@ -1636,4 +1648,411 @@
 
 .preorderChangePlanBtn:hover {
   opacity: 1;
+}
+
+/* ============================================================
+   NEW QUIZ — secondary toggle, gauge, level pills, result
+   sections, trust cards, Hair Expert CTA (redesign port)
+   ============================================================ */
+
+/* ── Q2 secondary toggle ── */
+.secondaryToggle {
+  margin: -6px 0 24px;
+}
+
+/* ── Result sections ── */
+.resultSection {
+  margin-top: 30px;
+}
+
+.sectionHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(1.35rem, 4.6vw, 1.7rem);
+  font-weight: 400;
+  color: #8b2f3a;
+  line-height: 1.3;
+  margin: 0 0 12px;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.bulletList li {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.65;
+  padding-left: 20px;
+  position: relative;
+}
+
+.bulletList li::before {
+  content: "•";
+  position: absolute;
+  left: 2px;
+  color: #c9a96e;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+/* ── Hair-stress gauge ── */
+.gaugeWrap {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 2px;
+}
+
+.gauge {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+}
+
+.gaugeLegend {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 0 6px;
+}
+
+.gaugeLegend span {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 11.5px;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  color: #9b8f8c;
+  transition: color 0.2s;
+}
+
+.gaugeLegendActive {
+  color: #45101d !important;
+  font-weight: 500 !important;
+}
+
+/* ── Level pills (menopause connection / THAMRA fit) ── */
+.pillWrap {
+  display: flex;
+}
+
+.levelPill {
+  display: inline-block;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  padding: 10px 20px;
+  border-radius: 30px;
+  line-height: 1.2;
+}
+
+.lvl0 { background: rgba(159, 176, 138, 0.18); color: #4f6a3e; }
+.lvl1 { background: rgba(217, 184, 102, 0.2);  color: #8a6a1f; }
+.lvl2 { background: rgba(207, 138, 92, 0.2);   color: #9c4e26; }
+.lvl3 { background: rgba(122, 35, 55, 0.12);   color: #7a2337; }
+
+/* ── Notices (red flag / competing cause) ── */
+.notice {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.6;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.noticeRed {
+  background: rgba(122, 35, 55, 0.08);
+  border: 1px solid rgba(122, 35, 55, 0.3);
+  color: #7a2337;
+}
+
+.noticeCompeting {
+  background: rgba(201, 169, 110, 0.1);
+  border: 1px solid rgba(201, 169, 110, 0.4);
+  color: #7a5c2e;
+}
+
+/* ── "Why THAMRA is different" pillars ── */
+.pillars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.pillarItem {
+  background: #fdfaf7;
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  border-radius: 8px;
+  padding: 18px 18px;
+}
+
+.pillarTitle {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #8b2f3a;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.pillarBody {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14.5px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Trust cards ── */
+.trustGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@media (max-width: 460px) {
+  .trustGrid { grid-template-columns: 1fr; }
+}
+
+.trustCard {
+  background: rgba(139, 47, 58, 0.04);
+  border: 1px solid rgba(201, 169, 110, 0.28);
+  border-radius: 8px;
+  padding: 18px 16px;
+}
+
+.trustCardTitle {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #8b2f3a;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.trustCardBody {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13.5px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── THAMRA Hair Expert CTA block ── */
+.hairExpertBlock {
+  margin-top: 36px;
+  background: #8b2f3a;
+  border-radius: 12px;
+  padding: 30px 22px;
+}
+
+.hairExpertBlock .driversLabel {
+  color: rgba(201, 169, 110, 0.85);
+}
+
+.hairExpertBlock .sectionHeading {
+  color: #f7f1e9;
+}
+
+.hairExpertBlock .resultText {
+  color: rgba(247, 241, 233, 0.85);
+}
+
+.hairExpertBlock .bulletList li {
+  color: rgba(247, 241, 233, 0.85);
+}
+
+.hairExpertBlock .bulletList li::before {
+  color: #c9a96e;
+}
+
+.hairExpertBlock .ctaBtn {
+  margin-top: 24px;
+}
+
+.hairExpertNote {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  color: rgba(247, 241, 233, 0.6);
+  line-height: 1.6;
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+/* ============================================================
+   RESULT RESTRUCTURE — profile card, level rows, quick facts,
+   learn-more accordion
+   ============================================================ */
+
+.resultCard {
+  background: #fdfaf7;
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 16px;
+  padding: 26px 22px 24px;
+  margin-top: 18px;
+  box-shadow: 0 8px 30px rgba(74, 63, 60, 0.06);
+}
+
+.gaugeMeaning {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.65;
+  text-align: center;
+  margin: 14px auto 0;
+  max-width: 340px;
+}
+
+.levelRows {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(201, 169, 110, 0.22);
+}
+
+.levelRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.levelRowHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.levelRowLabel {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #6b5f5a;
+}
+
+.levelRow .levelPill {
+  font-size: 13.5px;
+  padding: 7px 15px;
+}
+
+.levelMeaning {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13.5px;
+  font-weight: 300;
+  color: #9b8f8c;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.quickFacts {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(201, 169, 110, 0.22);
+}
+
+.quickFact {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.qfLabel {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c9a96e;
+}
+
+.qfValue {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #8b2f3a;
+  line-height: 1.3;
+}
+
+/* ── Learn-more accordion ── */
+.accordionToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  background: none;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-radius: 999px;
+  padding: 15px 24px;
+  cursor: pointer;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #8b2f3a;
+  transition: background 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.accordionToggle:hover {
+  background: rgba(139, 47, 58, 0.04);
+  border-color: rgba(139, 47, 58, 0.4);
+}
+
+.accordionChevron,
+.accordionChevronOpen {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.accordionChevronOpen {
+  transform: rotate(180deg);
+}
+
+.accordionPanel {
+  animation: accordionIn 0.3s ease both;
+}
+
+@keyframes accordionIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordionPanel { animation: none; }
+}
+
+/* Prominent gauge readout below the arc (replaces the in-arc caption
+   that used to collide with the needle) */
+.gaugeValue {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #45101d;
+  text-align: center;
+  margin: -6px 0 12px;
+  line-height: 1.15;
 }
