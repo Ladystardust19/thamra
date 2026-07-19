@@ -958,31 +958,30 @@ type ComparisonLevel = "full" | "partial" | "not_primary";
 type TreatmentCategory = "general_supplements" | "topical_treatments" | "procedures" | "none";
 
 const COMPARISON_ROW_LABELS = [
-  "მენოპაუზისთვის შექმნილი",
-  "ცვენა, სიმკვრივე, ხარისხი",
-  "ძილი და სტრესი",
-  "ღერის სიმტკიცე და ტენი",
-  "ყოველდღიური ზრუნვა",
-  "6-თვიანი პროგრამა",
+  "შექმნილია მენოპაუზის პერიოდში შეცვლილი თმისთვის",
+  "ერთდროულად ზრუნავს ცვენაზე, გათხელებასა და თმის ხარისხზე",
+  "ითვალისწინებს სტრესისა და ძილის ცვლილებებს",
+  "ზრუნავს უფრო ძლიერ და ნაკლებად მტვრევად თმაზე",
+  "ყოველდღიური, შინაგანი ზრუნვა",
 ];
 
 const COMPARATOR_LEVELS: Record<TreatmentCategory, ComparisonLevel[]> = {
-  general_supplements: ["not_primary", "partial", "not_primary", "partial", "full", "not_primary"],
-  topical_treatments: ["not_primary", "partial", "not_primary", "partial", "not_primary", "not_primary"],
-  procedures: ["not_primary", "partial", "not_primary", "partial", "not_primary", "partial"],
-  none: ["not_primary", "partial", "not_primary", "partial", "partial", "not_primary"],
+  general_supplements: ["not_primary", "partial", "not_primary", "partial", "full"],
+  topical_treatments: ["not_primary", "partial", "not_primary", "partial", "not_primary"],
+  procedures: ["not_primary", "partial", "not_primary", "partial", "not_primary"],
+  none: ["not_primary", "partial", "not_primary", "partial", "partial"],
 };
 
 const COMPARATOR_LABEL: Record<TreatmentCategory, string> = {
-  general_supplements: "ზოგადი თმის დანამატები",
-  topical_treatments: "ადგილობრივი საშუალებები",
+  general_supplements: "ბიოტინი და მულტივიტამინები",
+  topical_treatments: "შამპუნები, სერუმები და ადგილობრივი საშუალები",
   procedures: "პროცედურები",
   none: "გავრცელებული თმის მიდგომები",
 };
 
 const COMPARATOR_TAB_LABEL: Record<TreatmentCategory, string> = {
-  general_supplements: "სხვა საშუალებები",
-  topical_treatments: "ადგილობრივი საშუალებები",
+  general_supplements: "ბიოტინი და მულტივიტამინები",
+  topical_treatments: "შამპუნები, სერუმები და ადგილობრივი საშუალები",
   procedures: "პროცედურები",
   none: "გავრცელებული თმის მიდგომები",
 };
