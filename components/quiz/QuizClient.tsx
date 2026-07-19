@@ -981,7 +981,7 @@ const COMPARATOR_LABEL: Record<TreatmentCategory, string> = {
 };
 
 const COMPARATOR_TAB_LABEL: Record<TreatmentCategory, string> = {
-  general_supplements: "თმის დანამატები",
+  general_supplements: "სხვა საშუალებები",
   topical_treatments: "ადგილობრივი საშუალებები",
   procedures: "პროცედურები",
   none: "გავრცელებული თმის მიდგომები",

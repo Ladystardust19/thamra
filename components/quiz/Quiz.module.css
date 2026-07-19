@@ -2163,21 +2163,23 @@
 
 .compareHeadline {
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
-  font-size: clamp(29px, 7vw, 36px);
-  font-weight: 300;
-  line-height: 1.12;
+  font-size: clamp(30px, 7.2vw, 38px);
+  font-weight: 500;
+  line-height: 1.16;
+  letter-spacing: 0.005em;
   color: var(--thamra-burgundy);
   margin: 0;
-  max-width: 12ch;
+  max-width: 13ch;
 }
 
 .compareIntro {
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 17px;
-  font-weight: 300;
-  line-height: 1.55;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.62;
+  letter-spacing: 0.006em;
   color: var(--cmp-muted);
-  margin: 20px 0 0;
+  margin: 22px 0 0;
   max-width: 34ch;
 }
 
@@ -2216,25 +2218,33 @@
   outline-offset: 3px;
 }
 
-/* Matrix */
-.matrix { margin-top: 38px; }
+/* Matrix — a soft, refined cream panel (featured THAMRA column inset) */
+.matrix {
+  margin-top: 36px;
+  background: var(--thamra-surface);
+  border: 1px solid rgba(201, 169, 110, 0.22);
+  border-radius: 24px;
+  padding: 12px 24px 20px;
+  box-shadow: 0 16px 48px rgba(74, 63, 60, 0.08);
+}
 
 .matrixHead,
 .matrixRow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 60px 68px;
+  grid-template-columns: minmax(0, 1fr) 64px 72px;
   align-items: stretch;
 }
 
 .cellLabel {
   display: flex;
   align-items: center;
-  min-height: 84px;
-  padding: 20px 16px 20px 0;
+  min-height: 92px;
+  padding: 24px 16px 24px 0;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 15px;
-  font-weight: 300;
+  font-size: 16px;
+  font-weight: 400;
   line-height: 1.4;
+  letter-spacing: 0.006em;
   color: var(--cmp-text);
 }
 .cellHeadLabel {
@@ -2257,7 +2267,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 84px;
+  min-height: 92px;
 }
 
 .cellHeadThamra,
@@ -2279,10 +2289,10 @@
 }
 .cellHeadComp { color: var(--cmp-muted); font-weight: 400; }
 
-/* One soft, continuous THAMRA band */
-.cellThamra { background: var(--cmp-band); }
-.cellThamraTop { border-radius: 16px 16px 0 0; }
-.cellThamraBottom { border-radius: 0 0 16px 16px; }
+/* Featured THAMRA column — a soft gold inset panel running the full height */
+.cellThamra { background: rgba(201, 169, 110, 0.16); }
+.cellThamraTop { border-radius: 14px 14px 0 0; }
+.cellThamraBottom { border-radius: 0 0 14px 14px; }
 
 /* Markers — small and refined */
 .markerWrap { display: inline-flex; }
