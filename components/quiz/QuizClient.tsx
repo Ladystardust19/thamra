@@ -9,14 +9,11 @@ import {
   visibleQuestions,
   hasTriedTreatment,
   computeResult,
-  OUTCOME_LABEL,
   type Answers,
   type Question,
+  type Result,
 } from "@/lib/scoring";
 import {
-  TREATMENT_TRIED,
-  TREATMENT_DURATION,
-  TREATMENT_RESULT,
   WHY_DIFFERENT_INTRO,
   WHY_DIFFERENT_PILLARS,
   WHAT_IS_THAMRA,
@@ -25,10 +22,6 @@ import {
   TRUST_CARDS,
   GOAL_FOCUS,
   HAIR_EXPERT,
-  RESULT_DISCLAIMER,
-  HAIR_STRESS_MEANING,
-  MENO_MEANING,
-  THAMRA_MEANING,
   BRIDGE,
   MORE_ACCORDION_LABEL,
 } from "@/lib/resultContent";
@@ -248,10 +241,8 @@ export default function QuizClient() {
       valid = false;
     } else setPhoneError("");
 
-    if (!email.trim()) {
-      setEmailError("ელ.ფოსტა სავალდებულოა");
-      valid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    // Email is optional — only validate the format when something was entered.
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setEmailError("შეიყვანე სწორი ელ.ფოსტა");
       valid = false;
     } else setEmailError("");
@@ -261,28 +252,37 @@ export default function QuizClient() {
     const fullPhone = `+995${rawPhone}`;
     const eventId = crypto.randomUUID();
 
-    supabase.from("quiz_leads").insert({
-      name: name.trim(),
-      phone: fullPhone,
-      email: email.trim() || null,
-      answers,
-      submitted_at: new Date().toISOString(),
-      attribution: getAttribution(),
-      session_id: getSessionId(),
-    }).then(({ error }) => {
-      if (error) console.error("Supabase insert error:", error.message);
-    });
+    // Skip lead persistence + Meta conversion tracking outside production so the
+    // funnel can be tested locally without polluting the CRM or firing real
+    // Lead conversions.
+    const isProd = process.env.NODE_ENV === "production";
 
-    track({ event_type: "lead_submit", screen: "gate", attribution: getAttribution() });
+    if (isProd) {
+      supabase.from("quiz_leads").insert({
+        name: name.trim(),
+        phone: fullPhone,
+        email: email.trim() || null,
+        answers,
+        submitted_at: new Date().toISOString(),
+        attribution: getAttribution(),
+        session_id: getSessionId(),
+      }).then(({ error }) => {
+        if (error) console.error("Supabase insert error:", error.message);
+      });
 
-    fetch("/api/meta-lead", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name.trim(), phone: fullPhone, email: email.trim() || null, eventId, fbc: fbcRef.current }),
-    }).catch(() => {});
+      track({ event_type: "lead_submit", screen: "gate", attribution: getAttribution() });
 
-    if (typeof window !== "undefined" && (window as any).fbq) {
-      (window as any).fbq("track", "Lead", {}, { eventID: eventId });
+      fetch("/api/meta-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), phone: fullPhone, email: email.trim() || null, eventId, fbc: fbcRef.current }),
+      }).catch(() => {});
+
+      if (typeof window !== "undefined" && (window as any).fbq) {
+        (window as any).fbq("track", "Lead", {}, { eventID: eventId });
+      }
+    } else {
+      console.info("[dev] gate submit — Supabase insert + Meta Lead tracking skipped");
     }
 
     goToPhase("processing", "forward");
@@ -310,7 +310,7 @@ export default function QuizClient() {
         </div>
       )}
 
-      <div className={styles.main}>
+      <div className={screen === "result" ? `${styles.main} ${styles.mainResult}` : styles.main}>
         <div
           key={screen === "quiz" ? qid : screen}
           className={direction === "back" ? `${styles.screen} ${styles.back}` : styles.screen}
@@ -624,7 +624,9 @@ function GateScreen({
         </div>
 
         <div className={styles.field}>
-          <label className={styles.fieldLabel} htmlFor="quiz-email">ელ.ფოსტა</label>
+          <label className={styles.fieldLabel} htmlFor="quiz-email">
+            ელ.ფოსტა <span className={styles.optionalTag}>(არასავალდებულო)</span>
+          </label>
           <input
             id="quiz-email"
             type="email"
@@ -646,54 +648,6 @@ function GateScreen({
         შენს ნომერს მხოლოდ შენი შედეგისა და შეთავაზებისთვის გამოვიყენებთ.
       </p>
     </div>
-  );
-}
-
-// ─── Hair-stress gauge (pure SVG, ported from prototype) ──────────────────────
-
-const GAUGE_LABELS = ["დაბალი", "საწყისი", "მომატებული", "მაღალი"];
-const SEG_COLORS = ["#9fb08a", "#d9b866", "#cf8a5c", "#7a2337"];
-
-function polar(cx: number, cy: number, r: number, deg: number) {
-  const rad = (deg * Math.PI) / 180;
-  return { x: cx + r * Math.cos(rad), y: cy - r * Math.sin(rad) };
-}
-function n(v: number) {
-  return Math.round(v * 100) / 100;
-}
-
-function Gauge({ activeIndex }: { activeIndex: number }) {
-  const cx = 160, cy = 172, R = 122, sw = 26;
-  const segs = [];
-  for (let i = 0; i < 4; i++) {
-    const aStart = 180 - i * 45;
-    const aEnd = 180 - (i + 1) * 45;
-    const p1 = polar(cx, cy, R, aStart);
-    const p2 = polar(cx, cy, R, aEnd);
-    const active = i === activeIndex;
-    segs.push(
-      <path
-        key={i}
-        d={`M ${n(p1.x)} ${n(p1.y)} A ${R} ${R} 0 0 1 ${n(p2.x)} ${n(p2.y)}`}
-        fill="none"
-        stroke={SEG_COLORS[i]}
-        strokeWidth={active ? sw + 6 : sw}
-        strokeLinecap="round"
-        opacity={active ? 1 : 0.28}
-      />
-    );
-  }
-  const midAngle = 180 - activeIndex * 45 - 22.5;
-  const tip = polar(cx, cy, R - 6, midAngle);
-  const tail = polar(cx, cy, 16, midAngle + 180);
-
-  return (
-    <svg className={styles.gauge} viewBox="0 0 320 200" role="img" aria-label="თმის სტრესის დონე">
-      {segs}
-      <line x1={n(tail.x)} y1={n(tail.y)} x2={n(tip.x)} y2={n(tip.y)} stroke="#45101d" strokeWidth={4} strokeLinecap="round" />
-      <circle cx={cx} cy={cy} r={9} fill="#45101d" />
-      <circle cx={cx} cy={cy} r={3.6} fill="#faf5ec" />
-    </svg>
   );
 }
 
@@ -731,209 +685,605 @@ function Section({ label, heading, children }: { label?: string; heading?: strin
   return (
     <div className={styles.resultSection}>
       {label && <span className={styles.driversLabel}>{label}</span>}
-      {heading && <h3 className={styles.sectionHeading}>{heading}</h3>}
+      {heading && <h2 className={styles.sectionHeading}>{heading}</h2>}
       {children}
     </div>
   );
 }
 
-// ─── Result page (13-section spec) ────────────────────────────────────────────
+// ─── Result editorial content helpers ─────────────────────────────────────────
+
+const HAIR_CHANGE_ORDER = ["shedding", "volume", "partcrown", "quality", "stresssleep"] as const;
+type HairChangeKey = (typeof HAIR_CHANGE_ORDER)[number];
+type HairSymptomKey = Exclude<HairChangeKey, "stresssleep">;
+
+// Section 1 — short symptom phrases (hair symptoms only, no stress/sleep).
+const HAIR_CHANGE_S1: Record<HairSymptomKey, string> = {
+  shedding: "მომატებული ცვენა",
+  volume: "შემცირებული მოცულობა",
+  partcrown: "გაყოფის ხაზისა და გვირგვინის გათხელება",
+  quality: "უფრო მშრალი და მტვრევადი თმა",
+};
+
+// Section 3 — editorial rows.
+const HAIR_CHANGE_ROWS: Record<HairChangeKey, { title: string; text: string }> = {
+  shedding: { title: "ცვენა", text: "დაბანის ან დავარცხნის შემდეგ უფრო მეტი თმა გრჩება, ვიდრე ადრე." },
+  volume: { title: "მოცულობა", text: "თმის საერთო სისქე ან კუდის მოცულობა შენთვის შესამჩნევად შემცირდა." },
+  partcrown: { title: "გაყოფის ხაზი და გვირგვინი", text: "გაყოფის ხაზი ან გვირგვინის არე უფრო გამოკვეთილი გახდა." },
+  quality: { title: "თმის ხარისხი", text: "თმა გახდა უფრო მშრალი, თხელი, მტვრევადი ან დაკარგა ბზინვარება." },
+  stresssleep: { title: "ძილი და სტრესი", text: "თმის ცვლილებასთან ერთად ძილის ან სტრესის ცვლილებაც გამოიკვეთა." },
+};
+
+// Section 2 — hair-stress explanations (indexed by level).
+const HAIR_STRESS_EXPLAIN = [
+  "შენს პასუხებში თმის ცვლილება ჯერ მსუბუქად იკვეთება.",
+  "შენს პასუხებში ცვლილების პირველი ნიშნები ჩანს, თუმცა ისინი ჯერ რამდენიმე მიმართულებით არ არის გამოხატული.",
+  "ცვლილება უკვე ერთზე მეტ მიმართულებაში ჩანს — ცვენაში, მოცულობასა და თმის ხარისხში.",
+  "შენს პასუხებში თმის ცვენა, გათხელება ან ხარისხის ცვლილება მკვეთრად არის გამოხატული.",
+];
+
+const PRIMARY_CONCERN: Record<string, string> = {
+  a5_shedding: "ჭარბი ცვენა",
+  a5_volume: "თმის მოცულობის შემცირება",
+  a5_partcrown: "გაყოფის ხაზისა და გვირგვინის გათხელება",
+  a5_finedry: "მშრალი და მტვრევადი თმა",
+};
+
+const DESIRED_OUTCOME: Record<string, string> = {
+  g_shedding: "ნაკლები ყოველდღიური ცვენა",
+  g_fuller: "უფრო სქელი და მოცულობითი თმის იერი",
+  g_density: "მეტი სიმკვრივე გაყოფის ხაზსა და გვირგვინთან",
+  g_stronger: "უფრო ძლიერი და ნაკლებად მტვრევადი თმა",
+};
+
+const GEO_COUNT = ["ერთ", "ორ", "სამ", "ოთხ", "ხუთ"];
+
+function joinGeorgianList(items: string[]): string {
+  if (items.length === 0) return "";
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} და ${items[1]}`;
+  return `${items.slice(0, -1).join(", ")} და ${items[items.length - 1]}`;
+}
+
+/** Derive the meaningful hair-change categories from the raw answers. */
+function getSelectedHairChangeKeys(a: Answers): HairChangeKey[] {
+  const set = new Set<HairChangeKey>();
+  const q3 = Array.isArray(a.q3) ? a.q3 : [];
+  if (a.q5 === "a5_shedding") set.add("shedding");
+  if (a.q5 === "a5_volume" || a.q9 === "a9_finer" || a.q8 === "a8_selfonly") set.add("volume");
+  if (
+    a.q5 === "a5_partcrown" ||
+    a.q6 === "a6_part" ||
+    a.q6 === "a6_crown" ||
+    a.q8 === "a8_wider" ||
+    a.q8 === "a8_scalp" ||
+    a.q8 === "a8_bald"
+  )
+    set.add("partcrown");
+  if (a.q5 === "a5_finedry" || a.q9 === "a9_drier" || a.q9 === "a9_breaks" || a.q9 === "a9_several") set.add("quality");
+  if (q3.indexOf("a3_sleep") !== -1 || q3.indexOf("a3_stress") !== -1) set.add("stresssleep");
+  return HAIR_CHANGE_ORDER.filter((k) => set.has(k));
+}
+
+type MenoBucket = "strong" | "moderate" | "low";
+
+function menoBucket(r: Result): MenoBucket {
+  if (r.preMenopause) return "low";
+  if (r.menoLevel.index >= 3) return "strong";
+  if (r.menoLevel.index >= 1) return "moderate";
+  return "low";
+}
+
+function getMenopauseConnectionContent(r: Result, a: Answers) {
+  const bucket = menoBucket(r);
+  const headline =
+    bucket === "strong"
+      ? "შენი თმის ცვლილება მენოპაუზის პერიოდთან ძლიერად იკვეთება"
+      : bucket === "moderate"
+      ? "შენი თმის ცვლილება შესაძლოა მენოპაუზის პერიოდთან იყოს დაკავშირებული"
+      : "შენი პასუხები მენოპაუზასთან მკაფიო კავშირს არ აჩვენებს";
+
+  const phrases = getSelectedHairChangeKeys(a)
+    .filter((k): k is HairSymptomKey => k !== "stresssleep")
+    .map((k) => HAIR_CHANGE_S1[k]);
+  const symptomLead = phrases.length ? `შენს პასუხებში გამოიკვეთა ${joinGeorgianList(phrases)}.` : "";
+
+  let timing: string | null = null;
+  if (bucket !== "low") {
+    timing =
+      a.q4 === "a4_same"
+        ? "ისიც, რომ ეს ცვლილებები მენოპაუზის ნიშნებთან ახლოს დაიწყო, ამ კავშირს კიდევ უფრო აძლიერებს."
+        : "ამ პერიოდში თმაზე ერთდროულად რამდენიმე ცვლილების გამოჩენა ხშირია.";
+  }
+  return { headline, symptomLead, timing };
+}
+
+function getPrimaryConcernLabel(a: Answers, r: Result): string {
+  return (a.q5 && PRIMARY_CONCERN[a.q5]) || r.strongestSymptom;
+}
+
+function getDesiredOutcomeLabel(g: string | null): string | null {
+  return g ? DESIRED_OUTCOME[g] ?? null : null;
+}
+
+// ─── Editorial reveal wrapper (fade + translateY, reduced-motion safe) ─────────
+
+function RevealSection({
+  id,
+  className,
+  children,
+}: {
+  id?: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.section
+      id={id}
+      className={className}
+      initial={reduce ? false : { opacity: 0, y: 12 }}
+      whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+// ─── Result sections ──────────────────────────────────────────────────────────
+
+function MenopauseConnectionSection({
+  r,
+  answers,
+  onNext,
+}: {
+  r: Result;
+  answers: Answers;
+  onNext: () => void;
+}) {
+  const c = getMenopauseConnectionContent(r, answers);
+  return (
+    <RevealSection id="result-menopause-connection" className={`${styles.mSection} ${styles.mHero}`}>
+      <span className={styles.mEyebrow}>შენი შეფასება</span>
+      <h1 className={styles.mHeadline}>{c.headline}</h1>
+      {(c.symptomLead || c.timing) && (
+        <p className={styles.mBody}>
+          {c.symptomLead}
+          {c.symptomLead && c.timing ? " " : ""}
+          {c.timing}
+        </p>
+      )}
+      {r.messages.length > 0 && (
+        <div className={styles.mNotices}>
+          {r.messages.map((m, i) => (
+            <p key={i} className={styles.mNotice}>
+              {m.text}
+            </p>
+          ))}
+        </div>
+      )}
+      <button type="button" className={styles.mBtn} onClick={onNext}>
+        ნახე შენი თმის სტრესის დონე
+      </button>
+    </RevealSection>
+  );
+}
+
+function HairStressSection({
+  r,
+  answers,
+  onNext,
+}: {
+  r: Result;
+  answers: Answers;
+  onNext: () => void;
+}) {
+  const idx = r.hairStressLevel.index;
+  const concern = getPrimaryConcernLabel(answers, r);
+  const outcome = getDesiredOutcomeLabel(r.desiredOutcome);
+  return (
+    <RevealSection id="result-hair-stress" className={styles.mSection}>
+      <span className={styles.mEyebrow}>თმის სტრესის დონე</span>
+      <p className={styles.mBigWord}>{r.hairStressLevel.label}</p>
+      <div
+        className={styles.meter}
+        role="meter"
+        aria-valuemin={1}
+        aria-valuemax={4}
+        aria-valuenow={idx + 1}
+        aria-label="თმის სტრესის დონე"
+      >
+        <div className={styles.meterTrack}>
+          {[0, 1, 2, 3].map((i) => (
+            <span key={i} className={i === idx ? styles.meterDotActive : styles.meterDot} />
+          ))}
+        </div>
+        <div className={styles.meterEnds}>
+          <span>დაბალი</span>
+          <span>მაღალი</span>
+        </div>
+      </div>
+      <p className={styles.mBody}>{HAIR_STRESS_EXPLAIN[idx]}</p>
+      <div className={styles.insightRows}>
+        <div className={styles.insightRow}>
+          <span className={styles.insightLabel}>ყველაზე შესამჩნევი ცვლილება</span>
+          <span className={styles.insightValue}>{concern}</span>
+        </div>
+        {outcome && (
+          <div className={styles.insightRow}>
+            <span className={styles.insightLabel}>შენთვის ყველაზე მნიშვნელოვანი შედეგი</span>
+            <span className={styles.insightValue}>{outcome}</span>
+          </div>
+        )}
+      </div>
+      <button type="button" className={styles.mBtn} onClick={onNext}>
+        ნახე, რა გამოიკვეთა შენს პასუხებში
+      </button>
+    </RevealSection>
+  );
+}
+
+function HairChangesSection({ answers, onNext }: { answers: Answers; onNext: () => void }) {
+  const keys = getSelectedHairChangeKeys(answers);
+  const countWord = GEO_COUNT[keys.length - 1] ?? String(keys.length);
+  return (
+    <RevealSection id="result-hair-changes" className={styles.mSection}>
+      <span className={styles.mEyebrow}>შენი პასუხების მიხედვით</span>
+      <h2 className={styles.mHeadline}>{`შენს შემთხვევაში ცვლილება ${countWord} მიმართულებაში იკვეთება`}</h2>
+      <div className={styles.changeRows}>
+        {keys.map((k, i) => (
+          <div key={k} className={styles.changeRow}>
+            <span className={styles.changeNum} aria-hidden>
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className={styles.changeBody}>
+              <h3 className={styles.changeTitle}>{HAIR_CHANGE_ROWS[k].title}</h3>
+              <p className={styles.changeText}>{HAIR_CHANGE_ROWS[k].text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <button type="button" className={styles.mBtn} onClick={onNext}>
+        გავაგრძელოთ
+      </button>
+    </RevealSection>
+  );
+}
+
+// ─── Treatment comparison ─────────────────────────────────────────────────────
+
+type ComparisonLevel = "full" | "partial" | "not_primary";
+type TreatmentCategory = "general_supplements" | "topical_treatments" | "procedures" | "none";
+
+const COMPARISON_ROW_LABELS = [
+  "შექმნილია მენოპაუზის პერიოდში თმისთვის",
+  "ერთდროულად ზრუნავს ცვენაზე, სიმკვრივესა და ხარისხზე",
+  "ითვალისწინებს ძილისა და სტრესის ცვლილებებს",
+  "ზრუნავს თმის ღერის სიმტკიცესა და ტენიანობაზე",
+  "ყოველდღიური, შინაგანი ზრუნვა",
+  "6-თვიანი პროგრამა და პროგრესის შეფასება",
+];
+
+const COMPARATOR_LEVELS: Record<TreatmentCategory, ComparisonLevel[]> = {
+  general_supplements: ["not_primary", "partial", "not_primary", "partial", "full", "not_primary"],
+  topical_treatments: ["not_primary", "partial", "not_primary", "partial", "not_primary", "not_primary"],
+  procedures: ["not_primary", "partial", "not_primary", "partial", "not_primary", "partial"],
+  none: ["not_primary", "partial", "not_primary", "partial", "partial", "not_primary"],
+};
+
+const COMPARATOR_LABEL: Record<TreatmentCategory, string> = {
+  general_supplements: "ზოგადი თმის დანამატები",
+  topical_treatments: "ადგილობრივი საშუალებები",
+  procedures: "პროცედურები",
+  none: "გავრცელებული თმის მიდგომები",
+};
+
+const COMPARATOR_TAB_LABEL: Record<TreatmentCategory, string> = {
+  general_supplements: "თმის დანამატები",
+  topical_treatments: "ადგილობრივი საშუალებები",
+  procedures: "პროცედურები",
+  none: "გავრცელებული თმის მიდგომები",
+};
+
+const COMPARISON_INTRO: Record<TreatmentCategory, string> = {
+  general_supplements:
+    "შენ აქამდე ზოგადი თმის დანამატები სცადე. THAMRA განსხვავებულია იმით, რომ თავიდანვე მენოპაუზის პერიოდში შეცვლილი თმის რამდენიმე საჭიროებისთვის შეიქმნა.",
+  topical_treatments:
+    "შენ აქამდე ძირითადად ადგილობრივი საშუალებები სცადე. THAMRA ყოველდღიური ბიოაქტიური კომპლექსია, რომელიც მენოპაუზის პერიოდში თმის ცვლილებას ორგანიზმის შიგნიდან უდგება.",
+  procedures:
+    "შენ უკვე სცადე თმისთვის განკუთვნილი პროცედურები. THAMRA მათგან განსხვავებით ყოველდღიური, თანმიმდევრული ზრუნვისთვის შექმნილი 6-თვიანი პროგრამაა.",
+  none:
+    "ეს შეიძლება იყოს შენი პირველი მიზანმიმართული ნაბიჯი. THAMRA თავიდანვე მენოპაუზის პერიოდში შეცვლილი თმის მრავალმხრივი ზრუნვისთვის შეიქმნა.",
+};
+
+const LEVEL_SR: Record<ComparisonLevel, string> = {
+  full: "სრულად ითვალისწინებს",
+  partial: "ნაწილობრივ ითვალისწინებს",
+  not_primary: "არ არის ძირითადი მიმართულება",
+};
+
+/** Map the previous-treatment answer (q12, multi-select) into comparison categories. */
+function getSelectedTreatmentCategories(a: Answers): TreatmentCategory[] {
+  const q12 = Array.isArray(a.q12) ? a.q12 : [];
+  const cats: TreatmentCategory[] = [];
+  if (q12.indexOf("a12_supp") !== -1) cats.push("general_supplements");
+  if (q12.indexOf("a12_minox") !== -1) cats.push("topical_treatments");
+  if (q12.indexOf("a12_proc") !== -1) cats.push("procedures");
+  return cats.length > 0 ? cats : ["none"];
+}
+
+function getComparatorLabel(c: TreatmentCategory): string {
+  return COMPARATOR_LABEL[c];
+}
+function getPersonalizedComparisonIntro(c: TreatmentCategory): string {
+  return COMPARISON_INTRO[c];
+}
+function getComparisonRows(c: TreatmentCategory): ComparisonLevel[] {
+  return COMPARATOR_LEVELS[c];
+}
+
+function ComparisonMarker({ level, columnLabel }: { level: ComparisonLevel; columnLabel: string }) {
+  return (
+    <span className={styles.markerWrap}>
+      <span className={`${styles.marker} ${styles["marker_" + level]}`} aria-hidden />
+      <span className={styles.srOnly}>{`${columnLabel} — ${LEVEL_SR[level]}`}</span>
+    </span>
+  );
+}
+
+function ComparatorTabs({
+  categories,
+  active,
+  onChange,
+}: {
+  categories: TreatmentCategory[];
+  active: TreatmentCategory;
+  onChange: (c: TreatmentCategory) => void;
+}) {
+  function handleKey(e: React.KeyboardEvent, idx: number) {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const dir = e.key === "ArrowRight" ? 1 : -1;
+    const next = categories[(idx + dir + categories.length) % categories.length];
+    onChange(next);
+    if (typeof document !== "undefined") {
+      (document.getElementById(`cmp-tab-${next}`) as HTMLElement | null)?.focus();
+    }
+  }
+  return (
+    <div className={styles.tabs} role="tablist" aria-label="შედარების კატეგორია">
+      {categories.map((c, i) => {
+        const selected = c === active;
+        return (
+          <button
+            key={c}
+            id={`cmp-tab-${c}`}
+            role="tab"
+            type="button"
+            aria-selected={selected}
+            aria-controls="cmp-panel"
+            tabIndex={selected ? 0 : -1}
+            className={selected ? `${styles.tab} ${styles.tabActive}` : styles.tab}
+            onClick={() => onChange(c)}
+            onKeyDown={(e) => handleKey(e, i)}
+          >
+            {COMPARATOR_TAB_LABEL[c]}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ComparisonMatrix({ category }: { category: TreatmentCategory }) {
+  const rows = getComparisonRows(category);
+  const compLabel = getComparatorLabel(category);
+  return (
+    <div className={styles.matrix} role="table" aria-label="შედარება THAMRA-სთან">
+      <div className={styles.matrixHead} role="row">
+        <span className={`${styles.cellLabel} ${styles.cellHeadLabel}`} role="columnheader">
+          მიმართულება
+        </span>
+        <span className={`${styles.cellHeadThamra} ${styles.cellThamra} ${styles.cellThamraTop}`} role="columnheader">
+          THAMRA
+        </span>
+        <span className={styles.cellHeadComp} role="columnheader">
+          {compLabel}
+        </span>
+      </div>
+      {COMPARISON_ROW_LABELS.map((label, i) => (
+        <div className={styles.matrixRow} role="row" key={i}>
+          <span className={styles.cellLabel} role="cell">
+            {label}
+          </span>
+          <span
+            className={`${styles.cellMarker} ${styles.cellThamra} ${i === COMPARISON_ROW_LABELS.length - 1 ? styles.cellThamraBottom : ""}`}
+            role="cell"
+          >
+            <ComparisonMarker level="full" columnLabel="THAMRA" />
+          </span>
+          <span className={`${styles.cellMarker} ${styles.cellComp}`} role="cell">
+            <span key={category} className={styles.compFade}>
+              <ComparisonMarker level={rows[i]} columnLabel={compLabel} />
+            </span>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TreatmentComparisonSection({ answers }: { answers: Answers }) {
+  const categories = getSelectedTreatmentCategories(answers);
+  const [active, setActive] = useState<TreatmentCategory>(categories[0]);
+  const multi = categories.length > 1;
+  // The intro reflects the woman's overall experience (first category); the tabs
+  // only swap the comparison column, never the intro.
+  const intro = getPersonalizedComparisonIntro(categories[0]);
+
+  return (
+    <RevealSection id="result-treatment" className={`${styles.mSection} ${styles.compareSection}`}>
+      <div className={styles.compareInner}>
+        <div className={styles.compareLeft}>
+          <span className={`${styles.mEyebrow} ${styles.compareEyebrow}`}>შენი გამოცდილების მიხედვით</span>
+          <h2 className={styles.compareHeadline}>როგორ განსხვავდება THAMRA იმისგან, რაც აქამდე სცადე</h2>
+          <p className={styles.compareIntro}>{intro}</p>
+          {multi && <ComparatorTabs categories={categories} active={active} onChange={setActive} />}
+        </div>
+        <div
+          className={styles.compareRight}
+          role={multi ? "tabpanel" : undefined}
+          id={multi ? "cmp-panel" : undefined}
+          aria-labelledby={multi ? `cmp-tab-${active}` : undefined}
+        >
+          <ComparisonMatrix category={active} />
+          <p className={styles.compareLegend}>
+            <span>
+              <span className={`${styles.legendMarker} ${styles.marker_full}`} aria-hidden /> სრულად ითვალისწინებს
+            </span>
+            <span>
+              <span className={`${styles.legendMarker} ${styles.marker_partial}`} aria-hidden /> ნაწილობრივ
+            </span>
+            <span>
+              <span className={`${styles.legendMarker} ${styles.marker_not_primary}`} aria-hidden /> არ არის ძირითადი მიმართულება
+            </span>
+          </p>
+          <p className={styles.compareClarify}>
+            თითოეულ მიდგომას განსხვავებული დანიშნულება აქვს. შედარება აჩვენებს მათ ძირითად მიმართულებებს; კონკრეტული
+            პროდუქტები და პროცედურები შეიძლება განსხვავდებოდეს.
+          </p>
+        </div>
+      </div>
+    </RevealSection>
+  );
+}
+
+// ─── Result page ──────────────────────────────────────────────────────────────
 
 function ResultScreen({ answers }: { answers: Answers }) {
   const r = computeResult(answers);
   const [moreOpen, setMoreOpen] = useState(false);
+  const reduce = useReducedMotion();
+
+  function scrollTo(id: string) {
+    if (typeof document === "undefined") return;
+    document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  }
 
   function onHairExpert() {
     track({ event_type: "hair_expert_click", screen: "result" });
   }
 
-  const triedList = (r.previousTreatments || []).filter((id) => TREATMENT_TRIED[id]);
   const goalFocus = r.desiredOutcome ? GOAL_FOCUS[r.desiredOutcome] : null;
 
   return (
-    <div className={styles.resultWrap} style={{ paddingBottom: 96 }}>
-      {/* Header */}
-      <span className={styles.driversLabel}>შენი შეფასება</span>
-      <h2 className={styles.resultHeadline} style={{ marginTop: 6 }}>შენი თმის პროფილი</h2>
+    <div className={styles.resultWrap}>
+      {/* SECTION 1 — menopause connection (no product compatibility here) */}
+      <MenopauseConnectionSection r={r} answers={answers} onNext={() => scrollTo("result-hair-stress")} />
 
-      {/* Mandated notices */}
-      {r.messages.map((m, i) => (
-        <div
-          key={i}
-          className={m.type === "redFlag" ? `${styles.notice} ${styles.noticeRed}` : `${styles.notice} ${styles.noticeCompeting}`}
+      {/* SECTION 2 — hair stress level */}
+      <HairStressSection r={r} answers={answers} onNext={() => scrollTo("result-hair-changes")} />
+
+      {/* SECTION 3 — personalized hair changes */}
+      <HairChangesSection answers={answers} onNext={() => scrollTo("result-treatment")} />
+
+      {/* Treatment comparison — how THAMRA differs from what she previously tried */}
+      <TreatmentComparisonSection answers={answers} />
+
+      {/* Trust / education — collapsed by default */}
+      <RevealSection className={styles.mSection}>
+        <button
+          className={styles.accordionToggle}
+          onClick={() => setMoreOpen((v) => !v)}
+          aria-expanded={moreOpen}
         >
-          {m.text}
-        </div>
-      ))}
+          <span>{MORE_ACCORDION_LABEL}</span>
+          <span className={moreOpen ? styles.accordionChevronOpen : styles.accordionChevron} aria-hidden>
+            ⌄
+          </span>
+        </button>
 
-      {/* ── PROFILE CARD: the scannable, personalized snapshot ── */}
-      <div className={styles.resultCard}>
-        <span className={styles.driversLabel}>თმის სტრესის დონე</span>
-        <div className={styles.gaugeWrap}>
-          <Gauge activeIndex={r.hairStressLevel.index} />
-        </div>
-        <p className={styles.gaugeValue}>{r.hairStressLevel.label}</p>
-        <div className={styles.gaugeLegend}>
-          {GAUGE_LABELS.map((l, i) => (
-            <span key={l} className={i === r.hairStressLevel.index ? styles.gaugeLegendActive : undefined}>
-              {l}
-            </span>
-          ))}
-        </div>
-        <p className={styles.gaugeMeaning}>{HAIR_STRESS_MEANING[r.hairStressLevel.index]}</p>
-
-        <div className={styles.levelRows}>
-          <div className={styles.levelRow}>
-            <div className={styles.levelRowHead}>
-              <span className={styles.levelRowLabel}>მენოპაუზასთან კავშირი</span>
-              <span className={`${styles.levelPill} ${styles["lvl" + r.menoLevel.index]}`}>{r.menoLevel.label}</span>
-            </div>
-            <p className={styles.levelMeaning}>{MENO_MEANING[r.menoLevel.index]}</p>
-          </div>
-
-          {!r.redFlag && (
-            <div className={styles.levelRow}>
-              <div className={styles.levelRowHead}>
-                <span className={styles.levelRowLabel}>THAMRA-სთან შესაბამისობა</span>
-                <span className={`${styles.levelPill} ${styles["lvl" + r.thamraLevel.index]}`}>{r.thamraLevel.label}</span>
+        {moreOpen && (
+          <div className={styles.accordionPanel}>
+            <Section label="რატომ არის THAMRA განსხვავებული" heading={WHY_DIFFERENT_INTRO.heading}>
+              <Body text={WHY_DIFFERENT_INTRO.body} />
+              <div className={styles.pillars}>
+                {WHY_DIFFERENT_PILLARS.map((p) => (
+                  <div key={p.title} className={styles.pillarItem}>
+                    <p className={styles.pillarTitle}>{p.title}</p>
+                    <p className={styles.pillarBody}>{p.body}</p>
+                  </div>
+                ))}
               </div>
-              <p className={styles.levelMeaning}>{THAMRA_MEANING[r.thamraLevel.index]}</p>
-            </div>
-          )}
-        </div>
+            </Section>
 
-        <div className={styles.quickFacts}>
-          <div className={styles.quickFact}>
-            <span className={styles.qfLabel}>მთავარი საზრუნავი</span>
-            <span className={styles.qfValue}>{r.strongestSymptom}</span>
+            <Section label="რა არის THAMRA" heading={WHAT_IS_THAMRA.heading}>
+              <p className={styles.resultText}>{WHAT_IS_THAMRA.intro}</p>
+              <BulletList items={WHAT_IS_THAMRA.bullets} />
+              <p className={styles.resultText} style={{ marginTop: 10 }}>{WHAT_IS_THAMRA.outro}</p>
+            </Section>
+
+            <Section label="როგორ შეიქმნა THAMRA" heading={HOW_CREATED.heading}>
+              {HOW_CREATED.paragraphs.map((p, i) => (
+                <Body key={i} text={p} />
+              ))}
+            </Section>
+
+            <Section label="საერთაშორისო სამეცნიერო ხედვა" heading={SCIENCE_BOARD.heading}>
+              {SCIENCE_BOARD.paragraphs.map((p, i) => (
+                <Body key={i} text={p} />
+              ))}
+            </Section>
+
+            <Section label="რატომ შეგიძლია ენდო THAMRA-ს">
+              <div className={styles.trustGrid}>
+                {TRUST_CARDS.map((c) => (
+                  <div key={c.title} className={styles.trustCard}>
+                    <p className={styles.trustCardTitle}>{c.title}</p>
+                    <p className={styles.trustCardBody}>{c.body}</p>
+                  </div>
+                ))}
+              </div>
+            </Section>
           </div>
-          {r.desiredOutcome && OUTCOME_LABEL[r.desiredOutcome] && (
-            <div className={styles.quickFact}>
-              <span className={styles.qfLabel}>შენი მიზანი</span>
-              <span className={styles.qfValue}>{OUTCOME_LABEL[r.desiredOutcome]}</span>
-            </div>
-          )}
-        </div>
-      </div>
+        )}
+      </RevealSection>
 
-      {/* ── PERSONALIZED BRIDGE: profile → what THAMRA focuses on ── */}
-      {goalFocus && (
-        <Section label={BRIDGE.label} heading={BRIDGE.heading}>
-          <p className={styles.resultText}>{BRIDGE.lead}</p>
-          <BulletList items={goalFocus} />
-        </Section>
-      )}
+      {/* Recommendation — softer compatibility wording, shown only after the
+          woman has seen connection → stress → changes → treatment. */}
+      <RevealSection className={styles.mSection}>
+        <span className={styles.mEyebrow}>{BRIDGE.label}</span>
+        <h2 className={styles.mHeadline}>{BRIDGE.heading}</h2>
+        {!r.redFlag && (
+          <p className={styles.mBody}>შენი საჭიროებები კარგად ემთხვევა THAMRA-ს მრავალმხრივ მიდგომას.</p>
+        )}
+        {goalFocus && (
+          <>
+            <p className={styles.resultText}>{BRIDGE.lead}</p>
+            <BulletList items={goalFocus} />
+          </>
+        )}
+      </RevealSection>
 
-      {/* ── PRIMARY CTA: Hair Expert (moved up, reachable fast) ── */}
+      {/* Hair Expert CTA block (sticky bottom bar remains the primary action) */}
       <div className={styles.hairExpertBlock}>
         <span className={styles.driversLabel}>შემდეგი ნაბიჯი</span>
-        <h3 className={styles.sectionHeading}>{HAIR_EXPERT.heading}</h3>
-        <p className={styles.resultText}>{HAIR_EXPERT.introLead}</p>
-        <BulletList items={HAIR_EXPERT.assessmentBullets} />
-        <p className={styles.resultText} style={{ marginTop: 12 }}>{HAIR_EXPERT.helpLead}</p>
+        <h2 className={styles.sectionHeading}>{HAIR_EXPERT.heading}</h2>
+        <p className={styles.resultText}>{HAIR_EXPERT.helpLead}</p>
         <BulletList items={HAIR_EXPERT.helpBullets} />
         <a
           href={HAIR_EXPERT_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          className={styles.ctaBtn}
+          className={`${styles.ctaBtn} ${styles.ctaBtnGhost}`}
           onClick={onHairExpert}
         >
           {HAIR_EXPERT.ctaLabel}
         </a>
         <p className={styles.hairExpertNote}>{HAIR_EXPERT.note}</p>
       </div>
-
-      {/* 5 — რა სცადე აქამდე (treatment history) */}
-      {(triedList.length > 0) && (
-        <Section label="რა სცადე აქამდე">
-          {triedList.map((id, idx) => {
-            const b = TREATMENT_TRIED[id];
-            return (
-              <div key={id} style={idx > 0 ? { marginTop: 18 } : undefined}>
-                <h3 className={styles.sectionHeading}>{b.title}</h3>
-                <Body text={b.body} />
-                {b.bullets && <BulletList items={b.bullets} />}
-                {b.outro && <Body text={b.outro} />}
-              </div>
-            );
-          })}
-          {r.treatmentDuration && TREATMENT_DURATION[r.treatmentDuration] && (
-            <p className={styles.resultText} style={{ marginTop: 14 }}>
-              {TREATMENT_DURATION[r.treatmentDuration]}
-            </p>
-          )}
-          {r.previousTreatmentResult && TREATMENT_RESULT[r.previousTreatmentResult] && (
-            <p className={styles.resultText} style={{ marginTop: 10 }}>
-              {TREATMENT_RESULT[r.previousTreatmentResult]}
-            </p>
-          )}
-        </Section>
-      )}
-
-      <div className={styles.resultDivider} />
-
-      {/* ── LEARN MORE: all brand/education copy, collapsed by default ── */}
-      <button
-        className={styles.accordionToggle}
-        onClick={() => setMoreOpen((v) => !v)}
-        aria-expanded={moreOpen}
-      >
-        <span>{MORE_ACCORDION_LABEL}</span>
-        <span className={moreOpen ? styles.accordionChevronOpen : styles.accordionChevron} aria-hidden>⌄</span>
-      </button>
-
-      {moreOpen && (
-        <div className={styles.accordionPanel}>
-          {/* რატომ არის THAMRA განსხვავებული */}
-          <Section label="რატომ არის THAMRA განსხვავებული" heading={WHY_DIFFERENT_INTRO.heading}>
-            <Body text={WHY_DIFFERENT_INTRO.body} />
-            <div className={styles.pillars}>
-              {WHY_DIFFERENT_PILLARS.map((p) => (
-                <div key={p.title} className={styles.pillarItem}>
-                  <p className={styles.pillarTitle}>{p.title}</p>
-                  <p className={styles.pillarBody}>{p.body}</p>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          {/* რა არის THAMRA */}
-          <Section label="რა არის THAMRA" heading={WHAT_IS_THAMRA.heading}>
-            <p className={styles.resultText}>{WHAT_IS_THAMRA.intro}</p>
-            <BulletList items={WHAT_IS_THAMRA.bullets} />
-            <p className={styles.resultText} style={{ marginTop: 10 }}>{WHAT_IS_THAMRA.outro}</p>
-          </Section>
-
-          {/* როგორ შეიქმნა THAMRA */}
-          <Section label="როგორ შეიქმნა THAMRA" heading={HOW_CREATED.heading}>
-            {HOW_CREATED.paragraphs.map((p, i) => (
-              <Body key={i} text={p} />
-            ))}
-          </Section>
-
-          {/* საერთაშორისო სამეცნიერო ხედვა */}
-          <Section label="საერთაშორისო სამეცნიერო ხედვა" heading={SCIENCE_BOARD.heading}>
-            {SCIENCE_BOARD.paragraphs.map((p, i) => (
-              <Body key={i} text={p} />
-            ))}
-          </Section>
-
-          {/* Trust cards */}
-          <Section label="რატომ შეგიძლია ენდო THAMRA-ს">
-            <div className={styles.trustGrid}>
-              {TRUST_CARDS.map((c) => (
-                <div key={c.title} className={styles.trustCard}>
-                  <p className={styles.trustCardTitle}>{c.title}</p>
-                  <p className={styles.trustCardBody}>{c.body}</p>
-                </div>
-              ))}
-            </div>
-          </Section>
-        </div>
-      )}
-
-      <p className={styles.footnote} style={{ marginTop: 24 }}>{RESULT_DISCLAIMER}</p>
     </div>
   );
 }
