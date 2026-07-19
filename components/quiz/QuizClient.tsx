@@ -979,13 +979,6 @@ const COMPARATOR_LABEL: Record<TreatmentCategory, string> = {
   none: "გავრცელებული თმის მიდგომები",
 };
 
-const COMPARATOR_TAB_LABEL: Record<TreatmentCategory, string> = {
-  general_supplements: "ბიოტინი და მულტივიტამინები",
-  topical_treatments: "შამპუნები, სერუმები და ადგილობრივი საშუალები",
-  procedures: "პროცედურები",
-  none: "გავრცელებული თმის მიდგომები",
-};
-
 const COMPARISON_INTRO: Record<TreatmentCategory, string> = {
   general_supplements:
     "შენ აქამდე ზოგადი თმის დანამატები სცადე. THAMRA განსხვავებულია იმით, რომ თავიდანვე მენოპაუზის პერიოდში შეცვლილი თმის რამდენიმე საჭიროებისთვის შეიქმნა.",
@@ -1013,14 +1006,8 @@ function getSelectedTreatmentCategories(a: Answers): TreatmentCategory[] {
   return cats.length > 0 ? cats : ["none"];
 }
 
-function getComparatorLabel(c: TreatmentCategory): string {
-  return COMPARATOR_LABEL[c];
-}
 function getPersonalizedComparisonIntro(c: TreatmentCategory): string {
   return COMPARISON_INTRO[c];
-}
-function getComparisonRows(c: TreatmentCategory): ComparisonLevel[] {
-  return COMPARATOR_LEVELS[c];
 }
 
 function ComparisonMarker({ level, columnLabel }: { level: ComparisonLevel; columnLabel: string }) {
@@ -1032,54 +1019,11 @@ function ComparisonMarker({ level, columnLabel }: { level: ComparisonLevel; colu
   );
 }
 
-function ComparatorTabs({
-  categories,
-  active,
-  onChange,
-}: {
-  categories: TreatmentCategory[];
-  active: TreatmentCategory;
-  onChange: (c: TreatmentCategory) => void;
-}) {
-  function handleKey(e: React.KeyboardEvent, idx: number) {
-    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-    e.preventDefault();
-    const dir = e.key === "ArrowRight" ? 1 : -1;
-    const next = categories[(idx + dir + categories.length) % categories.length];
-    onChange(next);
-    if (typeof document !== "undefined") {
-      (document.getElementById(`cmp-tab-${next}`) as HTMLElement | null)?.focus();
-    }
-  }
-  return (
-    <div className={styles.tabs} role="tablist" aria-label="შედარების კატეგორია">
-      {categories.map((c, i) => {
-        const selected = c === active;
-        return (
-          <button
-            key={c}
-            id={`cmp-tab-${c}`}
-            role="tab"
-            type="button"
-            aria-selected={selected}
-            aria-controls="cmp-panel"
-            tabIndex={selected ? 0 : -1}
-            className={selected ? `${styles.tab} ${styles.tabActive}` : styles.tab}
-            onClick={() => onChange(c)}
-            onKeyDown={(e) => handleKey(e, i)}
-          >
-            {COMPARATOR_TAB_LABEL[c]}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+// The comparison shows THAMRA against the two most common prior approaches.
+const MATRIX_COMPARATORS: TreatmentCategory[] = ["general_supplements", "topical_treatments"];
 
-function ComparisonMatrix({ category }: { category: TreatmentCategory }) {
-  const rows = getComparisonRows(category);
-  const compLabel = getComparatorLabel(category); // full label for screen readers
-  const compHeader = COMPARATOR_TAB_LABEL[category]; // short label for the column header
+function ComparisonMatrix() {
+  const lastRow = COMPARISON_ROW_LABELS.length - 1;
   return (
     <div className={styles.matrix} role="table" aria-label="შედარება THAMRA-სთან">
       <div className={styles.matrixHead} role="row">
@@ -1087,9 +1031,11 @@ function ComparisonMatrix({ category }: { category: TreatmentCategory }) {
         <span className={`${styles.cellHeadThamra} ${styles.cellThamra} ${styles.cellThamraTop}`} role="columnheader">
           THAMRA
         </span>
-        <span className={styles.cellHeadComp} role="columnheader">
-          {compHeader}
-        </span>
+        {MATRIX_COMPARATORS.map((c) => (
+          <span key={c} className={styles.cellHeadComp} role="columnheader">
+            {COMPARATOR_LABEL[c]}
+          </span>
+        ))}
       </div>
       {COMPARISON_ROW_LABELS.map((label, i) => (
         <div className={styles.matrixRow} role="row" key={i}>
@@ -1097,16 +1043,16 @@ function ComparisonMatrix({ category }: { category: TreatmentCategory }) {
             {label}
           </span>
           <span
-            className={`${styles.cellMarker} ${styles.cellThamra} ${i === COMPARISON_ROW_LABELS.length - 1 ? styles.cellThamraBottom : ""}`}
+            className={`${styles.cellMarker} ${styles.cellThamra} ${i === lastRow ? styles.cellThamraBottom : ""}`}
             role="cell"
           >
             <ComparisonMarker level="full" columnLabel="THAMRA" />
           </span>
-          <span className={`${styles.cellMarker} ${styles.cellComp}`} role="cell">
-            <span key={category} className={styles.compFade}>
-              <ComparisonMarker level={rows[i]} columnLabel={compLabel} />
+          {MATRIX_COMPARATORS.map((c) => (
+            <span key={c} className={`${styles.cellMarker} ${styles.cellComp}`} role="cell">
+              <ComparisonMarker level={COMPARATOR_LEVELS[c][i]} columnLabel={COMPARATOR_LABEL[c]} />
             </span>
-          </span>
+          ))}
         </div>
       ))}
     </div>
@@ -1115,10 +1061,6 @@ function ComparisonMatrix({ category }: { category: TreatmentCategory }) {
 
 function TreatmentComparisonSection({ answers }: { answers: Answers }) {
   const categories = getSelectedTreatmentCategories(answers);
-  const [active, setActive] = useState<TreatmentCategory>(categories[0]);
-  const multi = categories.length > 1;
-  // The intro reflects the woman's overall experience (first category); the tabs
-  // only swap the comparison column, never the intro.
   const intro = getPersonalizedComparisonIntro(categories[0]);
 
   return (
@@ -1128,15 +1070,9 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
           <span className={`${styles.mEyebrow} ${styles.compareEyebrow}`}>შენი გამოცდილების მიხედვით</span>
           <h2 className={styles.compareHeadline}>როგორ განსხვავდება THAMRA</h2>
           <p className={styles.compareIntro}>{intro}</p>
-          {multi && <ComparatorTabs categories={categories} active={active} onChange={setActive} />}
         </div>
-        <div
-          className={styles.compareRight}
-          role={multi ? "tabpanel" : undefined}
-          id={multi ? "cmp-panel" : undefined}
-          aria-labelledby={multi ? `cmp-tab-${active}` : undefined}
-        >
-          <ComparisonMatrix category={active} />
+        <div className={styles.compareRight}>
+          <ComparisonMatrix />
           <p className={styles.compareLegend}>
             <span>
               <span className={`${styles.legendMarker} ${styles.marker_full}`} aria-hidden /> სრულად ითვალისწინებს
