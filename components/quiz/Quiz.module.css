@@ -2163,11 +2163,12 @@
 
 .compareHeadline {
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
-  font-size: clamp(32px, 8vw, 40px);
+  font-size: clamp(29px, 7vw, 36px);
   font-weight: 300;
-  line-height: 1.1;
+  line-height: 1.12;
   color: var(--thamra-burgundy);
   margin: 0;
+  max-width: 12ch;
 }
 
 .compareIntro {
@@ -2221,7 +2222,7 @@
 .matrixHead,
 .matrixRow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 72px 84px;
+  grid-template-columns: minmax(0, 1fr) 60px 68px;
   align-items: stretch;
 }
 

@@ -958,12 +958,12 @@ type ComparisonLevel = "full" | "partial" | "not_primary";
 type TreatmentCategory = "general_supplements" | "topical_treatments" | "procedures" | "none";
 
 const COMPARISON_ROW_LABELS = [
-  "შექმნილია მენოპაუზის პერიოდში თმისთვის",
-  "ერთდროულად ზრუნავს ცვენაზე, სიმკვრივესა და ხარისხზე",
-  "ითვალისწინებს ძილისა და სტრესის ცვლილებებს",
-  "ზრუნავს თმის ღერის სიმტკიცესა და ტენიანობაზე",
-  "ყოველდღიური, შინაგანი ზრუნვა",
-  "6-თვიანი პროგრამა და პროგრესის შეფასება",
+  "მენოპაუზისთვის შექმნილი",
+  "ცვენა, სიმკვრივე, ხარისხი",
+  "ძილი და სტრესი",
+  "ღერის სიმტკიცე და ტენი",
+  "ყოველდღიური ზრუნვა",
+  "6-თვიანი პროგრამა",
 ];
 
 const COMPARATOR_LEVELS: Record<TreatmentCategory, ComparisonLevel[]> = {
@@ -1079,18 +1079,17 @@ function ComparatorTabs({
 
 function ComparisonMatrix({ category }: { category: TreatmentCategory }) {
   const rows = getComparisonRows(category);
-  const compLabel = getComparatorLabel(category);
+  const compLabel = getComparatorLabel(category); // full label for screen readers
+  const compHeader = COMPARATOR_TAB_LABEL[category]; // short label for the column header
   return (
     <div className={styles.matrix} role="table" aria-label="შედარება THAMRA-სთან">
       <div className={styles.matrixHead} role="row">
-        <span className={`${styles.cellLabel} ${styles.cellHeadLabel}`} role="columnheader">
-          მიმართულება
-        </span>
+        <span className={`${styles.cellLabel} ${styles.cellHeadLabel}`} role="columnheader" aria-hidden />
         <span className={`${styles.cellHeadThamra} ${styles.cellThamra} ${styles.cellThamraTop}`} role="columnheader">
           THAMRA
         </span>
         <span className={styles.cellHeadComp} role="columnheader">
-          {compLabel}
+          {compHeader}
         </span>
       </div>
       {COMPARISON_ROW_LABELS.map((label, i) => (
@@ -1128,7 +1127,7 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
       <div className={styles.compareInner}>
         <div className={styles.compareLeft}>
           <span className={`${styles.mEyebrow} ${styles.compareEyebrow}`}>შენი გამოცდილების მიხედვით</span>
-          <h2 className={styles.compareHeadline}>როგორ განსხვავდება THAMRA იმისგან, რაც აქამდე სცადე</h2>
+          <h2 className={styles.compareHeadline}>როგორ განსხვავდება THAMRA</h2>
           <p className={styles.compareIntro}>{intro}</p>
           {multi && <ComparatorTabs categories={categories} active={active} onChange={setActive} />}
         </div>
