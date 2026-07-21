@@ -21,7 +21,7 @@ export type Answers = {
   q2_surgical?: boolean;
   q3?: string[];
   q4?: string;
-  q5?: string;
+  q5?: string[];
   q6?: string;
   q7?: string;
   q8?: string;
@@ -206,8 +206,9 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: "q5",
-    type: "single",
+    type: "multi",
     title: "რომელ ცვლილებას ამჩნევ ყველაზე მეტად?",
+    hint: "შესაძლებელია რამდენიმე პასუხის არჩევა.",
     options: [
       { id: "a5_shedding", label: "უფრო მეტი თმა მრჩება სავარცხელზე ან შხაპში" },
       { id: "a5_volume", label: "თმის საერთო ან კუდის მოცულობა შემცირდა" },
@@ -488,7 +489,12 @@ export function computeResult(answers: Answers): Result {
   const surgical = !!answers.q2_surgical;
   const q3 = Array.isArray(answers.q3) ? answers.q3 : [];
   const q4 = answers.q4;
-  const q5 = answers.q5;
+  const q5 = Array.isArray(answers.q5) ? answers.q5 : [];
+  // q5 is now multi-select. The "primary" change is the selected option with the
+  // highest hair-stress weight (ties keep option order) — used for personalized copy.
+  const q5Primary = q5
+    .slice()
+    .sort((a, b) => (C.hairStress.mainChange[b] || 0) - (C.hairStress.mainChange[a] || 0))[0];
   const q7 = answers.q7;
   const q8 = answers.q8;
   const q9 = answers.q9;
@@ -533,7 +539,7 @@ export function computeResult(answers: Answers): Result {
 
   /* ---- hair stress score ---- */
   let hairStress = 0;
-  hairStress += (q5 && C.hairStress.mainChange[q5]) || 0;
+  hairStress += q5.reduce((m, id) => Math.max(m, C.hairStress.mainChange[id] || 0), 0);
   hairStress += (q7 && C.hairStress.development[q7]) || 0;
   hairStress += (q8 && C.hairStress.severity[q8]) || 0;
   hairStress += (q9 && C.hairStress.fibre[q9]) || 0;
@@ -543,7 +549,7 @@ export function computeResult(answers: Answers): Result {
   let thamra = 0;
   const menoContrib = bandPts(meno, C.thamraFit.menoContribution);
   thamra += menoContrib;
-  thamra += (q5 && C.thamraFit.hairChangeType[q5]) || 0;
+  thamra += q5.reduce((m, id) => Math.max(m, C.thamraFit.hairChangeType[id] || 0), 0);
   thamra += (q8 && C.thamraFit.stage[q8]) || 0;
   thamra += (q7 && C.thamraFit.duration[q7]) || 0;
   thamra += redFlag ? 0 : C.thamraFit.safetyNoRedFlag;
@@ -559,7 +565,7 @@ export function computeResult(answers: Answers): Result {
 
   /* ---- personalization ---- */
   const personalization = buildPersonalization({
-    q5,
+    q5: q5Primary,
     menoLevel,
     hairStressLevel,
     thamraLevel,
@@ -591,7 +597,7 @@ export function computeResult(answers: Answers): Result {
     desiredOutcome,
     emotionalImpact,
     preMenopause,
-    strongestSymptom: (q5 && STRONGEST_SYMPTOM[q5]) || "თმის ცვლილება",
+    strongestSymptom: (q5Primary && STRONGEST_SYMPTOM[q5Primary]) || "თმის ცვლილება",
     personalization,
     treatmentJourney,
     messages: buildMessages(redFlag, competingCause),

@@ -8,6 +8,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* Contain any transient horizontal overflow (screen-slide transforms, the
+     comparison section's desktop breakout) without creating a scroll container. */
+  overflow-x: clip;
 }
 
 .logo {
@@ -1895,6 +1898,9 @@
 .mainResult {
   max-width: 680px;
   padding: 16px var(--page-padding) 140px;
+  /* Let the comparison section break out wider than the 680px reading column on
+     desktop; horizontal overflow is contained by .page (overflow-x: clip). */
+  overflow-x: visible;
 
   /* Design tokens — mapped to the existing THAMRA palette */
   --thamra-background: #f2ebe3;
@@ -1904,6 +1910,7 @@
   --thamra-burgundy: #8b2f3a;
   --thamra-gold: #bd8f49;
   --thamra-gold-ink: #8a6a1f; /* AA-contrast gold for small text */
+  --thamra-ink: #2e2724; /* darkest neutral — card & tile titles (distinct from maroon) */
   --thamra-line: rgba(77, 60, 56, 0.14);
 
   --page-padding: 20px;
@@ -1931,7 +1938,7 @@
 }
 
 .mHero {
-  min-height: 88svh;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   padding-top: 8px;
@@ -2030,74 +2037,115 @@
   outline-offset: 3px;
 }
 
-/* Section 2 — horizontal stress meter */
-.meter { margin: 4px 0 8px; }
-.meterTrack {
+/* Section 2 — organic hair-spectrum visualization
+   A soft, overlapping-strand band — not a slider, gauge, scale or dashboard. */
+.spectrumWrap { margin: 10px 0 2px; }
+.spectrumStage {
   position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 16px;
+  width: 100%;
+  height: clamp(56px, 17vw, 72px);
 }
-.meterTrack::before {
+.spectrumBand {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    #f4ecdf 0%,
+    #ecd6cd 30%,
+    #d7a3a6 56%,
+    #b25a60 78%,
+    #8b2f3a 100%
+  );
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    inset 0 -3px 8px rgba(90, 20, 30, 0.14),
+    0 8px 22px rgba(139, 47, 58, 0.12);
+}
+.spectrumStrands {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.spectrumOrb {
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 38% 34%, #cc6470 0%, #8b2f3a 55%, #6d2029 100%);
+  box-shadow:
+    0 0 0 6px rgba(139, 47, 58, 0.16),
+    0 0 20px 7px rgba(139, 47, 58, 0.5),
+    0 2px 6px rgba(90, 20, 30, 0.45);
+  z-index: 2;
+}
+.spectrumOrb::after {
   content: "";
   position: absolute;
-  left: 7px;
-  right: 7px;
-  top: 50%;
-  height: 2px;
-  background: var(--thamra-line);
-  transform: translateY(-50%);
-}
-.meterDot {
-  width: 9px;
-  height: 9px;
+  inset: -12px;
   border-radius: 50%;
-  background: rgba(77, 60, 56, 0.28);
-  position: relative;
-  z-index: 1;
+  background: radial-gradient(circle, rgba(139, 47, 58, 0.4) 0%, rgba(139, 47, 58, 0) 70%);
+  animation: orbGlow 3.4s ease-in-out infinite;
 }
-.meterDotActive {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--thamra-burgundy);
-  box-shadow: 0 0 0 4px rgba(139, 47, 58, 0.14);
-  position: relative;
-  z-index: 1;
+@keyframes orbGlow {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 0.32; }
 }
-.meterEnds {
+.spectrumEnds {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  gap: 16px;
+  margin-top: 15px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 400;
+  letter-spacing: 0.01em;
   color: var(--thamra-muted);
 }
+.spectrumEnds span:last-child { text-align: right; }
 
-/* Section 2 — editorial insight rows */
-.insightRows { margin-top: 30px; }
-.insightRow {
+/* Section 2 — two numbered editorial observations (no cards, pills or borders) */
+.observations {
+  margin-top: 34px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 20px 0;
-  border-top: 1px solid var(--thamra-line);
+  gap: 26px;
 }
-.insightRow:last-child { border-bottom: 1px solid var(--thamra-line); }
-.insightLabel {
+.observation {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+.observationNum {
+  flex-shrink: 0;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 13px;
-  font-weight: 400;
-  color: var(--thamra-muted);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--thamra-gold-ink);
+  white-space: nowrap;
 }
-.insightValue {
+.observationBody { flex: 1; min-width: 0; }
+.observationTitle {
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
-  font-size: 23px;
+  font-size: 24px;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.15;
+  color: var(--thamra-burgundy);
+  margin: 0 0 6px;
+}
+.observationText {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.55;
   color: var(--thamra-text);
+  margin: 0;
 }
 
 /* Section 3 — numbered change rows */
@@ -2138,6 +2186,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mBtn { transition: none; }
+  .spectrumOrb::after { animation: none; }
 }
 
 /* ============================================================
@@ -2163,24 +2212,35 @@
 
 .compareHeadline {
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
-  font-size: clamp(30px, 7.2vw, 38px);
+  font-size: clamp(30px, 7.6vw, 40px);
   font-weight: 500;
-  line-height: 1.16;
+  font-style: italic;
+  line-height: 1.2;
   letter-spacing: 0.005em;
   color: var(--thamra-burgundy);
   margin: 0;
-  max-width: 13ch;
+}
+.compareHeadlineBrand {
+  color: var(--thamra-gold);
 }
 
 .compareIntro {
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 16px;
+  font-size: 17px; /* shared body size — matches the about section */
   font-weight: 400;
-  line-height: 1.62;
+  line-height: 1.55;
   letter-spacing: 0.006em;
-  color: var(--cmp-muted);
-  margin: 22px 0 0;
-  max-width: 34ch;
+  color: var(--thamra-text); /* #4a3f3c — AA, not the low-contrast muted */
+  margin: 16px 0 0;
+  max-width: 62ch;
+}
+
+/* Table lives full-width below the intro; scrolls horizontally on small screens
+   instead of shrinking (no transforms — text stays at natural size). */
+.compareTableWrap {
+  margin-top: 28px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Comparator tabs — understated text tabs with a gold underline */
@@ -2220,35 +2280,36 @@
 
 /* Matrix — a soft, refined cream panel (featured THAMRA column inset) */
 .matrix {
-  margin-top: 34px;
-  background: var(--thamra-surface);
-  border: 1px solid rgba(201, 169, 110, 0.22);
-  border-radius: 22px;
-  padding: 8px 14px 16px;
-  box-shadow: 0 16px 48px rgba(74, 63, 60, 0.08);
+  width: 100%;
+  min-width: 560px; /* keeps the 4 columns readable; wrapper scrolls below this */
+  background: #ffffff; /* clearly whiter than the cream page bg */
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 18px;
+  padding: 6px 20px 14px;
+  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.05), 0 16px 44px rgba(46, 39, 36, 0.09);
 }
 
 .matrixHead,
 .matrixRow {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) repeat(3, 54px);
+  grid-template-columns: minmax(190px, 2.6fr) repeat(3, minmax(124px, 1fr));
   align-items: stretch;
 }
 
 .cellLabel {
   display: flex;
   align-items: center;
-  min-height: 82px;
-  padding: 18px 10px 18px 0;
+  min-height: 68px;
+  padding: 16px 14px 16px 4px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 13.5px;
-  font-weight: 400;
-  line-height: 1.38;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.45;
   letter-spacing: 0.004em;
-  color: var(--cmp-text);
+  color: var(--thamra-ink); /* darkest neutral — row titles read as the content tier */
 }
 .cellHeadLabel {
-  min-height: 48px;
+  min-height: 52px;
   padding: 0;
 }
 
@@ -2263,7 +2324,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 82px;
+  min-height: 68px; /* matches .cellLabel — consistent row heights */
 }
 
 .cellHeadThamra,
@@ -2272,12 +2333,12 @@
   align-items: flex-end;
   justify-content: center;
   text-align: center;
-  min-height: 48px;
-  padding: 8px 2px 10px;
+  min-height: 56px;
+  padding: 8px 6px 12px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 10px;
-  line-height: 1.2;
-  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: break-word;
   hyphens: none;
 }
 .cellHeadThamra {
@@ -2285,12 +2346,13 @@
   font-weight: 600;
   letter-spacing: 0.04em;
 }
-.cellHeadComp { color: var(--cmp-muted); font-weight: 400; }
+.cellHeadComp { color: var(--thamra-text); font-weight: 500; }
 
-/* Featured THAMRA column — a soft gold inset panel running the full height */
-.cellThamra { background: rgba(201, 169, 110, 0.16); }
-.cellThamraTop { border-radius: 14px 14px 0 0; }
-.cellThamraBottom { border-radius: 0 0 14px 14px; }
+/* Featured THAMRA column — a subtle warm-cream column running full height (not a
+   narrow floating capsule; it reads as one continuous highlighted column). */
+.cellThamra { background: rgba(201, 169, 110, 0.1); }
+.cellThamraTop { border-radius: 10px 10px 0 0; }
+.cellThamraBottom { border-radius: 0 0 10px 10px; }
 
 /* Markers — small and refined */
 .markerWrap { display: inline-flex; }
@@ -2331,7 +2393,7 @@
 }
 .marker_not_primary {
   background: transparent;
-  border: 1px solid rgba(77, 60, 56, 0.22);
+  border: 1px solid rgba(77, 60, 56, 0.32);
 }
 
 /* Fade only the comparator column when the tab changes */
@@ -2348,8 +2410,9 @@
   gap: 8px 20px;
   margin: 26px 0 0;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 12.5px;
-  color: var(--cmp-muted);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--thamra-text);
 }
 .compareLegend span {
   display: inline-flex;
@@ -2378,29 +2441,366 @@
   border: 0;
 }
 
-/* Desktop — two-part editorial composition (headline left, matrix right) */
+/* Desktop — vertical composition, broken out to a centered ~1140px width so the
+   table has room to breathe (heading → intro → full-width table → legend). The
+   breakout uses margins only (no transform — framer-motion owns transform here). */
 @media (min-width: 900px) {
-  .compareInner {
-    display: grid;
-    grid-template-columns: minmax(0, 32%) 1fr;
-    gap: 60px;
-    align-items: start;
+  .compareSection {
+    width: min(1140px, calc(100vw - 48px));
+    margin-left: calc(50% - min(1140px, calc(100vw - 48px)) / 2);
+  }
+  .compareHeadline {
+    text-align: center;
+  }
+  .compareIntro {
+    text-align: center;
+    max-width: 68ch;
+    margin-left: auto;
+    margin-right: auto;
   }
   .matrix {
-    margin-top: 0;
-    padding: 12px 24px 22px;
+    min-width: 0; /* full width — no horizontal scroll needed on desktop */
+    padding: 8px 28px 18px;
   }
   .matrixHead,
   .matrixRow {
-    grid-template-columns: minmax(0, 1fr) repeat(3, 80px);
+    grid-template-columns: minmax(0, 2.8fr) repeat(3, minmax(150px, 1fr));
   }
-  .cellLabel { font-size: 15px; padding-right: 16px; }
+  .cellLabel {
+    font-size: 16px;
+    min-height: 74px;
+  }
+  .cellMarker {
+    min-height: 74px;
+  }
   .cellHeadThamra,
-  .cellHeadComp { font-size: 12px; }
+  .cellHeadComp {
+    font-size: 14px;
+  }
   .marker { width: 15px; height: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .compFade { animation: none; }
   .tab { transition: none; }
+}
+
+/* ============================================================
+   RESULT — "გაიგე მეტი THAMRA-ზე" redesign
+   One-line lead-in + independently collapsible info cards,
+   a benefit icon grid, and compact expert cards. Replaces the
+   single mega-accordion and the solid-maroon CTA block.
+   ============================================================ */
+
+/* ── Lead-in: one-line definition, positioning stated once ── */
+.aboutIntro {
+  margin-bottom: 4px;
+}
+
+.aboutHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(30px, 7.6vw, 40px); /* shared scale — matches .compareHeadline */
+  font-weight: 300;
+  line-height: 1.14;
+  color: var(--thamra-burgundy);
+  margin: 0 0 14px;
+}
+.aboutHeadingBrand {
+  color: var(--thamra-gold);
+  font-style: italic;
+}
+.aboutDefinition {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px; /* shared body size */
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--thamra-text); /* #4a3f3c — AA on white/cream */
+  margin: 0;
+  max-width: 62ch;
+}
+
+/* ── Independently collapsible info cards ── */
+.infoCards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.infoCard {
+  background: #ffffff; /* clearly whiter than the cream page bg (#f2ebe3) */
+  border: 1px solid rgba(77, 60, 56, 0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(46, 39, 36, 0.05), 0 6px 16px rgba(46, 39, 36, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.infoCardOpen {
+  border-color: rgba(189, 143, 73, 0.5);
+  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.06), 0 10px 24px rgba(46, 39, 36, 0.07);
+}
+
+.infoCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 68px; /* large mobile tap target */
+  padding: 17px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.infoCardHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.infoCardLabel {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 20px;
+  font-weight: 600; /* titles heavier than 400 body for clear hierarchy */
+  line-height: 1.25;
+  color: var(--thamra-ink); /* dark neutral — distinct from the maroon heading */
+}
+.infoCardTeaser {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--thamra-muted);
+}
+
+.infoCardChevron,
+.infoCardChevronOpen {
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--thamra-gold-ink);
+  transition: transform 0.25s ease;
+}
+.infoCardChevronOpen {
+  transform: rotate(180deg);
+}
+
+.infoCardPanel {
+  padding: 2px 20px 22px;
+  animation: accordionIn 0.28s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .infoCardPanel { animation: none; }
+}
+
+.aboutBody {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px; /* shared body size — matches .aboutDefinition */
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--thamra-text);
+  margin: 0;
+  max-width: 64ch;
+}
+
+/* ── "Who it's for" gold-check checklist ── */
+.whoList {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.whoList li {
+  position: relative;
+  padding-left: 30px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--thamra-text);
+}
+.whoList li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(189, 143, 73, 0.16);
+  color: var(--thamra-gold-ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── Benefit icon grid ── */
+.benefitGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 2px;
+}
+@media (min-width: 560px) {
+  .benefitGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+  }
+}
+.benefitTile {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.benefitIcon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(189, 143, 73, 0.12);
+  color: var(--thamra-burgundy);
+}
+.benefitText {
+  min-width: 0;
+}
+.benefitTitle {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--thamra-ink);
+  margin: 0 0 3px;
+}
+.benefitMech {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--thamra-muted);
+  margin: 0;
+}
+
+/* ── Compact expert cards ── */
+.expertGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.expertCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: rgba(139, 47, 58, 0.035);
+  border: 1px solid var(--thamra-line);
+  border-radius: 12px;
+}
+.expertPhoto {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  background: rgba(189, 143, 73, 0.15);
+}
+.expertMeta {
+  min-width: 0;
+}
+.expertName {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--thamra-burgundy);
+  margin: 0 0 3px;
+}
+.expertRole {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--thamra-muted);
+  margin: 0;
+}
+
+/* ── "What next" — quieter secondary CTA (sticky gold bar is primary) ── */
+.nextStep {
+  margin-top: 44px;
+  background: var(--thamra-surface);
+  border: 1px solid rgba(189, 143, 73, 0.4);
+  border-radius: 16px;
+  padding: 28px 22px;
+}
+.nextStepLabel {
+  display: block;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--thamra-gold-ink);
+  margin-bottom: 12px;
+}
+.nextStepHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(1.35rem, 4.6vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--thamra-burgundy);
+  margin: 0 0 14px;
+}
+.nextStepLead {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--thamra-text);
+  margin: 0;
+}
+.nextStepBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 22px;
+  padding: 15px 24px;
+  background: transparent;
+  color: var(--thamra-burgundy);
+  border: 1.5px solid rgba(139, 47, 58, 0.4);
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  transition: background 0.2s, border-color 0.2s;
+}
+.nextStepBtn:hover {
+  background: rgba(139, 47, 58, 0.05);
+  border-color: rgba(139, 47, 58, 0.6);
+}
+.nextStepNote {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--thamra-muted);
+  margin: 14px 0 0;
+  text-align: center;
 }
