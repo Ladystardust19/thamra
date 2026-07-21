@@ -2564,9 +2564,9 @@
 .infoCardLabel {
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
   font-size: 20px;
-  font-weight: 600; /* titles heavier than 400 body for clear hierarchy */
+  font-weight: 600;
   line-height: 1.25;
-  color: var(--thamra-ink); /* dark neutral — distinct from the maroon heading */
+  color: var(--thamra-burgundy); /* brand maroon — reverted from the neutral ink */
 }
 .infoCardTeaser {
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
@@ -2803,4 +2803,38 @@
   color: var(--thamra-muted);
   margin: 14px 0 0;
   text-align: center;
+}
+
+/* ============================================================
+   RESULT — Cal.com consultation booking section (Zone B)
+   ============================================================ */
+.bookingSection {
+  background: #f2ebe3; /* cream — matches the result page */
+}
+.bookingHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(30px, 7.6vw, 40px);
+  font-weight: 300;
+  line-height: 1.14;
+  color: var(--thamra-burgundy);
+  margin: 14px 0 0;
+}
+.bookingSubtext {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--thamra-text);
+  margin: 12px 0 0;
+  max-width: 60ch;
+}
+.calEmbedWrap {
+  margin-top: 26px;
+  width: 100%;
+  min-height: 560px; /* fallback before the embed loads; grows to fit content */
+  background: #ffffff;
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.05), 0 16px 44px rgba(46, 39, 36, 0.09);
 }

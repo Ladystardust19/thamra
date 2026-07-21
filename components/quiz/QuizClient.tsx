@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import styles from "./Quiz.module.css";
+import ConsultationBooking from "./ConsultationBooking";
 import { supabase } from "@/lib/supabase";
 import {
   QUESTIONS,
@@ -1168,6 +1169,14 @@ function ResultScreen({ answers }: { answers: Answers }) {
       {/* Treatment comparison — how THAMRA differs from what she previously tried */}
       <TreatmentComparisonSection answers={answers} />
 
+      {/* Cal.com consultation booking (Zone B — after the comparison table) */}
+      <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
+        <span className={styles.mEyebrow}>დაჯავშნე დრო</span>
+        <h2 className={styles.bookingHeading}>დაჯავშნე კონსულტაცია</h2>
+        <p className={styles.bookingSubtext}>ესაუბრე THAMRA-ს ექსპერტს შენს თმის პროფილზე</p>
+        <ConsultationBooking />
+      </RevealSection>
+
       {/* გაიგე მეტი THAMRA-ზე — independent progressive-disclosure cards */}
       <RevealSection id="result-about" className={styles.mSection}>
         <div className={styles.aboutIntro}>
@@ -1259,7 +1268,6 @@ function ResultScreen({ answers }: { answers: Answers }) {
         >
           {HAIR_EXPERT.ctaLabel}
         </a>
-        <p className={styles.nextStepNote}>{HAIR_EXPERT.note}</p>
       </div>
     </div>
   );
