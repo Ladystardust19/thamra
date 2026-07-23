@@ -7,6 +7,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 
 /*
  * Mixed-script type system. Latin glyphs render in Cormorant/Jost; Georgian
@@ -81,6 +82,7 @@ export default function RootLayout({
 
         <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

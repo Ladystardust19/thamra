@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
-  { label: "ჩვენ შესახებ", href: "#story" },
-  { label: "მეცნიერება",   href: "#science" },
-  { label: "კონტაქტი",     href: "#footer" },
+  { label: "ჩვენ შესახებ", href: "/#about" },
+  { label: "პროგრამები",   href: "/programs" },
+  { label: "მეცნიერება",   href: "/#science" },
+  { label: "კონტაქტი",     href: "/contact" },
   { label: "ჩემი ოთახი",    href: "/cabinet" },
 ];
 

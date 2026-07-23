@@ -462,6 +462,46 @@ export default function Home() {
       <ThamraDivider />
 
       {/* ============================================================ */}
+      {/* ABOUT — ჩვენ შესახებ                                         */}
+      {/* ============================================================ */}
+      <section id="about" className="scroll-mt-24 bg-cream">
+        <div className={`${CONTAINER} py-20 md:py-[120px]`}>
+          <Reveal>
+            <div className="mx-auto max-w-3xl">
+              <h2 className="font-display text-[2rem] font-normal italic leading-[1.15] text-oxblood md:text-[3rem]">
+                ჩვენ შესახებ
+              </h2>
+              <div className="mt-8 space-y-5 font-body text-[17px] sm:text-[19px] font-light leading-[1.85] text-read">
+                <p>
+                  THAMRA შევქმენით მენოპაუზის ბიოლოგიური ცვლილებების გათვალისწინებით — ქალებისთვის, რომლებიც ეძებენ გააზრებულ და თანმიმდევრულ გზას თმის სიმკვრივეზე, მოცულობასა და ხარისხზე ზრუნვისთვის.
+                </p>
+                <p>
+                  მენოპაუზის პერიოდში თმის ცვლილება იშვიათად უკავშირდება მხოლოდ ერთ მიზეზს. მასზე შეიძლება ერთდროულად მოქმედებდეს ჰორმონალური ცვლილებები, ფოლიკულის მგრძნობელობა, ორგანიზმის კვებითი საჭიროებები, შინაგანი ბალანსი, სკალპის გარემო და ნუტრიენტების ათვისება.
+                </p>
+                <p>
+                  სწორედ ამიტომ, როდესაც პრობლემა მრავალმხრივია, ზრუნვაც მრავალმხრივი უნდა იყოს.
+                </p>
+                <p>
+                  THAMRA აერთიანებს მიმართულებებს, რომლებიც ამ პერიოდში თმის ცვლილებებთან ყველაზე ხშირად არის დაკავშირებული — ერთ ყოველდღიურ, ელეგანტურ რიტუალში. ის შეიქმნა როგორც მეცნიერებისა და ბუნების გააზრებული ნაზავი: სიზუსტით, თმის ხარისხზე ზრუნვითა და ქალის სხეულის ამ გარდამავალი ეტაპის პატივისცემით.
+                </p>
+                <p>
+                  ამ ხედვის ჩამოყალიბებაში მნიშვნელოვანი ადგილი ჰქონდა გინეკოლოგ მაია სიდამონიშვილის მრავალწლიან დაკვირვებას მის პაციენტ ქალებთან. წლების განმავლობაში ის ხედავდა, რომ ბევრი ქალისთვის თმის შეთხელება და ხარისხის ცვლილება მხოლოდ გარეგნული პრობლემა არ იყო — ის უკავშირდებოდა თავდაჯერებულობას, საკუთარი თავის აღქმასა და ცხოვრების ახალ ეტაპთან შეგუებას.
+                </p>
+                <p>
+                  ამიტომ THAMRA-სთვის თმაზე ზრუნვა მხოლოდ გარეგნულ ცვლილებაზე პასუხი არ არის.
+                </p>
+                <p>
+                  როდესაც ქალი საკუთარ თმაზე იწყებს ზრუნვას, ის უკეთ უსმენს საკუთარ სხეულს, უკეთ იგებს, რა სჭირდება მას და ცხოვრების ახალ ეტაპს მეტი სიმშვიდით, თავდაჯერებულობითა და შინაგანი ძალით ხვდება.
+                </p>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <ThamraDivider />
+
+      {/* ============================================================ */}
       {/* 6 — BRAND STORY                                              */}
       {/* ============================================================ */}
       <section id="story" className="scroll-mt-24 bg-surface/40 overflow-hidden">
@@ -578,99 +618,6 @@ export default function Home() {
       {/* 8 — FINAL CTA                                                */}
       {/* ============================================================ */}
       <PricingSection />
-
-      {/* ============================================================ */}
-      {/* 9 — FOOTER                                                   */}
-      {/* ============================================================ */}
-      <footer id="footer" className="bg-oxblood text-cream-soft">
-        <div className={`${CONTAINER} pt-[100px] pb-[60px]`}>
-          <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-8">
-            {/* nav */}
-            <div>
-              <h4 className={`${LABEL} text-cream-soft/70`}>ნავიგაცია</h4>
-              <ul className="mt-5 space-y-3">
-                {[
-                  { l: "მთავარი", h: "#" },
-                  { l: "ტესტი", h: "/quiz" },
-                  { l: "მეცნიერება", h: "#science" },
-                  { l: "ჩვენ შესახებ", h: "#story" },
-                ].map((x) => (
-                  <li key={x.l}>
-                    <a
-                      href={x.h}
-                      className="font-body text-[16px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
-                    >
-                      {x.l}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* help */}
-            <div>
-              <h4 className={`${LABEL} text-cream-soft/70`}>დახმარება</h4>
-              <ul className="mt-5 space-y-3">
-                {["კონტაქტი", "მიწოდება", "დაბრუნება", "FAQ"].map((l) => (
-                  <li key={l}>
-                    <a
-                      href="#"
-                      className="font-body text-[16px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
-                    >
-                      {l}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* contact */}
-            <div>
-              <h4 className={`${LABEL} text-cream-soft/70`}>კონტაქტი</h4>
-              <ul className="mt-5 space-y-3">
-                <li>
-                  <a
-                    href="mailto:infothamra@gmail.com"
-                    className="font-body text-[16px] font-light text-cream-soft/70 transition-colors hover:text-cream-soft"
-                  >
-                    infothamra@gmail.com
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* social */}
-            <div>
-              <h4 className={`${LABEL} text-cream-soft/70`}>გამოგვყევი</h4>
-              <div className="mt-5 flex gap-3">
-                <a
-                  href="https://www.facebook.com/profile.php?id=61591199567325"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-cream-soft/25 text-cream-soft/70 transition-colors hover:border-cream-soft hover:text-cream-soft"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    <path d="M14.5 8.5h2V5.5h-2c-2 0-3.3 1.3-3.3 3.4v1.6H9v3h2.2v7h3v-7h2.1l.4-3h-2.5V9c0-.3.2-.5.6-.5z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-14 border-t border-cream-soft/15 pt-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-body text-[13px] font-light tracking-[0.04em] text-cream-soft/70">
-              © 2026 Thamra. ყველა უფლება დაცულია.
-            </p>
-            <a
-              href="/privacy"
-              className="font-body text-[13px] font-light tracking-[0.04em] text-cream-soft/70 transition-colors hover:text-cream-soft"
-            >
-              კონფიდენციალურობის პოლიტიკა
-            </a>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
