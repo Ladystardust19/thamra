@@ -45,6 +45,11 @@ const PROCESSING_TEXTS = [
 // sessionStorage key holding the visitor's in-progress quiz state (survives refresh)
 const STATE_KEY = "thamra_quiz_state_v2";
 
+// Version of the privacy policy the quiz consent refers to. Bump this (and the
+// version shown on /privacy) whenever the policy materially changes, so stored
+// consents record exactly which version the user agreed to.
+const POLICY_VERSION = "2026-07-23";
+
 // THAMRA Hair Expert destination. PLACEHOLDER — points at the existing WhatsApp
 // line used elsewhere in the funnel. Swap this for the real Hair Expert chat /
 // consultation link when it exists.
@@ -71,6 +76,10 @@ export default function QuizClient() {
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
+  // Required, unchecked-by-default consent to process quiz answers (incl.
+  // health-related data). The quiz cannot start until this is checked.
+  const [consent, setConsent] = useState(false);
+  const [consentAt, setConsentAt] = useState<string | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fbcRef = useRef<string | null>(null);
   const enteredAtRef = useRef<number>(Date.now());
@@ -94,6 +103,8 @@ export default function QuizClient() {
         if (st.phone) setPhone(st.phone);
         if (st.email) setEmail(st.email);
         if (st.qid) setQid(st.qid);
+        if (st.consent) setConsent(true);
+        if (st.consentAt) setConsentAt(st.consentAt);
         let target: Screen = st.screen ?? "intro";
         if (target === "processing") target = "result"; // don't re-run the loader
         setScreen(target);
@@ -113,9 +124,9 @@ export default function QuizClient() {
       return;
     }
     try {
-      sessionStorage.setItem(STATE_KEY, JSON.stringify({ screen, qid, answers, name, phone, email }));
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({ screen, qid, answers, name, phone, email, consent, consentAt }));
     } catch {}
-  }, [screen, qid, answers, name, phone, email]);
+  }, [screen, qid, answers, name, phone, email, consent, consentAt]);
 
   // Result page view — only counts if they stay 3+ seconds, once per session.
   useEffect(() => {
@@ -166,6 +177,19 @@ export default function QuizClient() {
     } else {
       goToQuestion(list[idx + 1].id, "forward");
     }
+  }
+
+  function handleConsentChange(v: boolean) {
+    setConsent(v);
+    // Stamp the moment consent is first granted.
+    if (v && !consentAt) setConsentAt(new Date().toISOString());
+  }
+
+  // Gate the whole quiz on consent — the intro's start button is disabled
+  // without it, and this guards against any other entry path.
+  function startQuiz() {
+    if (!consent) return;
+    goNext();
   }
 
   function goBack() {
@@ -259,7 +283,16 @@ export default function QuizClient() {
         name: name.trim(),
         phone: fullPhone,
         email: email.trim() || null,
-        answers,
+        // Consent metadata rides along in the answers JSON so no schema change
+        // is required: status, timestamp and the policy version agreed to.
+        answers: {
+          ...answers,
+          _consent: {
+            accepted: consent,
+            accepted_at: consentAt,
+            policy_version: POLICY_VERSION,
+          },
+        },
         submitted_at: new Date().toISOString(),
         attribution: getAttribution(),
         session_id: getSessionId(),
@@ -312,7 +345,13 @@ export default function QuizClient() {
           key={screen === "quiz" ? qid : screen}
           className={direction === "back" ? `${styles.screen} ${styles.back}` : styles.screen}
         >
-          {screen === "intro" && <IntroScreen onStart={goNext} />}
+          {screen === "intro" && (
+            <IntroScreen
+              onStart={startQuiz}
+              consent={consent}
+              onConsentChange={handleConsentChange}
+            />
+          )}
 
           {screen === "quiz" && currentQuestion && (
             <QuestionScreen
@@ -398,14 +437,39 @@ function WhatsAppIcon() {
 
 // ─── Intro screen ─────────────────────────────────────────────────────────────
 
-function IntroScreen({ onStart }: { onStart: () => void }) {
+function IntroScreen({
+  onStart,
+  consent,
+  onConsentChange,
+}: {
+  onStart: () => void;
+  consent: boolean;
+  onConsentChange: (v: boolean) => void;
+}) {
   return (
     <div className={styles.introWrap}>
       <h1 className={styles.introHeadline}>გაიგე, რა სჭირდება შენს თმას</h1>
       <p className={styles.introText}>
         უპასუხე რამდენიმე კითხვას და გაიგე, როგორ იზრუნო თმის სიჯანსაღეზე მენოპაუზის პერიოდში.
       </p>
-      <button className={styles.primaryBtn} onClick={onStart}>
+
+      <label className={styles.consentRow}>
+        <input
+          type="checkbox"
+          className={styles.consentCheckbox}
+          checked={consent}
+          onChange={(e) => onConsentChange(e.target.checked)}
+        />
+        <span className={styles.consentText}>
+          გავეცანი{" "}
+          <a href="/privacy" target="_blank" rel="noopener noreferrer" className={styles.consentLink}>
+            კონფიდენციალურობის პოლიტიკას
+          </a>{" "}
+          და ვაცხადებ წერილობით თანხმობას, რომ THAMRA-მ დაამუშაოს კითხვარში მითითებული ჩემი პასუხები, მათ შორის ჯანმრთელობასთან დაკავშირებული მონაცემები, პერსონალური შეფასებისა და პროგრამაში ჩართული მხარდაჭერის მოსამზადებლად. ვიცი, რომ თანხმობის გამოხმობა ნებისმიერ დროს შემიძლია.
+        </span>
+      </label>
+
+      <button className={styles.primaryBtn} onClick={onStart} disabled={!consent}>
         დაიწყე ტესტი
       </button>
     </div>

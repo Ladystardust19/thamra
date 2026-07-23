@@ -176,6 +176,46 @@
 
 .primaryBtn:hover { background-color: #722530; transform: translateY(-1px); }
 .primaryBtn:active { transform: translateY(0); }
+.primaryBtn:disabled {
+  background-color: #cbb8ba;
+  color: #f7f1e9;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Consent (required before the quiz can start) ── */
+
+.consentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 28px;
+  cursor: pointer;
+}
+
+.consentCheckbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #8b2f3a;
+  cursor: pointer;
+}
+
+.consentText {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.65;
+}
+
+.consentLink {
+  color: #8b2f3a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.consentLink:hover { color: #722530; }
 
 /* ── Question screen ── */
 
