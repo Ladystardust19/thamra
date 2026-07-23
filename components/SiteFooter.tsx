@@ -14,7 +14,7 @@ const LABEL = "font-body text-[14px] font-normal uppercase tracking-[0.22em]";
 
 const NAV_LINKS = [
   { l: "მთავარი", h: "/" },
-  { l: "ჩვენ შესახებ", h: "/#about" },
+  { l: "ჩვენ შესახებ", h: "/about" },
   { l: "პროგრამები", h: "/programs" },
   { l: "ტესტი", h: "/quiz" },
 ];

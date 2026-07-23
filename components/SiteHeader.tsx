@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
-  { label: "ჩვენ შესახებ", href: "/#about" },
+  { label: "ჩვენ შესახებ", href: "/about" },
   { label: "პროგრამები",   href: "/programs" },
   { label: "მეცნიერება",   href: "/#science" },
   { label: "კონტაქტი",     href: "/contact" },
