@@ -25,6 +25,10 @@ export default function ConsultationBooking() {
 
   return (
     <div className={styles.calEmbedWrap}>
+      {/* The embed hides event-type details, so state the medium here. */}
+      <p className={styles.calHowLine}>
+        კონსულტაცია ტარდება ტელეფონით ან WhatsApp-ით. ჯავშნის შემდეგ დაგიკავშირდებით შენ მიერ მითითებულ ნომერზე.
+      </p>
       <Cal
         calLink={CAL_LINK}
         style={{ width: "100%" }}
