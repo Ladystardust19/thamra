@@ -8,6 +8,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* Contain any transient horizontal overflow (screen-slide transforms, the
+     comparison section's desktop breakout) without creating a scroll container. */
+  overflow-x: clip;
 }
 
 .logo {
@@ -161,18 +164,58 @@
   background-color: #8b2f3a;
   color: #f7f1e9;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 17px;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   transition: background-color 0.3s, transform 0.2s;
 }
 
 .primaryBtn:hover { background-color: #722530; transform: translateY(-1px); }
 .primaryBtn:active { transform: translateY(0); }
+.primaryBtn:disabled {
+  background-color: #cbb8ba;
+  color: #f7f1e9;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Consent (required before the quiz can start) ── */
+
+.consentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 28px;
+  cursor: pointer;
+}
+
+.consentCheckbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: #8b2f3a;
+  cursor: pointer;
+}
+
+.consentText {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.65;
+}
+
+.consentLink {
+  color: #8b2f3a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.consentLink:hover { color: #722530; }
 
 /* ── Question screen ── */
 
@@ -196,42 +239,54 @@
 
 /* ── Option cards ── */
 
+/* Seed-style pill chips: hug their text, left-aligned, checkmark when selected */
 .options {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 24px;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .option {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 16px 18px;
-  background-color: rgba(253, 250, 247, 0.92);
-  border: 1.5px solid rgba(201, 169, 110, 0.22);
-  border-radius: 6px;
+  gap: 9px;
+  max-width: 100%;
+  padding: 14px 24px;
+  background-color: #fdfaf7;
+  border: 1.5px solid rgba(201, 169, 110, 0.3);
+  border-radius: 999px;
   cursor: pointer;
   text-align: left;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
-  font-size: 18px;
-  font-weight: 300;
-  color: #3d3335;
-  line-height: 1.4;
+  font-size: 17px;
+  font-weight: 400;
+  color: #4a3f3c;
+  line-height: 1.35;
   transition: border-color 0.2s, background-color 0.2s, color 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
 
 .option:hover {
   border-color: rgba(139, 47, 58, 0.45);
-  background-color: rgba(139, 47, 58, 0.03);
+  background-color: rgba(139, 47, 58, 0.04);
 }
 
 .option.selected {
-  border-color: #8b2f3a;
-  background-color: rgba(139, 47, 58, 0.06);
+  border-color: transparent;
+  background-color: rgba(201, 169, 110, 0.34);
+  color: #7a2530;
+  font-weight: 500;
+}
+
+.optionCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #8b2f3a;
+  flex-shrink: 0;
+  margin-left: -6px;
 }
 
 /* Radio dot */
@@ -285,7 +340,7 @@
   background-color: #8b2f3a;
 }
 
-/* Next / submit buttons */
+/* Next / submit buttons — Seed-style rounded pill */
 .nextBtn {
   display: block;
   width: 100%;
@@ -293,13 +348,13 @@
   background-color: #8b2f3a;
   color: #f7f1e9;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 17px;
   font-weight: 400;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   transition: background-color 0.3s, transform 0.2s, opacity 0.25s;
 }
 
@@ -443,12 +498,12 @@
   background-color: #8b2f3a;
   color: #f7f1e9;
   border: none;
-  border-radius: 4px;
+  border-radius: 999px;
   cursor: pointer;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 17px;
   font-weight: 400;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.02em;
   transition: background-color 0.3s, transform 0.2s;
 }
 
@@ -511,10 +566,11 @@
   display: block;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 0.3em;
+  font-weight: 500;
+  /* Georgian reads poorly with wide tracking — keep it tight */
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #c9a96e;
+  color: #8a6a1f;
   margin-bottom: 16px;
 }
 
@@ -1636,4 +1692,1326 @@
 
 .preorderChangePlanBtn:hover {
   opacity: 1;
+}
+
+/* ============================================================
+   NEW QUIZ — secondary toggle, gauge, level pills, result
+   sections, trust cards, Hair Expert CTA (redesign port)
+   ============================================================ */
+
+/* ── Q2 secondary toggle ── */
+.secondaryToggle {
+  margin: -6px 0 24px;
+}
+
+/* ── Result sections ── */
+.resultSection {
+  margin-top: 30px;
+}
+
+.sectionHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(1.35rem, 4.6vw, 1.7rem);
+  font-weight: 400;
+  color: #8b2f3a;
+  line-height: 1.3;
+  margin: 0 0 12px;
+}
+
+.bulletList {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.bulletList li {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.65;
+  padding-left: 20px;
+  position: relative;
+}
+
+.bulletList li::before {
+  content: "•";
+  position: absolute;
+  left: 2px;
+  color: #c9a96e;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+/* (obsolete gauge, level pills and notice styles removed in the editorial
+   result redesign) */
+
+/* ── "Why THAMRA is different" pillars ── */
+.pillars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.pillarItem {
+  background: #fdfaf7;
+  border: 1px solid rgba(201, 169, 110, 0.25);
+  border-radius: 8px;
+  padding: 18px 18px;
+}
+
+.pillarTitle {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: #8b2f3a;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.pillarBody {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14.5px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Trust cards ── */
+.trustGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+@media (max-width: 460px) {
+  .trustGrid { grid-template-columns: 1fr; }
+}
+
+.trustCard {
+  background: rgba(139, 47, 58, 0.04);
+  border: 1px solid rgba(201, 169, 110, 0.28);
+  border-radius: 8px;
+  padding: 18px 16px;
+}
+
+.trustCardTitle {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #8b2f3a;
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.trustCardBody {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13.5px;
+  font-weight: 300;
+  color: #4a3f3c;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── THAMRA Hair Expert CTA block ── */
+.hairExpertBlock {
+  margin-top: 40px;
+  background: #8b2f3a;
+  border-radius: 16px;
+  padding: 32px 24px;
+}
+
+.hairExpertBlock .driversLabel {
+  color: rgba(201, 169, 110, 0.85);
+}
+
+.hairExpertBlock .sectionHeading {
+  color: #f7f1e9;
+}
+
+.hairExpertBlock .resultText {
+  color: rgba(247, 241, 233, 0.85);
+}
+
+.hairExpertBlock .bulletList li {
+  color: rgba(247, 241, 233, 0.85);
+}
+
+.hairExpertBlock .bulletList li::before {
+  color: #c9a96e;
+}
+
+.hairExpertBlock .ctaBtn {
+  margin-top: 24px;
+}
+
+.hairExpertNote {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  color: rgba(247, 241, 233, 0.82);
+  line-height: 1.6;
+  margin: 16px 0 0;
+  text-align: center;
+}
+
+/* ============================================================
+   RESULT — learn-more accordion (kept from the restructure; the
+   profile card / gauge / level rows / quick facts were removed
+   in the editorial redesign)
+   ============================================================ */
+
+/* ── Learn-more accordion ── */
+.accordionToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+  background: none;
+  border: 1px solid rgba(201, 169, 110, 0.35);
+  border-radius: 999px;
+  padding: 15px 24px;
+  cursor: pointer;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #8b2f3a;
+  transition: background 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.accordionToggle:hover {
+  background: rgba(139, 47, 58, 0.04);
+  border-color: rgba(139, 47, 58, 0.4);
+}
+
+.accordionChevron,
+.accordionChevronOpen {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.25s ease;
+}
+
+.accordionChevronOpen {
+  transform: rotate(180deg);
+}
+
+.accordionPanel {
+  animation: accordionIn 0.3s ease both;
+}
+
+@keyframes accordionIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordionPanel { animation: none; }
+}
+
+/* Secondary (ghost) Hair Expert button — the solid-gold sticky bar is the one
+   dominant primary; this shares the destination but never competes visually. */
+.ctaBtnGhost {
+  background: transparent;
+  color: #f3e4c4;
+  border: 1.5px solid rgba(201, 169, 110, 0.75);
+}
+
+.ctaBtnGhost:hover {
+  background: rgba(201, 169, 110, 0.14);
+  color: #f7f1e9;
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   RESULT — editorial redesign (mobile-first, one idea / section)
+   ============================================================ */
+
+.mainResult {
+  max-width: 680px;
+  padding: 16px var(--page-padding) 140px;
+  /* Let the comparison section break out wider than the 680px reading column on
+     desktop; horizontal overflow is contained by .page (overflow-x: clip). */
+  overflow-x: visible;
+
+  /* Design tokens — mapped to the existing THAMRA palette */
+  --thamra-background: #f2ebe3;
+  --thamra-surface: #fdfaf7;
+  --thamra-text: #4a3f3c;
+  --thamra-muted: #6b5f5a;
+  --thamra-burgundy: #8b2f3a;
+  --thamra-gold: #bd8f49;
+  --thamra-gold-ink: #8a6a1f; /* AA-contrast gold for small text */
+  --thamra-ink: #2e2724; /* darkest neutral — card & tile titles (distinct from maroon) */
+  --thamra-line: rgba(77, 60, 56, 0.14);
+
+  --page-padding: 20px;
+  --section-gap: 88px;
+  --content-gap: 24px;
+}
+
+@media (min-width: 390px) {
+  .mainResult { --page-padding: 24px; }
+}
+@media (min-width: 768px) {
+  .mainResult { --section-gap: 120px; }
+}
+
+.resultWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.mSection {
+  margin-top: var(--section-gap);
+}
+.mSection:first-child {
+  margin-top: 0;
+}
+
+.mHero {
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+.mHero .mBtn {
+  margin-top: auto;
+}
+
+.mEyebrow {
+  display: block;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--thamra-gold-ink);
+  margin-bottom: 18px;
+}
+
+.mHeadline {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(34px, 9vw, 44px);
+  font-weight: 300;
+  line-height: 1.12;
+  color: var(--thamra-burgundy);
+  margin: 0;
+}
+
+.mBody {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--thamra-text);
+  margin: 22px 0 0;
+}
+
+.mSubhead {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(1.35rem, 5.2vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--thamra-burgundy);
+  margin: 0 0 12px;
+}
+
+.mBigWord {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(44px, 14vw, 56px);
+  font-weight: 500;
+  line-height: 1.05;
+  color: #3a1418; /* dark near-black bordeaux — anchors the section vs. the bar */
+  margin: 0 0 26px;
+}
+
+.mNotices {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mNotice {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--thamra-burgundy);
+  padding-left: 14px;
+  border-left: 2px solid var(--thamra-gold);
+  margin: 0;
+}
+
+/* Primary button */
+.mBtn {
+  display: block;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 32px;
+  padding: 15px 24px;
+  background: var(--thamra-burgundy);
+  color: #f7f1e9;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: background 0.25s, transform 0.12s, opacity 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mBtn:hover { background: #722530; }
+.mBtn:active { transform: scale(0.985); opacity: 0.94; }
+.mBtn:focus-visible {
+  outline: 2px solid var(--thamra-burgundy);
+  outline-offset: 3px;
+}
+
+/* Section 2 — organic hair-spectrum visualization
+   A soft, overlapping-strand band — not a slider, gauge, scale or dashboard. */
+.spectrumWrap { margin: 2rem 0; }
+.spectrumStage {
+  position: relative;
+  width: 100%;
+  height: 28px;
+}
+.spectrumBand {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 12px;
+  transform: translateY(-50%);
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    #f4ecdf 0%,
+    #ecd6cd 30%,
+    #d7a3a6 56%,
+    #b25a60 78%,
+    #8b2f3a 100%
+  );
+  /* matte — no inner gloss or drop shadow */
+}
+.spectrumStrands {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.35; /* whisper of texture only — keeps the bar reading as matte */
+}
+.spectrumOrb {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: #8b2f3a; /* flat, matte */
+  box-shadow: 0 0 0 3px #f4ecdf; /* thin cream ring */
+  z-index: 2;
+}
+/* Subtle 1px tick linking the marker down toward the scale labels below. */
+.spectrumOrb::after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  width: 1px;
+  height: 15px;
+  transform: translateX(-50%);
+  background: rgba(58, 20, 24, 0.32);
+}
+.spectrumEnds {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 15px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--thamra-muted);
+}
+.spectrumEnds span:last-child { text-align: right; }
+
+/* Section 2 — two numbered editorial observations (no cards, pills or borders) */
+.observations {
+  margin-top: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.observation {
+  display: flex;
+  gap: 16px;
+  align-items: baseline;
+}
+.observationNum {
+  flex-shrink: 0;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--thamra-gold-ink);
+  white-space: nowrap;
+}
+.observationBody { flex: 1; min-width: 0; }
+.observationTitle {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--thamra-burgundy);
+  margin: 0 0 6px;
+}
+.observationText {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--thamra-text);
+  margin: 0;
+}
+
+/* Section 3 — numbered change rows */
+.changeRows { margin-top: 28px; }
+.changeRow {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+  padding: 26px 0;
+  border-top: 1px solid var(--thamra-line);
+}
+.changeRow:last-child { border-bottom: 1px solid var(--thamra-line); }
+.changeNum {
+  flex-shrink: 0;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--thamra-gold);
+}
+.changeBody { flex: 1; min-width: 0; }
+.changeTitle {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--thamra-burgundy);
+  margin: 0 0 6px;
+}
+.changeText {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--thamra-text);
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mBtn { transition: none; }
+}
+
+/* ============================================================
+   TREATMENT COMPARISON — warm editorial "how THAMRA differs"
+   Quiet luxury: same ivory world as the rest of the result,
+   hairline dividers, one soft continuous THAMRA band, small
+   refined markers, generous whitespace. No dark box, no grid lines.
+   ============================================================ */
+
+.compareSection {
+  /* Warm palette, drawn from the existing THAMRA tokens */
+  --cmp-text: var(--thamra-text);
+  --cmp-muted: var(--thamra-muted);
+  --cmp-line: rgba(0, 0, 0, 0.06); /* editorial hairline */
+  --cmp-gold: #a6812f;
+  --cmp-gold-soft: rgba(166, 129, 47, 0.55);
+  --cmp-band: rgba(201, 169, 110, 0.1);
+}
+
+.compareEyebrow {
+  color: var(--thamra-gold-ink);
+}
+
+.compareHeadline {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(30px, 7.6vw, 40px);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+  color: var(--thamra-burgundy);
+  margin: 0;
+}
+
+/* Reusable THAMRA wordmark — upright, letter-spaced gold. Applied everywhere the
+   brand name appears (headlines, about, compare-table header) so it always
+   renders identically. */
+.brandWord {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-style: normal;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.12em;
+  color: var(--thamra-gold); /* #bd8f49 */
+}
+
+.compareIntro {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px; /* shared body size — matches the about section */
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0.006em;
+  color: var(--thamra-text); /* #4a3f3c — AA, not the low-contrast muted */
+  margin: 16px 0 0;
+  max-width: 62ch;
+}
+
+/* Table lives full-width below the intro; scrolls horizontally on small screens
+   instead of shrinking (no transforms — text stays at natural size). */
+.compareTableWrap {
+  margin-top: 28px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Comparator tabs — understated text tabs with a gold underline */
+.tabs {
+  display: flex;
+  gap: 28px;
+  margin-top: 26px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  border-bottom: 1.5px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--cmp-muted);
+  transition: color 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.tabActive {
+  color: var(--thamra-burgundy);
+  border-bottom-color: var(--cmp-gold);
+}
+.tab:focus-visible {
+  outline: 2px solid var(--thamra-burgundy);
+  outline-offset: 3px;
+}
+
+/* Matrix — a soft, refined cream panel (featured THAMRA column inset) */
+.matrix {
+  width: 100%;
+  min-width: 560px; /* keeps the 4 columns readable; wrapper scrolls below this */
+  background: #ffffff; /* clearly whiter than the cream page bg */
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 18px;
+  padding: 6px 20px 14px;
+  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.05), 0 16px 44px rgba(46, 39, 36, 0.09);
+}
+
+.matrixHead,
+.matrixRow {
+  display: grid;
+  grid-template-columns: minmax(190px, 2.6fr) repeat(3, minmax(124px, 1fr));
+  align-items: stretch;
+}
+
+.cellLabel {
+  display: flex;
+  align-items: center;
+  min-height: 76px;
+  padding: 22px 14px 22px 4px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.004em;
+  color: var(--thamra-ink); /* darkest neutral — row titles read as the content tier */
+}
+.cellHeadLabel {
+  min-height: 52px;
+  padding: 0;
+}
+
+/* Hairline dividers on the label + comparator cells only, so the THAMRA
+   band reads as one continuous, uninterrupted shape. */
+.matrixRow .cellLabel,
+.matrixRow .cellComp {
+  border-top: 1px solid var(--cmp-line);
+}
+
+.cellMarker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 76px; /* matches .cellLabel — consistent row heights */
+}
+
+.cellHeadThamra,
+.cellHeadComp {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+  min-height: 56px;
+  padding: 8px 6px 12px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+.cellHeadThamra {
+  color: var(--thamra-burgundy);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.cellHeadComp { color: var(--thamra-text); font-weight: 500; }
+
+/* Merged "others" column header — same look as a comparator header, but only
+   shown on phones (see the max-width: 559px block). */
+.cellHeadOthers {
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+  min-height: 56px;
+  padding: 8px 6px 12px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--thamra-text);
+  font-weight: 500;
+}
+.cellOthers { display: none; } /* revealed only under max-width: 559px */
+
+/* Featured THAMRA column — a subtle warm-cream column running full height (not a
+   narrow floating capsule; it reads as one continuous highlighted column). */
+.cellThamra { background: #fbf6ef; } /* soft cream */
+.cellThamraTop { border-radius: 12px 12px 0 0; }
+.cellThamraBottom { border-radius: 0 0 12px 12px; }
+
+/* Markers — small and refined */
+.markerWrap { display: inline-flex; }
+.marker {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.legendMarker {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.marker_full {
+  background: var(--cmp-gold);
+  border: 1px solid var(--cmp-gold);
+}
+.marker_partial {
+  position: relative;
+  background: transparent;
+  border: 1px solid var(--cmp-gold-soft);
+}
+.marker_partial::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 38%;
+  height: 38%;
+  border-radius: 50%;
+  background: var(--cmp-gold-soft);
+  transform: translate(-50%, -50%);
+}
+.marker_not_primary {
+  background: transparent;
+  border: 1px solid rgba(77, 60, 56, 0.32);
+}
+
+/* Fade only the comparator column when the tab changes */
+.compFade { animation: compFadeIn 0.22s ease both; }
+@keyframes compFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Legend + clarification */
+.compareLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 26px 0 0;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--thamra-text);
+}
+.compareLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.compareClarify {
+  margin: 16px 0 0;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--cmp-muted);
+}
+
+/* Screen-reader only */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Desktop — vertical composition, broken out to a centered ~1140px width so the
+   table has room to breathe (heading → intro → full-width table → legend). The
+   breakout uses margins only (no transform — framer-motion owns transform here). */
+@media (min-width: 900px) {
+  .compareSection {
+    width: min(1140px, calc(100vw - 48px));
+    margin-left: calc(50% - min(1140px, calc(100vw - 48px)) / 2);
+  }
+  .compareHeadline {
+    text-align: center;
+  }
+  .compareIntro {
+    text-align: center;
+    max-width: 68ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .matrix {
+    min-width: 0; /* full width — no horizontal scroll needed on desktop */
+    padding: 8px 28px 18px;
+  }
+  .matrixHead,
+  .matrixRow {
+    grid-template-columns: minmax(0, 2.8fr) repeat(3, minmax(150px, 1fr));
+  }
+  .cellLabel {
+    font-size: 16px;
+    min-height: 74px;
+  }
+  .cellMarker {
+    min-height: 74px;
+  }
+  .cellHeadThamra,
+  .cellHeadComp {
+    font-size: 14px;
+  }
+  .marker { width: 15px; height: 15px; }
+}
+
+/* Phones — the two comparator columns are identical, so collapse them into one
+   "others" column. Result: a clean 3-column table (attribute · THAMRA · others)
+   that fits without horizontal scroll. */
+@media (max-width: 559px) {
+  .compareTableWrap {
+    overflow-x: visible; /* nothing overflows now — kill the scroll affordance */
+  }
+  .matrix {
+    min-width: 0;
+    padding: 4px 14px 12px;
+  }
+  .matrixHead,
+  .matrixRow {
+    grid-template-columns: minmax(0, 1.5fr) minmax(64px, 1fr) minmax(64px, 1fr);
+  }
+
+  /* Swap the two detailed comparators for the single merged column */
+  .cellHeadComp,
+  .cellComp {
+    display: none;
+  }
+  .cellOthers {
+    display: flex;
+  }
+  /* Row hairline on the attribute + others columns; THAMRA stays a continuous
+     cream band, exactly as on desktop. */
+  .matrixRow .cellOthers {
+    border-top: 1px solid var(--cmp-line);
+  }
+
+  .cellLabel {
+    min-height: 60px;
+    padding: 16px 12px 16px 2px;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  .cellMarker {
+    min-height: 60px;
+  }
+  .cellHeadThamra,
+  .cellHeadOthers {
+    font-size: 12px;
+    min-height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compFade { animation: none; }
+  .tab { transition: none; }
+}
+
+/* ============================================================
+   RESULT — "გაიგე მეტი THAMRA-ზე" redesign
+   One-line lead-in + independently collapsible info cards,
+   a benefit icon grid, and compact expert cards. Replaces the
+   single mega-accordion and the solid-maroon CTA block.
+   ============================================================ */
+
+/* ── Lead-in: one-line definition, positioning stated once ── */
+.aboutIntro {
+  margin-bottom: 4px;
+}
+
+.aboutHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(30px, 7.6vw, 40px); /* shared scale — matches .compareHeadline */
+  font-weight: 300;
+  line-height: 1.14;
+  color: var(--thamra-burgundy);
+  margin: 0 0 14px;
+}
+.aboutDefinition {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px; /* shared body size */
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--thamra-text); /* #4a3f3c — AA on white/cream */
+  margin: 0;
+  max-width: 62ch;
+}
+
+/* ── Independently collapsible info cards ── */
+.infoCards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.infoCard {
+  background: #ffffff; /* clearly whiter than the cream page bg (#f2ebe3) */
+  border: 1px solid rgba(77, 60, 56, 0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(46, 39, 36, 0.05), 0 6px 16px rgba(46, 39, 36, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.infoCardOpen {
+  border-color: rgba(189, 143, 73, 0.5);
+  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.06), 0 10px 24px rgba(46, 39, 36, 0.07);
+}
+
+.infoCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 68px; /* large mobile tap target */
+  padding: 17px 20px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.infoCardHeaderText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.infoCardLabel {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--thamra-burgundy); /* brand maroon — reverted from the neutral ink */
+}
+.infoCardTeaser {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--thamra-muted);
+}
+
+.infoCardChevron,
+.infoCardChevronOpen {
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--thamra-gold-ink);
+  transition: transform 0.25s ease;
+}
+.infoCardChevronOpen {
+  transform: rotate(180deg);
+}
+
+.infoCardPanel {
+  padding: 2px 20px 22px;
+  animation: accordionIn 0.28s ease both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .infoCardPanel { animation: none; }
+}
+
+.aboutBody {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px; /* shared body size — matches .aboutDefinition */
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--thamra-text);
+  margin: 0;
+  max-width: 64ch;
+}
+
+/* ── "Who it's for" gold-check checklist ── */
+.whoList {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.whoList li {
+  position: relative;
+  padding-left: 30px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--thamra-text);
+}
+.whoList li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(189, 143, 73, 0.16);
+  color: var(--thamra-gold-ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── Benefit icon grid ── */
+.benefitGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 2px;
+}
+@media (min-width: 560px) {
+  .benefitGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+  }
+}
+.benefitTile {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.benefitIcon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(189, 143, 73, 0.12);
+  color: var(--thamra-burgundy);
+}
+.benefitText {
+  min-width: 0;
+}
+.benefitTitle {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--thamra-ink);
+  margin: 0 0 3px;
+}
+.benefitMech {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--thamra-muted);
+  margin: 0;
+}
+
+/* ── Compact expert cards ── */
+.expertGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.expertCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: rgba(139, 47, 58, 0.035);
+  border: 1px solid var(--thamra-line);
+  border-radius: 12px;
+}
+.expertPhoto {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  background: rgba(189, 143, 73, 0.15);
+}
+.expertMeta {
+  min-width: 0;
+}
+.expertName {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--thamra-burgundy);
+  margin: 0 0 3px;
+}
+.expertRole {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--thamra-muted);
+  margin: 0;
+}
+
+/* ── "What next" — quieter secondary CTA (sticky gold bar is primary) ── */
+.nextStep {
+  margin-top: 44px;
+  background: var(--thamra-surface);
+  border: 1px solid rgba(189, 143, 73, 0.4);
+  border-radius: 16px;
+  padding: 28px 22px;
+}
+.nextStepLabel {
+  display: block;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--thamra-gold-ink);
+  margin-bottom: 12px;
+}
+.nextStepHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(1.35rem, 4.6vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--thamra-burgundy);
+  margin: 0 0 14px;
+}
+.nextStepLead {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--thamra-text);
+  margin: 0;
+}
+.nextStepBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 22px;
+  padding: 15px 24px;
+  background: transparent;
+  color: var(--thamra-burgundy);
+  border: 1.5px solid rgba(139, 47, 58, 0.4);
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  transition: background 0.2s, border-color 0.2s;
+}
+.nextStepBtn:hover {
+  background: rgba(139, 47, 58, 0.05);
+  border-color: rgba(139, 47, 58, 0.6);
+}
+.nextStepNote {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 12.5px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--thamra-muted);
+  margin: 14px 0 0;
+  text-align: center;
+}
+
+/* ============================================================
+   RESULT — Cal.com consultation booking section (Zone B)
+   ============================================================ */
+.bookingSection {
+  background: #f2ebe3; /* cream — matches the result page */
+}
+.bookingHeading {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-size: clamp(30px, 7.6vw, 40px);
+  font-weight: 300;
+  line-height: 1.14;
+  color: var(--thamra-burgundy);
+  margin: 14px 0 0;
+}
+.bookingSubtext {
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--thamra-text);
+  margin: 12px 0 0;
+  max-width: 60ch;
+}
+/* Wrapper that centres the booking CTAs (and the calendar once revealed). */
+.bookingActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+}
+/* Primary CTA that reveals the Cal.com calendar on click. */
+.bookingRevealBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 480px;
+  min-height: 54px;
+  margin: 18px auto 0;
+  padding: 16px 28px;
+  background: var(--thamra-burgundy);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  box-shadow: 0 8px 22px rgba(139, 47, 58, 0.22);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+.bookingRevealBtn:hover {
+  background: #7a2833;
+  box-shadow: 0 10px 26px rgba(139, 47, 58, 0.28);
+}
+.bookingRevealBtn:active {
+  transform: translateY(1px);
+}
+/* Secondary CTA — instant WhatsApp chat (reuses the funnel's WhatsApp number). */
+.bookingWhatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  max-width: 480px;
+  min-height: 52px;
+  margin: 12px auto 0;
+  padding: 14px 24px;
+  background: #ffffff;
+  color: #1f7a4d;
+  border: 1.5px solid #25d366;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  transition: background 0.2s, border-color 0.2s;
+}
+.bookingWhatsappBtn:hover {
+  background: rgba(37, 211, 102, 0.08);
+  border-color: #1ebe5a;
+}
+.bookingWhatsappBtn svg {
+  flex-shrink: 0;
+}
+.calEmbedWrap {
+  margin: 22px auto 0; /* centered so the capped-width embed isn't full-bleed */
+  width: 100%;
+  max-width: 480px; /* compact card, like a standard site embed */
+  min-height: 320px; /* small fallback before the embed loads; grows to fit content */
+  background: #ffffff;
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.05), 0 12px 32px rgba(46, 39, 36, 0.08);
+}
+
+/* Trim the Cal iframe's own internal top/bottom padding so the widget isn't
+   taller than it needs to be. */
+.calEmbedWrap :global(iframe) {
+  display: block;
 }

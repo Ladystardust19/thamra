@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { scoreQuiz } from "@/lib/scoring";
-import { CAUSE_BLOCKS, AGE_FRAMING } from "@/lib/resultContent";
+import { computeResult, type Answers } from "@/lib/scoring";
 import {
   Lead,
   LeadNote,
@@ -27,8 +26,13 @@ const statusCls = (k: string | null) => STATUSES.find((s) => s.key === k)?.cls ?
 function diagnose(answers: Record<string, unknown> | null): string {
   if (!answers) return "—";
   try {
-    const { primaryCause, ageGroup } = scoreQuiz(answers as never);
-    return `${AGE_FRAMING[ageGroup].profileName} · ${CAUSE_BLOCKS[primaryCause].title}`;
+    const r = computeResult(answers as Answers);
+    // New model: hair-stress level · menopause-connection level, plus flags.
+    const flags: string[] = [];
+    if (r.redFlag) flags.push("⚑ სამედ. შემოწმება");
+    if (r.competingCause) flags.push("± მრავალფაქტორული");
+    const base = `სტრესი: ${r.hairStressLevel.label} · მენოპაუზა: ${r.menoLevel.label}`;
+    return flags.length ? `${base} · ${flags.join(" · ")}` : base;
   } catch {
     return "—";
   }
