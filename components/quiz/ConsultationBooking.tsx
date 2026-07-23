@@ -13,6 +13,11 @@ export default function ConsultationBooking() {
       const cal = await getCalApi();
       cal("ui", {
         theme: "light",
+        // Hide the left details panel (host name "Nino Jakeli", event title,
+        // duration) — she's already on the result page, so it's redundant and
+        // makes the embed noticeably shorter/narrower.
+        hideEventTypeDetails: true,
+        layout: "month_view",
         styles: { branding: { brandColor: "#8B2F3A" } },
       });
     })();
@@ -23,7 +28,9 @@ export default function ConsultationBooking() {
       <Cal
         calLink={CAL_LINK}
         style={{ width: "100%" }}
-        config={{ layout: "month_view" }}
+        // theme must be set here too — the "ui" config alone doesn't stop the
+        // embed from following the system's dark preference.
+        config={{ layout: "month_view", theme: "light" }}
       />
     </div>
   );

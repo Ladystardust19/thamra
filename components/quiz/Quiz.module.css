@@ -1990,7 +1990,7 @@
   font-size: clamp(44px, 14vw, 56px);
   font-weight: 500;
   line-height: 1.05;
-  color: var(--thamra-burgundy);
+  color: #3a1418; /* dark near-black bordeaux — anchors the section vs. the bar */
   margin: 0 0 26px;
 }
 
@@ -2039,16 +2039,20 @@
 
 /* Section 2 — organic hair-spectrum visualization
    A soft, overlapping-strand band — not a slider, gauge, scale or dashboard. */
-.spectrumWrap { margin: 10px 0 2px; }
+.spectrumWrap { margin: 2rem 0; }
 .spectrumStage {
   position: relative;
   width: 100%;
-  height: clamp(56px, 17vw, 72px);
+  height: 28px;
 }
 .spectrumBand {
   position: absolute;
-  inset: 0;
-  border-radius: 999px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 12px;
+  transform: translateY(-50%);
+  border-radius: 6px;
   overflow: hidden;
   background: linear-gradient(
     90deg,
@@ -2058,10 +2062,7 @@
     #b25a60 78%,
     #8b2f3a 100%
   );
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.5),
-    inset 0 -3px 8px rgba(90, 20, 30, 0.14),
-    0 8px 22px rgba(139, 47, 58, 0.12);
+  /* matte — no inner gloss or drop shadow */
 }
 .spectrumStrands {
   position: absolute;
@@ -2069,32 +2070,29 @@
   width: 100%;
   height: 100%;
   display: block;
+  opacity: 0.35; /* whisper of texture only — keeps the bar reading as matte */
 }
 .spectrumOrb {
   position: absolute;
   top: 50%;
-  width: 22px;
-  height: 22px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle at 38% 34%, #cc6470 0%, #8b2f3a 55%, #6d2029 100%);
-  box-shadow:
-    0 0 0 6px rgba(139, 47, 58, 0.16),
-    0 0 20px 7px rgba(139, 47, 58, 0.5),
-    0 2px 6px rgba(90, 20, 30, 0.45);
+  background: #8b2f3a; /* flat, matte */
+  box-shadow: 0 0 0 3px #f4ecdf; /* thin cream ring */
   z-index: 2;
 }
+/* Subtle 1px tick linking the marker down toward the scale labels below. */
 .spectrumOrb::after {
   content: "";
   position: absolute;
-  inset: -12px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 47, 58, 0.4) 0%, rgba(139, 47, 58, 0) 70%);
-  animation: orbGlow 3.4s ease-in-out infinite;
-}
-@keyframes orbGlow {
-  0%, 100% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.3); opacity: 0.32; }
+  top: calc(100% + 3px);
+  left: 50%;
+  width: 1px;
+  height: 15px;
+  transform: translateX(-50%);
+  background: rgba(58, 20, 24, 0.32);
 }
 .spectrumEnds {
   display: flex;
@@ -2186,7 +2184,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .mBtn { transition: none; }
-  .spectrumOrb::after { animation: none; }
 }
 
 /* ============================================================
@@ -2200,7 +2197,7 @@
   /* Warm palette, drawn from the existing THAMRA tokens */
   --cmp-text: var(--thamra-text);
   --cmp-muted: var(--thamra-muted);
-  --cmp-line: rgba(77, 60, 56, 0.11);
+  --cmp-line: rgba(0, 0, 0, 0.06); /* editorial hairline */
   --cmp-gold: #a6812f;
   --cmp-gold-soft: rgba(166, 129, 47, 0.55);
   --cmp-band: rgba(201, 169, 110, 0.1);
@@ -2214,14 +2211,22 @@
   font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
   font-size: clamp(30px, 7.6vw, 40px);
   font-weight: 500;
-  font-style: italic;
+  font-style: normal;
   line-height: 1.2;
   letter-spacing: 0.005em;
   color: var(--thamra-burgundy);
   margin: 0;
 }
-.compareHeadlineBrand {
-  color: var(--thamra-gold);
+
+/* Reusable THAMRA wordmark — upright, letter-spaced gold. Applied everywhere the
+   brand name appears (headlines, about, compare-table header) so it always
+   renders identically. */
+.brandWord {
+  font-family: var(--font-cormorant), var(--font-ge-serif), Georgia, serif;
+  font-style: normal;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.12em;
+  color: var(--thamra-gold); /* #bd8f49 */
 }
 
 .compareIntro {
@@ -2299,8 +2304,8 @@
 .cellLabel {
   display: flex;
   align-items: center;
-  min-height: 68px;
-  padding: 16px 14px 16px 4px;
+  min-height: 76px;
+  padding: 22px 14px 22px 4px;
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -2324,7 +2329,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 68px; /* matches .cellLabel — consistent row heights */
+  min-height: 76px; /* matches .cellLabel — consistent row heights */
 }
 
 .cellHeadThamra,
@@ -2348,11 +2353,27 @@
 }
 .cellHeadComp { color: var(--thamra-text); font-weight: 500; }
 
+/* Merged "others" column header — same look as a comparator header, but only
+   shown on phones (see the max-width: 559px block). */
+.cellHeadOthers {
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+  min-height: 56px;
+  padding: 8px 6px 12px;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--thamra-text);
+  font-weight: 500;
+}
+.cellOthers { display: none; } /* revealed only under max-width: 559px */
+
 /* Featured THAMRA column — a subtle warm-cream column running full height (not a
    narrow floating capsule; it reads as one continuous highlighted column). */
-.cellThamra { background: rgba(201, 169, 110, 0.1); }
-.cellThamraTop { border-radius: 10px 10px 0 0; }
-.cellThamraBottom { border-radius: 0 0 10px 10px; }
+.cellThamra { background: #fbf6ef; } /* soft cream */
+.cellThamraTop { border-radius: 12px 12px 0 0; }
+.cellThamraBottom { border-radius: 0 0 12px 12px; }
 
 /* Markers — small and refined */
 .markerWrap { display: inline-flex; }
@@ -2480,6 +2501,52 @@
   .marker { width: 15px; height: 15px; }
 }
 
+/* Phones — the two comparator columns are identical, so collapse them into one
+   "others" column. Result: a clean 3-column table (attribute · THAMRA · others)
+   that fits without horizontal scroll. */
+@media (max-width: 559px) {
+  .compareTableWrap {
+    overflow-x: visible; /* nothing overflows now — kill the scroll affordance */
+  }
+  .matrix {
+    min-width: 0;
+    padding: 4px 14px 12px;
+  }
+  .matrixHead,
+  .matrixRow {
+    grid-template-columns: minmax(0, 1.5fr) minmax(64px, 1fr) minmax(64px, 1fr);
+  }
+
+  /* Swap the two detailed comparators for the single merged column */
+  .cellHeadComp,
+  .cellComp {
+    display: none;
+  }
+  .cellOthers {
+    display: flex;
+  }
+  /* Row hairline on the attribute + others columns; THAMRA stays a continuous
+     cream band, exactly as on desktop. */
+  .matrixRow .cellOthers {
+    border-top: 1px solid var(--cmp-line);
+  }
+
+  .cellLabel {
+    min-height: 60px;
+    padding: 16px 12px 16px 2px;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  .cellMarker {
+    min-height: 60px;
+  }
+  .cellHeadThamra,
+  .cellHeadOthers {
+    font-size: 12px;
+    min-height: 48px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .compFade { animation: none; }
   .tab { transition: none; }
@@ -2504,10 +2571,6 @@
   line-height: 1.14;
   color: var(--thamra-burgundy);
   margin: 0 0 14px;
-}
-.aboutHeadingBrand {
-  color: var(--thamra-gold);
-  font-style: italic;
 }
 .aboutDefinition {
   font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
@@ -2828,13 +2891,87 @@
   margin: 12px 0 0;
   max-width: 60ch;
 }
-.calEmbedWrap {
-  margin-top: 26px;
+/* Wrapper that centres the booking CTAs (and the calendar once revealed). */
+.bookingActions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 6px;
+}
+/* Primary CTA that reveals the Cal.com calendar on click. */
+.bookingRevealBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  min-height: 560px; /* fallback before the embed loads; grows to fit content */
+  max-width: 480px;
+  min-height: 54px;
+  margin: 18px auto 0;
+  padding: 16px 28px;
+  background: var(--thamra-burgundy);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  box-shadow: 0 8px 22px rgba(139, 47, 58, 0.22);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+.bookingRevealBtn:hover {
+  background: #7a2833;
+  box-shadow: 0 10px 26px rgba(139, 47, 58, 0.28);
+}
+.bookingRevealBtn:active {
+  transform: translateY(1px);
+}
+/* Secondary CTA — instant WhatsApp chat (reuses the funnel's WhatsApp number). */
+.bookingWhatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  max-width: 480px;
+  min-height: 52px;
+  margin: 12px auto 0;
+  padding: 14px 24px;
+  background: #ffffff;
+  color: #1f7a4d;
+  border: 1.5px solid #25d366;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  transition: background 0.2s, border-color 0.2s;
+}
+.bookingWhatsappBtn:hover {
+  background: rgba(37, 211, 102, 0.08);
+  border-color: #1ebe5a;
+}
+.bookingWhatsappBtn svg {
+  flex-shrink: 0;
+}
+.calEmbedWrap {
+  margin: 22px auto 0; /* centered so the capped-width embed isn't full-bleed */
+  width: 100%;
+  max-width: 480px; /* compact card, like a standard site embed */
+  min-height: 320px; /* small fallback before the embed loads; grows to fit content */
   background: #ffffff;
   border: 1px solid rgba(201, 169, 110, 0.3);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.05), 0 16px 44px rgba(46, 39, 36, 0.09);
+  box-shadow: 0 2px 4px rgba(46, 39, 36, 0.05), 0 12px 32px rgba(46, 39, 36, 0.08);
+}
+
+/* Trim the Cal iframe's own internal top/bottom padding so the widget isn't
+   taller than it needs to be. */
+.calEmbedWrap :global(iframe) {
+  display: block;
 }

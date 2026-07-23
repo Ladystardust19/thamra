@@ -20,7 +20,6 @@ import {
   ABOUT_BENEFITS,
   ABOUT_TRUST,
   ABOUT_ORIGIN,
-  HAIR_EXPERT,
   type BenefitTile,
 } from "@/lib/resultContent";
 import {
@@ -387,6 +386,16 @@ function BackArrow() {
   );
 }
 
+// ─── WhatsApp glyph ───────────────────────────────────────────────────────────
+
+function WhatsAppIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.83c2.16 0 4.19.84 5.72 2.37a8.06 8.06 0 0 1 2.37 5.72c0 4.54-3.7 8.24-8.24 8.24-1.5 0-2.97-.4-4.25-1.16l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.25-8.24Zm-4.6 4.4c-.22 0-.57.08-.87.4-.3.33-1.15 1.12-1.15 2.73s1.18 3.17 1.34 3.39c.16.22 2.32 3.54 5.62 4.96.78.34 1.4.54 1.87.69.79.25 1.5.22 2.07.13.63-.09 1.94-.79 2.21-1.56.27-.77.27-1.43.19-1.56-.08-.14-.3-.22-.63-.38-.33-.16-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.24-.71.08-.33-.16-1.39-.51-2.65-1.63-.98-.87-1.64-1.95-1.83-2.28-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.58.16-.19.22-.33.33-.55.11-.22.06-.41-.03-.58-.08-.16-.72-1.78-1.02-2.44-.24-.53-.49-.53-.71-.54-.18-.01-.39-.01-.6-.01Z" />
+    </svg>
+  );
+}
+
 // ─── Intro screen ─────────────────────────────────────────────────────────────
 
 function IntroScreen({ onStart }: { onStart: () => void }) {
@@ -650,16 +659,6 @@ function GateScreen({
 }
 
 // ─── Reusable result bits ─────────────────────────────────────────────────────
-
-function BulletList({ items }: { items: string[] }) {
-  return (
-    <ul className={styles.bulletList}>
-      {items.map((it, i) => (
-        <li key={i}>{it}</li>
-      ))}
-    </ul>
-  );
-}
 
 /** Independently collapsible "learn more" card with a teaser header (large tap
  *  target) that expands to reveal its content. */
@@ -1075,6 +1074,11 @@ function ComparisonMarker({ level, columnLabel }: { level: ComparisonLevel; colu
 // The comparison shows THAMRA against the two most common prior approaches.
 const MATRIX_COMPARATORS: TreatmentCategory[] = ["general_supplements", "topical_treatments"];
 
+// On phones the two comparator columns (which carry identical marker patterns)
+// collapse into a single "others" column to cut visual clutter.
+const OTHERS_LABEL = "სხვა მიდგომები";
+const OTHERS_LEVELS = COMPARATOR_LEVELS[MATRIX_COMPARATORS[0]];
+
 function ComparisonMatrix() {
   const lastRow = COMPARISON_ROW_LABELS.length - 1;
   return (
@@ -1082,13 +1086,17 @@ function ComparisonMatrix() {
       <div className={styles.matrixHead} role="row">
         <span className={`${styles.cellLabel} ${styles.cellHeadLabel}`} role="columnheader" aria-hidden />
         <span className={`${styles.cellHeadThamra} ${styles.cellThamra} ${styles.cellThamraTop}`} role="columnheader">
-          THAMRA
+          <span className={styles.brandWord}>THAMRA</span>
         </span>
         {MATRIX_COMPARATORS.map((c) => (
           <span key={c} className={styles.cellHeadComp} role="columnheader">
             {COMPARATOR_LABEL[c]}
           </span>
         ))}
+        {/* Merged comparator — rendered only on phones (CSS-toggled) */}
+        <span className={`${styles.cellHeadOthers} ${styles.cellOthers}`} role="columnheader">
+          {OTHERS_LABEL}
+        </span>
       </div>
       {COMPARISON_ROW_LABELS.map((label, i) => (
         <div className={styles.matrixRow} role="row" key={i}>
@@ -1106,6 +1114,10 @@ function ComparisonMatrix() {
               <ComparisonMarker level={COMPARATOR_LEVELS[c][i]} columnLabel={COMPARATOR_LABEL[c]} />
             </span>
           ))}
+          {/* Merged comparator — rendered only on phones (CSS-toggled) */}
+          <span className={`${styles.cellMarker} ${styles.cellOthers}`} role="cell">
+            <ComparisonMarker level={OTHERS_LEVELS[i]} columnLabel={OTHERS_LABEL} />
+          </span>
         </div>
       ))}
     </div>
@@ -1119,7 +1131,7 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
   return (
     <RevealSection id="result-treatment" className={`${styles.mSection} ${styles.compareSection}`}>
       <h2 className={styles.compareHeadline}>
-        რით განსხვავდება <span className={styles.compareHeadlineBrand}>THAMRA</span>?
+        რით განსხვავდება <span className={styles.brandWord}>THAMRA</span>?
       </h2>
       {intro && <p className={styles.compareIntro}>{intro}</p>}
       <div className={styles.compareTableWrap}>
@@ -1146,13 +1158,20 @@ function ResultScreen({ answers }: { answers: Answers }) {
   const r = computeResult(answers);
   const reduce = useReducedMotion();
 
+  // The Cal.com calendar is heavy and only relevant once the user wants to
+  // book, so it stays hidden (and its script unloaded) until this is true.
+  const [showBooking, setShowBooking] = useState(false);
+
   function scrollTo(id: string) {
     if (typeof document === "undefined") return;
     document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   }
 
-  function onHairExpert() {
-    track({ event_type: "hair_expert_click", screen: "result" });
+  function onOpenBooking() {
+    setShowBooking(true);
+    track({ event_type: "booking_open", screen: "result" });
+    // Wait a tick for the calendar to mount, then bring it into view.
+    setTimeout(() => scrollTo("result-booking"), 60);
   }
 
   return (
@@ -1169,20 +1188,12 @@ function ResultScreen({ answers }: { answers: Answers }) {
       {/* Treatment comparison — how THAMRA differs from what she previously tried */}
       <TreatmentComparisonSection answers={answers} />
 
-      {/* Cal.com consultation booking (Zone B — after the comparison table) */}
-      <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
-        <span className={styles.mEyebrow}>დაჯავშნე დრო</span>
-        <h2 className={styles.bookingHeading}>დაჯავშნე კონსულტაცია</h2>
-        <p className={styles.bookingSubtext}>ესაუბრე THAMRA-ს ექსპერტს შენს თმის პროფილზე</p>
-        <ConsultationBooking />
-      </RevealSection>
-
       {/* გაიგე მეტი THAMRA-ზე — independent progressive-disclosure cards */}
       <RevealSection id="result-about" className={styles.mSection}>
         <div className={styles.aboutIntro}>
           <span className={styles.mEyebrow}>{ABOUT_THAMRA.eyebrow}</span>
           <h2 className={styles.aboutHeading}>
-            რა არის <span className={styles.aboutHeadingBrand}>THAMRA</span>
+            რა არის <span className={styles.brandWord}>THAMRA</span>
           </h2>
           <p className={styles.aboutDefinition}>{ABOUT_THAMRA.definition}</p>
         </div>
@@ -1253,22 +1264,33 @@ function ResultScreen({ answers }: { answers: Answers }) {
         </div>
       </RevealSection>
 
-      {/* What next — quieter secondary CTA; the gold sticky bar is the primary. */}
-      <div className={styles.nextStep}>
-        <span className={styles.nextStepLabel}>შემდეგი ნაბიჯი</span>
-        <h2 className={styles.nextStepHeading}>{HAIR_EXPERT.heading}</h2>
-        <p className={styles.nextStepLead}>{HAIR_EXPERT.helpLead}</p>
-        <BulletList items={HAIR_EXPERT.helpBullets} />
-        <a
-          href={HAIR_EXPERT_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.nextStepBtn}
-          onClick={onHairExpert}
-        >
-          {HAIR_EXPERT.ctaLabel}
-        </a>
-      </div>
+      {/* Cal.com consultation booking — placed at the very end of the result page */}
+      <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
+        <span className={styles.mEyebrow}>დაჯავშნე დრო</span>
+        <div className={styles.bookingActions}>
+          {showBooking ? (
+            <ConsultationBooking />
+          ) : (
+            <button
+              type="button"
+              className={styles.bookingRevealBtn}
+              onClick={onOpenBooking}
+            >
+              დაჯავშნე დრო კონსულტაციისთვის
+            </button>
+          )}
+          <a
+            href={HAIR_EXPERT_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.bookingWhatsappBtn}
+            onClick={() => track({ event_type: "whatsapp_click", screen: "result" })}
+          >
+            <WhatsAppIcon />
+            WhatsApp-ზე მოგვწერე
+          </a>
+        </div>
+      </RevealSection>
     </div>
   );
 }
