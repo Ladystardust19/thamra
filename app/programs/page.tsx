@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PRODUCTS } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "პროგრამები და ფასები | Thamra",
@@ -9,53 +10,6 @@ export const metadata: Metadata = {
 
 const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
-
-type Program = {
-  name: string;
-  duration: string;
-  price: string;
-  equivalent?: string;
-  features: string[];
-  featured?: boolean;
-};
-
-const PROGRAMS: Program[] = [
-  {
-    name: "Thamra Foundation",
-    duration: "ერთთვიანი პროგრამა",
-    price: "149 ₾",
-    features: [
-      "ერთი თვისთვის განკუთვნილი Thamra",
-      "პერსონალური შეფასების კითხვარი",
-      "თმისა და საერთო მდგომარეობის საწყისი შეფასება",
-      "ინდივიდუალური 30-დღიანი რეკომენდაციები",
-    ],
-  },
-  {
-    name: "Thamra Signature",
-    duration: "90-დღიანი პროგრამა",
-    price: "399 ₾",
-    equivalent: "საორიენტაციო ეკვივალენტი: ≈133 ₾ თვეში / ≈4.43 ₾ დღეში",
-    features: [
-      "სამი თვისთვის განკუთვნილი Thamra",
-      "პასუხების საფუძველზე შექმნილი პერსონალური შეფასება",
-      "90-დღიანი ზრუნვის გზამკვლევი",
-      "პროგრესის შეფასება სამი თვის შემდეგ",
-    ],
-    featured: true,
-  },
-  {
-    name: "Thamra Hair Longevity",
-    duration: "ექვსთვიანი სრული პროგრამა",
-    price: "749 ₾",
-    equivalent: "საორიენტაციო ეკვივალენტი: ≈125 ₾ თვეში / ≈4.16 ₾ დღეში",
-    features: [
-      "ექვსი თვისთვის განკუთვნილი Thamra",
-      "სიღრმისეული პერსონალური შეფასება",
-      "180-დღიანი ინდივიდუალური გზამკვლევი",
-    ],
-  },
-];
 
 function Check() {
   return (
@@ -136,9 +90,9 @@ export default function ProgramsPage() {
         </header>
 
         <div className="programs-grid">
-          {PROGRAMS.map((p) => (
+          {PRODUCTS.map((p) => (
             <article
-              key={p.name}
+              key={p.id}
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -201,7 +155,7 @@ export default function ProgramsPage() {
                   lineHeight: 1,
                 }}
               >
-                {p.price}
+                {p.price} ₾
               </div>
               <span
                 style={{
@@ -261,11 +215,25 @@ export default function ProgramsPage() {
               <div style={{ flex: 1 }} />
 
               <Link
-                href="/quiz"
+                href={`/checkout?plan=${p.id}`}
                 className="key-reasons-cta"
                 style={{ marginTop: 28, textAlign: "center" }}
               >
-                გაიარე ტესტი →
+                შეუკვეთე →
+              </Link>
+              <Link
+                href="/quiz"
+                style={{
+                  fontFamily: FB,
+                  fontSize: 13,
+                  color: "#6B5F5A",
+                  textAlign: "center",
+                  marginTop: 12,
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                }}
+              >
+                ან ჯერ გაიარე ტესტი
               </Link>
             </article>
           ))}
