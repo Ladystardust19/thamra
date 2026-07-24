@@ -221,20 +221,6 @@ export default function ProgramsPage() {
               >
                 შეუკვეთე →
               </Link>
-              <Link
-                href="/quiz"
-                style={{
-                  fontFamily: FB,
-                  fontSize: 13,
-                  color: "#6B5F5A",
-                  textAlign: "center",
-                  marginTop: 12,
-                  textDecoration: "underline",
-                  textUnderlineOffset: 3,
-                }}
-              >
-                ან ჯერ გაიარე ტესტი
-              </Link>
             </article>
           ))}
         </div>
