@@ -7,7 +7,6 @@ const NAV_LINKS = [
   { label: "ჩვენ შესახებ", href: "/about" },
   { label: "პროგრამები",   href: "/programs" },
   { label: "მეცნიერება",   href: "/#science" },
-  { label: "კონტაქტი",     href: "/contact" },
   { label: "ჩემი ოთახი",    href: "/cabinet" },
 ];
 
