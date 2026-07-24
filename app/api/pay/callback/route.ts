@@ -41,8 +41,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, reason: "invalid signature" }, { status: 200 });
   }
 
-  // Reconcile the order (real checkout orders start with "ord-"; the throwaway
-  // /pay-test smoke test uses "test-" and simply won't match a row).
+  // Reconcile the matching order row by external_order_id.
   if (externalOrderId) {
     const status =
       statusKey === "completed" && paymentCode === "100"

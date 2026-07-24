@@ -29,8 +29,8 @@ export default function PayFailPage() {
       <p style={{ maxWidth: 380, fontSize: 15, lineHeight: 1.6, margin: 0 }}>
         გადახდა არ განხორციელდა. სცადე თავიდან.
       </p>
-      <Link href="/pay-test" style={{ color: "#8B2F3A", fontSize: 14 }}>
-        ← ისევ ცდა
+      <Link href="/programs" style={{ color: "#8B2F3A", fontSize: 14 }}>
+        ← პროგრამებზე დაბრუნება
       </Link>
     </main>
   );
