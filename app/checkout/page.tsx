@@ -13,5 +13,10 @@ export default function CheckoutPage({
   searchParams: { plan?: string };
 }) {
   const initial = getProduct(searchParams.plan ?? "") ?? PRODUCTS[1];
-  return <CheckoutForm products={PRODUCTS} initialPlanId={initial.id} />;
+  // Include the initial product in the selector even if it's not a public
+  // program (e.g. the temporary "test" product reached via ?plan=test).
+  const selectable = PRODUCTS.some((p) => p.id === initial.id)
+    ? PRODUCTS
+    : [initial, ...PRODUCTS];
+  return <CheckoutForm products={selectable} initialPlanId={initial.id} />;
 }

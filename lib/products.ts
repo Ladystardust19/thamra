@@ -52,6 +52,18 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
+// TEMPORARY: 1 GEL product for verifying the full order→DB→callback loop under
+// BOG's 100 GEL test cap. NOT listed on /programs — reachable only via
+// /checkout?plan=test. REMOVE once the gateway limit is lifted and verified.
+export const TEST_PRODUCT: Product = {
+  id: "test",
+  name: "Thamra Test (1 ₾)",
+  duration: "სატესტო შეკვეთა",
+  price: 1,
+  features: ["გადახდის სისტემის შესამოწმებელი სატესტო შეკვეთა"],
+};
+
 export function getProduct(id: string): Product | undefined {
+  if (id === TEST_PRODUCT.id) return TEST_PRODUCT;
   return PRODUCTS.find((p) => p.id === id);
 }
