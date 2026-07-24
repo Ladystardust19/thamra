@@ -20,7 +20,6 @@ const NAV_LINKS = [
 ];
 
 const INFO_LINKS = [
-  { l: "კონტაქტი", h: "/contact" },
   { l: "მიწოდება, გაუქმება და დაბრუნება", h: "/delivery-returns" },
   { l: "კონფიდენციალურობის პოლიტიკა", h: "/privacy" },
   { l: "წესები და პირობები", h: "/terms" },

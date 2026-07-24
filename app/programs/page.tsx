@@ -225,35 +225,6 @@ export default function ProgramsPage() {
           ))}
         </div>
 
-        {/* Required disclosures near the programs */}
-        <div style={{ maxWidth: 760, marginTop: 44, display: "flex", flexDirection: "column", gap: 14 }}>
-          <p
-            style={{
-              fontFamily: FB,
-              fontSize: 15,
-              fontWeight: 300,
-              lineHeight: 1.7,
-              color: "#4A3F3C",
-              margin: 0,
-            }}
-          >
-            პერსონალური შეფასება, რეკომენდაციები, გზამკვლევები და პროგრესის მხარდაჭერა შესაბამის
-            პროგრამაში დამატებითი საფასურის გარეშეა ჩართული.
-          </p>
-          <p
-            style={{
-              fontFamily: FB,
-              fontSize: 15,
-              fontWeight: 300,
-              lineHeight: 1.7,
-              color: "#4A3F3C",
-              margin: 0,
-            }}
-          >
-            თვიური და დღიური თანხები მხოლოდ სრული ღირებულების საორიენტაციო გაანგარიშებაა და არ
-            წარმოადგენს გამოწერას, ყოველთვიურ გადასახადს ან განვადებას.
-          </p>
-        </div>
       </div>
 
       <style>{`
