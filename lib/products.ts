@@ -40,6 +40,19 @@ export const PRODUCTS: Product[] = [
   },
 ];
 
+// TEMPORARY hidden test product for verifying the full order → BOG payment →
+// confirmation-email loop while BOG's 100 GEL test cap is still in place.
+// Deliberately NOT in PRODUCTS, so it never appears on /programs or the default
+// checkout dropdown. Reachable only via /checkout?plan=test. REMOVE after test.
+export const TEST_PRODUCT: Product = {
+  id: "test",
+  name: "Thamra სატესტო (1 ₾)",
+  duration: "სატესტო შეკვეთა",
+  price: 1,
+  features: [],
+};
+
 export function getProduct(id: string): Product | undefined {
+  if (id === TEST_PRODUCT.id) return TEST_PRODUCT;
   return PRODUCTS.find((p) => p.id === id);
 }
