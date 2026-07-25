@@ -76,8 +76,7 @@ function shell(inner: string): string {
       </div>
       <div style="padding:28px;">${inner}</div>
       <div style="padding:18px 28px;border-top:1px solid rgba(201,169,110,0.3);color:${MUTE};font-size:12px;line-height:1.6;">
-        THAMRA · <a href="mailto:${REPLY_TO}" style="color:${GOLD};text-decoration:none;">${REPLY_TO}</a><br/>
-        Thamra არის საკვები დანამატი და არ არის მედიკამენტი.
+        THAMRA · <a href="mailto:${REPLY_TO}" style="color:${GOLD};text-decoration:none;">${REPLY_TO}</a>
       </div>
     </div>
   </body></html>`;
