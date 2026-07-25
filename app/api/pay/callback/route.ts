@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyBogSignature } from "@/lib/bog";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { sendOrderEmails } from "@/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -61,6 +62,24 @@ export async function POST(req: NextRequest) {
         })
         .eq("external_order_id", externalOrderId);
       if (error) console.error("[BOG callback] order update failed:", error);
+
+      // Send the confirmation email exactly once, even if BOG retries this
+      // callback. Atomically claim the row by flipping confirmation_email_sent
+      // false→true; only the winning update returns a row, and only it sends.
+      if (status === "completed") {
+        const { data: claimed, error: claimErr } = await admin
+          .from("orders")
+          .update({ confirmation_email_sent: true })
+          .eq("external_order_id", externalOrderId)
+          .eq("status", "completed")
+          .eq("confirmation_email_sent", false)
+          .select(
+            "external_order_id, program_name, amount, currency, customer_name, customer_phone, customer_email, city, address"
+          )
+          .maybeSingle();
+        if (claimErr) console.error("[BOG callback] email claim failed:", claimErr);
+        if (claimed) await sendOrderEmails(claimed);
+      }
     } catch (e) {
       console.error("[BOG callback] order update threw:", e);
     }
