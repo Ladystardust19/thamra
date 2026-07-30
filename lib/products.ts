@@ -9,6 +9,9 @@ export interface Product {
   equivalent?: string;
   features: string[];
   featured?: boolean;
+  // A non-physical product (e.g. a consultation): no delivery address is
+  // collected at checkout, and it is not listed on the /programs page.
+  service?: boolean;
 }
 
 export const PRODUCTS: Product[] = [
@@ -37,6 +40,17 @@ export const PRODUCTS: Product[] = [
     price: 749,
     equivalent: "საორიენტაციო ეკვივალენტი: ≈125 ₾ თვეში / ≈4.16 ₾ დღეში",
     features: [],
+  },
+  {
+    id: "consultation",
+    name: "Thamra კონსულტაცია",
+    duration: "ინდივიდუალური თმის კონსულტაცია",
+    price: 150,
+    service: true,
+    features: [
+      "ინდივიდუალური კონსულტაცია Thamra-ს ექსპერტთან",
+      "გადახდის შემდეგ დაგიკავშირდებით ტელეფონით ან WhatsApp-ით დროის შესათანხმებლად",
+    ],
   },
 ];
 

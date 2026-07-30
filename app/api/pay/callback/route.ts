@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
           .eq("status", "completed")
           .eq("confirmation_email_sent", false)
           .select(
-            "external_order_id, program_name, amount, currency, customer_name, customer_phone, customer_email, city, address"
+            "external_order_id, program_id, program_name, amount, currency, customer_name, customer_phone, customer_email, city, address"
           )
           .maybeSingle();
         if (claimErr) console.error("[BOG callback] email claim failed:", claimErr);

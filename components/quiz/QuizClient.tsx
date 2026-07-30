@@ -1332,17 +1332,30 @@ function ResultScreen({ answers }: { answers: Answers }) {
       <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
         <span className={styles.mEyebrow}>დაჯავშნე დრო</span>
         <div className={styles.bookingActions}>
+          {/* Primary — paid consultation checkout (150 ₾) */}
+          <a
+            href="/checkout?plan=consultation"
+            className={styles.bookingRevealBtn}
+            onClick={() =>
+              track({ event_type: "consultation_checkout_click", screen: "result" })
+            }
+          >
+            დაჯავშნე კონსულტაცია — 150 ₾
+          </a>
+
+          {/* Secondary — free Cal.com booking, revealed on click */}
           {showBooking ? (
             <ConsultationBooking />
           ) : (
             <button
               type="button"
-              className={styles.bookingRevealBtn}
+              className={styles.bookingSecondaryBtn}
               onClick={onOpenBooking}
             >
-              დაჯავშნე დრო კონსულტაციისთვის
+              ან დაჯავშნე უფასო დრო
             </button>
           )}
+
           <a
             href={HAIR_EXPERT_LINK}
             target="_blank"

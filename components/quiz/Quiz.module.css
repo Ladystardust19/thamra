@@ -2968,6 +2968,31 @@
 .bookingRevealBtn:active {
   transform: translateY(1px);
 }
+/* Secondary outline CTA — the free Cal.com booking, subordinate to the paid consultation. */
+.bookingSecondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 480px;
+  min-height: 52px;
+  margin: 12px auto 0;
+  padding: 14px 24px;
+  background: #ffffff;
+  color: var(--thamra-burgundy);
+  border: 1.5px solid var(--thamra-burgundy);
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  transition: background 0.2s, border-color 0.2s;
+}
+.bookingSecondaryBtn:hover {
+  background: rgba(139, 47, 58, 0.06);
+}
 /* Secondary CTA — instant WhatsApp chat (reuses the funnel's WhatsApp number). */
 .bookingWhatsappBtn {
   display: inline-flex;

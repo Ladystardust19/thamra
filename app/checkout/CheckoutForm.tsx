@@ -47,9 +47,14 @@ export default function CheckoutForm({
   const [error, setError] = useState("");
 
   const product = products.find((p) => p.id === planId) ?? products[0];
+  const isService = !!product.service;
 
   const canSubmit =
-    name.trim() && phone.trim() && city.trim() && address.trim() && terms && !loading;
+    name.trim() &&
+    phone.trim() &&
+    (isService || (city.trim() && address.trim())) &&
+    terms &&
+    !loading;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -124,18 +129,36 @@ export default function CheckoutForm({
               alignSelf: "start",
             }}
           >
-            <label style={labelStyle}>აირჩიე პროგრამა</label>
-            <select
-              value={planId}
-              onChange={(e) => setPlanId(e.target.value)}
-              style={{ ...inputStyle, cursor: "pointer", marginBottom: 20 }}
-            >
-              {products.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name} — {p.price} ₾
-                </option>
-              ))}
-            </select>
+            {isService ? (
+              <div
+                style={{
+                  fontFamily: FD,
+                  fontSize: "1.5rem",
+                  fontWeight: 400,
+                  color: "#3D3335",
+                  marginBottom: 16,
+                }}
+              >
+                {product.name}
+              </div>
+            ) : (
+              <>
+                <label style={labelStyle}>აირჩიე პროგრამა</label>
+                <select
+                  value={planId}
+                  onChange={(e) => setPlanId(e.target.value)}
+                  style={{ ...inputStyle, cursor: "pointer", marginBottom: 20 }}
+                >
+                  {products
+                    .filter((p) => !p.service)
+                    .map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} — {p.price} ₾
+                      </option>
+                    ))}
+                </select>
+              </>
+            )}
 
             <div style={{ fontFamily: FB, fontSize: 13, color: "#6B5F5A" }}>
               {product.duration}
@@ -211,19 +234,23 @@ export default function CheckoutForm({
                 inputMode="email"
               />
             </div>
-            <div>
-              <label style={labelStyle}>ქალაქი *</label>
-              <input style={inputStyle} value={city} onChange={(e) => setCity(e.target.value)} />
-            </div>
-            <div>
-              <label style={labelStyle}>მისამართი *</label>
-              <input
-                style={inputStyle}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="ქუჩა, ბინა, სადარბაზო..."
-              />
-            </div>
+            {!isService && (
+              <>
+                <div>
+                  <label style={labelStyle}>ქალაქი *</label>
+                  <input style={inputStyle} value={city} onChange={(e) => setCity(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelStyle}>მისამართი *</label>
+                  <input
+                    style={inputStyle}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="ქუჩა, ბინა, სადარბაზო..."
+                  />
+                </div>
+              </>
+            )}
 
             <label
               style={{

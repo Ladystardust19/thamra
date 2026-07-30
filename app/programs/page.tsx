@@ -90,7 +90,7 @@ export default function ProgramsPage() {
         </header>
 
         <div className="programs-grid">
-          {PRODUCTS.map((p) => (
+          {PRODUCTS.filter((p) => !p.service).map((p) => (
             <article
               key={p.id}
               style={{

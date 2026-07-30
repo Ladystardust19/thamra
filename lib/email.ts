@@ -8,6 +8,7 @@
 //                         (the domain must be verified in Resend to send).
 //   ORDER_EMAIL_BUSINESS  optional, defaults to "infothamra@gmail.com".
 import { Resend } from "resend";
+import { getProduct } from "./products";
 
 const FROM = process.env.ORDER_EMAIL_FROM || "Thamra <orders@thamra.ge>";
 const BUSINESS = process.env.ORDER_EMAIL_BUSINESS || "infothamra@gmail.com";
@@ -18,6 +19,7 @@ const SHIP_DATE = "10 სექტემბერი, 2026";
 
 export interface OrderEmailData {
   external_order_id: string;
+  program_id?: string | null;
   program_name: string;
   amount: number | string;
   currency?: string | null;
@@ -42,6 +44,11 @@ function esc(s: unknown): string {
 
 function money(o: OrderEmailData): string {
   return `${o.amount} ${o.currency || "GEL"}`;
+}
+
+// A service (e.g. consultation) has no shipment — the buyer note differs.
+function isService(o: OrderEmailData): boolean {
+  return !!getProduct(o.program_id ?? "")?.service;
 }
 
 // A compact order-detail table shared by both emails.
@@ -91,8 +98,12 @@ function buyerHtml(o: OrderEmailData): string {
     </p>
     <table style="width:100%;border-collapse:collapse;margin:0 0 20px;">${detailRows(o)}</table>
     <div style="background:${CREAM};border-radius:8px;padding:16px 18px;font-size:14px;color:${INK};line-height:1.6;">
-      📦 ეს არის წინასწარი შეკვეთა. მიწოდება დაიწყება <strong>${SHIP_DATE}</strong>-დან.
-      მიწოდებამდე დაგიკავშირდებით მითითებულ ნომერზე.
+      ${
+        isService(o)
+          ? `📅 გადახდა მიღებულია. მალე დაგიკავშირდებით ტელეფონით ან WhatsApp-ით კონსულტაციის დროის შესათანხმებლად.`
+          : `📦 ეს არის წინასწარი შეკვეთა. მიწოდება დაიწყება <strong>${SHIP_DATE}</strong>-დან.
+      მიწოდებამდე დაგიკავშირდებით მითითებულ ნომერზე.`
+      }
     </div>
     <p style="font-size:13px;color:${MUTE};line-height:1.6;margin:20px 0 0;">
       კითხვის შემთხვევაში მოგვწერე <a href="mailto:${REPLY_TO}" style="color:${BURGUNDY};">${REPLY_TO}</a>.
@@ -116,7 +127,9 @@ function buyerText(o: OrderEmailData): string {
     `თანხა: ${money(o)}`,
     `შეკვეთის ნომერი: ${o.external_order_id}`,
     ``,
-    `ეს არის წინასწარი შეკვეთა. მიწოდება დაიწყება ${SHIP_DATE}-დან.`,
+    isService(o)
+      ? `გადახდა მიღებულია. მალე დაგიკავშირდებით კონსულტაციის დროის შესათანხმებლად.`
+      : `ეს არის წინასწარი შეკვეთა. მიწოდება დაიწყება ${SHIP_DATE}-დან.`,
     `კითხვის შემთხვევაში: ${REPLY_TO}`,
   ].join("\n");
 }
