@@ -1330,7 +1330,7 @@ function ResultScreen({ answers }: { answers: Answers }) {
 
       {/* Cal.com consultation booking — placed at the very end of the result page */}
       <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
-        <span className={styles.mEyebrow}>დაჯავშნე დრო</span>
+        <span className={styles.mEyebrow}>დაჯავშნე ვიზიტი</span>
         <div className={styles.bookingActions}>
           {/* Primary — paid consultation checkout (150 ₾) */}
           <a
@@ -1352,7 +1352,7 @@ function ResultScreen({ answers }: { answers: Answers }) {
               className={styles.bookingSecondaryBtn}
               onClick={onOpenBooking}
             >
-              ან დაჯავშნე უფასო დრო
+              ან დაჯავშნე უფასო ვიზიტი
             </button>
           )}
 
