@@ -45,9 +45,10 @@ export async function POST(req: NextRequest) {
     const city = clean(c.city);
     const address = clean(c.address);
 
-    if (!name || !phone || !city || !address) {
+    // Physical programs need a delivery address; a service (consultation) does not.
+    if (!name || !phone || (!product.service && (!city || !address))) {
       return NextResponse.json(
-        { error: "missing required delivery fields" },
+        { error: "missing required fields" },
         { status: 400 }
       );
     }
@@ -69,8 +70,8 @@ export async function POST(req: NextRequest) {
       customer_name: name,
       customer_phone: phone,
       customer_email: email || null,
-      city,
-      address,
+      city: city || null,
+      address: address || null,
     });
     if (insertErr) {
       console.error("checkout: order insert failed:", insertErr);
