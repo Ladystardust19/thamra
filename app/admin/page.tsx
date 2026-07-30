@@ -8,15 +8,17 @@ import DateFilter from "@/components/admin/DateFilter";
 import QuizTab from "@/components/admin/QuizTab";
 import ResultTab from "@/components/admin/ResultTab";
 import LeadsTab from "@/components/admin/LeadsTab";
+import OrdersTab from "@/components/admin/OrdersTab";
 
 const ADMIN_EMAIL = "nino.jakeli270@gmail.com";
 
-type Tab = "quiz" | "result" | "leads";
+type Tab = "quiz" | "result" | "leads" | "orders";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "quiz", label: "ქვიზი" },
   { key: "result", label: "შედეგის გვერდი" },
   { key: "leads", label: "ლიდები" },
+  { key: "orders", label: "შეკვეთები" },
 ];
 
 export default function AdminPage() {
@@ -109,6 +111,7 @@ export default function AdminPage() {
         {tab === "quiz" && <QuizTab range={range} />}
         {tab === "result" && <ResultTab range={range} />}
         {tab === "leads" && <LeadsTab />}
+        {tab === "orders" && <OrdersTab range={range} />}
       </div>
     </main>
   );

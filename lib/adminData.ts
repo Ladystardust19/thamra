@@ -50,6 +50,26 @@ export interface LeadNote {
   created_at: string;
 }
 
+export interface Order {
+  id: string;
+  external_order_id: string;
+  bog_order_id: string | null;
+  program_id: string;
+  program_name: string;
+  amount: number;
+  currency: string;
+  status: string; // pending | completed | failed
+  customer_name: string | null;
+  customer_phone: string | null;
+  customer_email: string | null;
+  city: string | null;
+  address: string | null;
+  payment_detail: Record<string, unknown> | null;
+  confirmation_email_sent: boolean | null;
+  created_at: string;
+  updated_at: string;
+}
+
 // ─── Quiz screen metadata (order + Georgian labels) ────────────────────────────
 // Funnel order: landing → 9 questions → gate → lead → result.
 
@@ -182,6 +202,22 @@ export function fetchLeads(range?: DateRange): Promise<Lead[]> {
       q = q
         .gte("submitted_at", range.from.toISOString())
         .lte("submitted_at", range.to.toISOString());
+    }
+    return q;
+  });
+}
+
+export function fetchOrders(range?: DateRange): Promise<Order[]> {
+  return fetchAll<Order>((from, to) => {
+    let q = supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .range(from, to);
+    if (range) {
+      q = q
+        .gte("created_at", range.from.toISOString())
+        .lte("created_at", range.to.toISOString());
     }
     return q;
   });
@@ -374,6 +410,12 @@ export function fmtDuration(ms: number | null): string {
 
 export function fmtPct(x: number): string {
   return `${(x * 100).toFixed(x >= 0.1 ? 0 : 1)}%`;
+}
+
+export function fmtGel(amount: number): string {
+  // Whole GEL when integral, otherwise 2 decimals (e.g. 1.00 test orders).
+  const n = Number.isInteger(amount) ? amount : Number(amount.toFixed(2));
+  return `${n.toLocaleString("ka-GE")} ₾`;
 }
 
 export function fmtDate(iso: string): string {
