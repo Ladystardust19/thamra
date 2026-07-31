@@ -1038,25 +1038,26 @@ function HairChangesSection({ answers, onNext }: { answers: Answers; onNext: () 
 type ComparisonLevel = "full" | "partial" | "not_primary";
 type TreatmentCategory = "general_supplements" | "topical_treatments" | "procedures" | "none";
 
-const COMPARISON_ROW_LABELS = [
-  "მართავს გათხელების ჰორმონალურ მიზეზს",
-  "ითვალისწინებს სტრესისა და ძილის გავლენას თმაზე",
-  "ერთდროულად მოქმედებს ცვენაზე, გათხელებასა და თმის სტრუქტურაზე",
+// Fixed comparison — THAMRA vs the two most common prior approaches. Each row's
+// levels are ordered [THAMRA, biotin/multivitamins, shampoos/serums].
+const COMPARISON_COLUMNS = [
+  "ბიოტინი და მულტივიტამინები",
+  "შამპუნები და სერუმები",
+] as const;
+
+interface ComparisonRow {
+  label: string;
+  levels: [ComparisonLevel, ComparisonLevel, ComparisonLevel];
+}
+
+const COMPARISON_ROWS: ComparisonRow[] = [
+  { label: "შექმნილია მენოპაუზის პერიოდში თმის კომპლექსური ზრუნვისთვის", levels: ["full", "not_primary", "not_primary"] },
+  { label: "ითვალისწინებს თმის ცვლილებებთან დაკავშირებულ ჰორმონალურ ფაქტორებს", levels: ["full", "not_primary", "not_primary"] },
+  { label: "ითვალისწინებს სტრესისა და ძილის გავლენას", levels: ["full", "not_primary", "not_primary"] },
+  { label: "ზრუნავს თმის სიმკვრივეზე, ზრდის ციკლსა და სტრუქტურაზე", levels: ["full", "partial", "partial"] },
+  { label: "მოქმედებს შიგნიდან", levels: ["full", "full", "not_primary"] },
+  { label: "უზრუნველყოფს გარეგან მოვლას", levels: ["not_primary", "not_primary", "full"] },
 ];
-
-const COMPARATOR_LEVELS: Record<TreatmentCategory, ComparisonLevel[]> = {
-  general_supplements: ["not_primary", "not_primary", "partial"],
-  topical_treatments: ["not_primary", "not_primary", "partial"],
-  procedures: ["not_primary", "not_primary", "partial"],
-  none: ["not_primary", "not_primary", "partial"],
-};
-
-const COMPARATOR_LABEL: Record<TreatmentCategory, string> = {
-  general_supplements: "ბიოტინი და მულტივიტამინები",
-  topical_treatments: "შამპუნები, სერუმები და სხვა საშუალებები",
-  procedures: "პროცედურები",
-  none: "გავრცელებული თმის მიდგომები",
-};
 
 const COMPARISON_INTRO: Record<TreatmentCategory, string> = {
   general_supplements:
@@ -1069,9 +1070,16 @@ const COMPARISON_INTRO: Record<TreatmentCategory, string> = {
 };
 
 const LEVEL_SR: Record<ComparisonLevel, string> = {
-  full: "სრულად ითვალისწინებს",
-  partial: "ნაწილობრივ ითვალისწინებს",
+  full: "კომპლექსურად",
+  partial: "ნაწილობრივ",
   not_primary: "არ არის ძირითადი მიმართულება",
+};
+
+// Glyph shown in each cell: ✓ complex · ◐ partial · — not a primary focus.
+const LEVEL_GLYPH: Record<ComparisonLevel, string> = {
+  full: "✓",
+  partial: "◐",
+  not_primary: "—",
 };
 
 /** Map the previous-treatment answer (q12, multi-select) into comparison categories. */
@@ -1091,22 +1099,16 @@ function getPersonalizedComparisonIntro(c: TreatmentCategory): string {
 function ComparisonMarker({ level, columnLabel }: { level: ComparisonLevel; columnLabel: string }) {
   return (
     <span className={styles.markerWrap}>
-      <span className={`${styles.marker} ${styles["marker_" + level]}`} aria-hidden />
+      <span className={`${styles.glyph} ${styles["glyph_" + level]}`} aria-hidden>
+        {LEVEL_GLYPH[level]}
+      </span>
       <span className={styles.srOnly}>{`${columnLabel} — ${LEVEL_SR[level]}`}</span>
     </span>
   );
 }
 
-// The comparison shows THAMRA against the two most common prior approaches.
-const MATRIX_COMPARATORS: TreatmentCategory[] = ["general_supplements", "topical_treatments"];
-
-// On phones the two comparator columns (which carry identical marker patterns)
-// collapse into a single "others" column to cut visual clutter.
-const OTHERS_LABEL = "სხვა მიდგომები";
-const OTHERS_LEVELS = COMPARATOR_LEVELS[MATRIX_COMPARATORS[0]];
-
 function ComparisonMatrix() {
-  const lastRow = COMPARISON_ROW_LABELS.length - 1;
+  const lastRow = COMPARISON_ROWS.length - 1;
   return (
     <div className={styles.matrix} role="table" aria-label="შედარება THAMRA-სთან">
       <div className={styles.matrixHead} role="row">
@@ -1114,36 +1116,28 @@ function ComparisonMatrix() {
         <span className={`${styles.cellHeadThamra} ${styles.cellThamra} ${styles.cellThamraTop}`} role="columnheader">
           <span className={styles.brandWord}>THAMRA</span>
         </span>
-        {MATRIX_COMPARATORS.map((c) => (
+        {COMPARISON_COLUMNS.map((c) => (
           <span key={c} className={styles.cellHeadComp} role="columnheader">
-            {COMPARATOR_LABEL[c]}
+            {c}
           </span>
         ))}
-        {/* Merged comparator — rendered only on phones (CSS-toggled) */}
-        <span className={`${styles.cellHeadOthers} ${styles.cellOthers}`} role="columnheader">
-          {OTHERS_LABEL}
-        </span>
       </div>
-      {COMPARISON_ROW_LABELS.map((label, i) => (
+      {COMPARISON_ROWS.map((row, i) => (
         <div className={styles.matrixRow} role="row" key={i}>
           <span className={styles.cellLabel} role="cell">
-            {label}
+            {row.label}
           </span>
           <span
             className={`${styles.cellMarker} ${styles.cellThamra} ${i === lastRow ? styles.cellThamraBottom : ""}`}
             role="cell"
           >
-            <ComparisonMarker level="full" columnLabel="THAMRA" />
+            <ComparisonMarker level={row.levels[0]} columnLabel="THAMRA" />
           </span>
-          {MATRIX_COMPARATORS.map((c) => (
+          {COMPARISON_COLUMNS.map((c, ci) => (
             <span key={c} className={`${styles.cellMarker} ${styles.cellComp}`} role="cell">
-              <ComparisonMarker level={COMPARATOR_LEVELS[c][i]} columnLabel={COMPARATOR_LABEL[c]} />
+              <ComparisonMarker level={row.levels[ci + 1]} columnLabel={c} />
             </span>
           ))}
-          {/* Merged comparator — rendered only on phones (CSS-toggled) */}
-          <span className={`${styles.cellMarker} ${styles.cellOthers}`} role="cell">
-            <ComparisonMarker level={OTHERS_LEVELS[i]} columnLabel={OTHERS_LABEL} />
-          </span>
         </div>
       ))}
     </div>
@@ -1165,13 +1159,13 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
       </div>
       <p className={styles.compareLegend}>
         <span>
-          <span className={`${styles.legendMarker} ${styles.marker_full}`} aria-hidden /> სრულად ითვალისწინებს
+          <span className={`${styles.legendGlyph} ${styles.glyph_full}`} aria-hidden>✓</span> კომპლექსურად
         </span>
         <span>
-          <span className={`${styles.legendMarker} ${styles.marker_partial}`} aria-hidden /> ნაწილობრივ
+          <span className={`${styles.legendGlyph} ${styles.glyph_partial}`} aria-hidden>◐</span> ნაწილობრივ — ითვალისწინებს, თუმცა არა კომპლექსურად
         </span>
         <span>
-          <span className={`${styles.legendMarker} ${styles.marker_not_primary}`} aria-hidden /> არ არის ძირითადი მიმართულება
+          <span className={`${styles.legendGlyph} ${styles.glyph_not_primary}`} aria-hidden>—</span> არ არის ძირითადი მიმართულება
         </span>
       </p>
     </RevealSection>
