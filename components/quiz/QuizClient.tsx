@@ -1273,21 +1273,15 @@ function ResultScreen({ answers }: { answers: Answers }) {
         </div>
       </RevealSection>
 
-      {/* Cal.com consultation booking — placed at the very end of the result page */}
+      {/* Closing block — the THAMRA hair expert reviews your answers */}
       <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
-        <span className={styles.mEyebrow}>პერსონალური კონსულტაცია</span>
-        <div className={styles.bookingActions}>
-          {/* Primary — paid consultation checkout (150 ₾) */}
-          <a
-            href="/checkout?plan=consultation"
-            className={styles.bookingRevealBtn}
-            onClick={() =>
-              track({ event_type: "consultation_checkout_click", screen: "result" })
-            }
-          >
-            დაჯავშნე კონსულტაცია — 150 ₾
-          </a>
-        </div>
+        <h2 className={styles.mHeadline}>შენი შედეგი თამრას თმის ექსპერტთან ერთად</h2>
+        <p className={styles.mBody}>ამ ეტაპზე თამრა პირველ 50 ქალთან მუშაობს.</p>
+        <p className={styles.mBody}>
+          შენს პასუხებს განვიხილავთ და შევამოწმებთ, ემთხვევა თუ არა შენი თმის
+          ცვლილების მიზეზი იმას, რაზეც თამრა მუშაობს. თუ ემთხვევა, დაგიკავშირდებით
+          და ერთად გავარკვევთ, საიდან სჯობს დაიწყო.
+        </p>
       </RevealSection>
     </div>
   );
