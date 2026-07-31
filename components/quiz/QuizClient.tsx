@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import styles from "./Quiz.module.css";
-import ConsultationBooking from "./ConsultationBooking";
 import { supabase } from "@/lib/supabase";
 import {
   QUESTIONS,
@@ -421,16 +420,6 @@ function BackArrow() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
       <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-// ─── WhatsApp glyph ───────────────────────────────────────────────────────────
-
-function WhatsAppIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 1.83c2.16 0 4.19.84 5.72 2.37a8.06 8.06 0 0 1 2.37 5.72c0 4.54-3.7 8.24-8.24 8.24-1.5 0-2.97-.4-4.25-1.16l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.37c0-4.54 3.7-8.24 8.25-8.24Zm-4.6 4.4c-.22 0-.57.08-.87.4-.3.33-1.15 1.12-1.15 2.73s1.18 3.17 1.34 3.39c.16.22 2.32 3.54 5.62 4.96.78.34 1.4.54 1.87.69.79.25 1.5.22 2.07.13.63-.09 1.94-.79 2.21-1.56.27-.77.27-1.43.19-1.56-.08-.14-.3-.22-.63-.38-.33-.16-1.94-.96-2.24-1.07-.3-.11-.52-.16-.74.16-.22.33-.85 1.07-1.04 1.29-.19.22-.38.24-.71.08-.33-.16-1.39-.51-2.65-1.63-.98-.87-1.64-1.95-1.83-2.28-.19-.33-.02-.5.14-.67.15-.15.33-.38.49-.58.16-.19.22-.33.33-.55.11-.22.06-.41-.03-.58-.08-.16-.72-1.78-1.02-2.44-.24-.53-.49-.53-.71-.54-.18-.01-.39-.01-.6-.01Z" />
     </svg>
   );
 }
@@ -1222,20 +1211,9 @@ function ResultScreen({ answers }: { answers: Answers }) {
   const r = computeResult(answers);
   const reduce = useReducedMotion();
 
-  // The Cal.com calendar is heavy and only relevant once the user wants to
-  // book, so it stays hidden (and its script unloaded) until this is true.
-  const [showBooking, setShowBooking] = useState(false);
-
   function scrollTo(id: string) {
     if (typeof document === "undefined") return;
     document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-  }
-
-  function onOpenBooking() {
-    setShowBooking(true);
-    track({ event_type: "booking_open", screen: "result" });
-    // Wait a tick for the calendar to mount, then bring it into view.
-    setTimeout(() => scrollTo("result-booking"), 60);
   }
 
   return (
@@ -1330,7 +1308,7 @@ function ResultScreen({ answers }: { answers: Answers }) {
 
       {/* Cal.com consultation booking — placed at the very end of the result page */}
       <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
-        <span className={styles.mEyebrow}>დაჯავშნე დრო</span>
+        <span className={styles.mEyebrow}>დაჯავშნე ვიზიტი</span>
         <div className={styles.bookingActions}>
           {/* Primary — paid consultation checkout (150 ₾) */}
           <a
@@ -1341,30 +1319,6 @@ function ResultScreen({ answers }: { answers: Answers }) {
             }
           >
             დაჯავშნე კონსულტაცია — 150 ₾
-          </a>
-
-          {/* Secondary — free Cal.com booking, revealed on click */}
-          {showBooking ? (
-            <ConsultationBooking />
-          ) : (
-            <button
-              type="button"
-              className={styles.bookingSecondaryBtn}
-              onClick={onOpenBooking}
-            >
-              ან დაჯავშნე უფასო დრო
-            </button>
-          )}
-
-          <a
-            href={HAIR_EXPERT_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.bookingWhatsappBtn}
-            onClick={() => track({ event_type: "whatsapp_click", screen: "result" })}
-          >
-            <WhatsAppIcon />
-            WhatsApp-ზე მოგვწერე
           </a>
         </div>
       </RevealSection>
