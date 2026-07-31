@@ -1,6 +1,7 @@
 "use client";
 
 import { supabase } from "./supabase";
+import { QUESTIONS } from "./scoring";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -426,6 +427,51 @@ export function fmtDate(iso: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+// ─── Human-readable quiz answers ───────────────────────────────────────────────
+// Raw leads store answer codes (q1: "a1_45_49"); map them to the Georgian
+// question titles + option labels defined in the quiz itself.
+
+const QUESTION_TITLE: Record<string, string> = {};
+const OPTION_LABEL: Record<string, string> = {};
+for (const q of QUESTIONS) {
+  QUESTION_TITLE[q.id] = q.title;
+  for (const opt of q.options) OPTION_LABEL[opt.id] = opt.label;
+}
+
+export interface ReadableAnswer {
+  question: string;
+  answer: string;
+}
+
+/** Turn a raw lead `answers` blob into ordered, human-readable Q→A pairs. */
+export function readableAnswers(answers: Record<string, unknown> | null): ReadableAnswer[] {
+  if (!answers) return [];
+  const out: ReadableAnswer[] = [];
+  const seen = new Set<string>();
+
+  const render = (v: unknown): string =>
+    Array.isArray(v)
+      ? v.map((x) => OPTION_LABEL[String(x)] ?? String(x)).join(" · ")
+      : OPTION_LABEL[String(v)] ?? String(v);
+
+  // Quiz order first, so the detail reads like the questionnaire.
+  for (const q of QUESTIONS) {
+    const v = answers[q.id];
+    seen.add(q.id);
+    if (v == null || (Array.isArray(v) && v.length === 0)) continue;
+    out.push({ question: q.title, answer: render(v) });
+  }
+
+  // Any extra keys we don't recognise (skip internal/consent metadata).
+  for (const [k, v] of Object.entries(answers)) {
+    if (seen.has(k) || k.startsWith("_")) continue;
+    if (v == null || (Array.isArray(v) && v.length === 0)) continue;
+    out.push({ question: QUESTION_TITLE[k] ?? k, answer: render(v) });
+  }
+
+  return out;
 }
 
 export function fmtDateShort(iso: string): string {
