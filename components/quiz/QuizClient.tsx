@@ -1162,7 +1162,7 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
           <span className={`${styles.legendGlyph} ${styles.glyph_full}`} aria-hidden>✓</span> კომპლექსურად
         </span>
         <span>
-          <span className={`${styles.legendGlyph} ${styles.glyph_partial}`} aria-hidden>◐</span> ნაწილობრივ
+          <span className={`${styles.legendGlyph} ${styles.glyph_partial}`} aria-hidden>◐</span> ნაწილობრივ — ითვალისწინებს, თუმცა არა კომპლექსურად
         </span>
         <span>
           <span className={`${styles.legendGlyph} ${styles.glyph_not_primary}`} aria-hidden>—</span> არ არის ძირითადი მიმართულება
