@@ -12,6 +12,7 @@ import {
   planLabel,
   fmtDate,
   fmtDateShort,
+  readableAnswers,
 } from "@/lib/adminData";
 
 const STATUSES = [
@@ -129,12 +130,15 @@ export default function LeadsTab() {
 
   function exportCsv() {
     const esc = (v: string) => `"${String(v).replace(/"/g, '""')}"`;
-    const header = ["სახელი", "ტელეფონი", "ელ.ფოსტა", "თარიღი", "სტატუსი", "დარეკილი", "პაკეტი", "წყარო", "პროფილი", "კომენტარები"];
+    const header = ["სახელი", "ტელეფონი", "ელ.ფოსტა", "თარიღი", "სტატუსი", "დარეკილი", "პაკეტი", "წყარო", "პროფილი", "პასუხები", "კომენტარები"];
     const rows = filtered.map((l) => {
       const leadNotes = (notes[l.id] ?? [])
         .map((n) => `${fmtDateShort(n.created_at)}: ${n.body}`)
         .join(" | ");
       const st = STATUSES.find((s) => s.key === (l.status ?? "new"))?.label ?? "";
+      const answerText = readableAnswers(l.answers)
+        .map((r) => `${r.question} ${r.answer}`)
+        .join(" | ");
       return [
         l.name,
         l.phone,
@@ -145,6 +149,7 @@ export default function LeadsTab() {
         planLabel(l.selected_plan),
         sourceLabel(l.attribution),
         diagnose(l.answers),
+        answerText,
         leadNotes,
       ].map((v) => esc(v)).join(",");
     });
@@ -333,14 +338,16 @@ export default function LeadsTab() {
 // ─── Answers list ──────────────────────────────────────────────────────────────
 
 function AnswersList({ answers }: { answers: Record<string, unknown> | null }) {
-  if (!answers || Object.keys(answers).length === 0) {
+  const rows = readableAnswers(answers);
+  if (rows.length === 0) {
     return <p className="font-body text-[13px] text-muted">—</p>;
   }
   return (
-    <ul className="flex flex-col gap-1">
-      {Object.entries(answers).map(([k, v]) => (
-        <li key={k} className="font-body text-[13px] text-ink">
-          <span className="text-muted">{k}:</span> {Array.isArray(v) ? v.join(", ") : String(v)}
+    <ul className="flex flex-col gap-2">
+      {rows.map((r, i) => (
+        <li key={i} className="font-body text-[13px]">
+          <span className="block text-muted">{r.question}</span>
+          <span className="text-ink">{r.answer}</span>
         </li>
       ))}
     </ul>
