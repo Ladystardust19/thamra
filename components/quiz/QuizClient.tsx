@@ -787,14 +787,6 @@ const HAIR_CHANGE_ROWS: Record<HairChangeKey, { title: string; text: string }> =
   stresssleep: { title: "ძილი და სტრესი", text: "თმის ცვლილებასთან ერთად ძილის ან სტრესის ცვლილებაც გამოიკვეთა." },
 };
 
-// Section 2 — hair-stress explanations (indexed by level).
-const HAIR_STRESS_EXPLAIN = [
-  "შენს პასუხებში თმის ცვლილება ჯერ მსუბუქად იკვეთება.",
-  "შენს პასუხებში ცვლილების პირველი ნიშნები ჩანს, თუმცა ისინი ჯერ რამდენიმე მიმართულებით არ არის გამოხატული.",
-  "",
-  "შენს პასუხებში თმის ცვენა, გათხელება ან ხარისხის ცვლილება მკვეთრად არის გამოხატული.",
-];
-
 const GEO_COUNT = ["ერთ", "ორ", "სამ", "ოთხ", "ხუთ"];
 
 // ─── Hair-spectrum visualization — organic overlapping-strand band ─────────────
@@ -999,8 +991,6 @@ function HairStressSection({
           <span>მკვეთრად გამოხატული</span>
         </div>
       </div>
-
-      {HAIR_STRESS_EXPLAIN[idx] && <p className={styles.mBody}>{HAIR_STRESS_EXPLAIN[idx]}</p>}
 
     </RevealSection>
   );
