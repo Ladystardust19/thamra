@@ -49,13 +49,6 @@ const STATE_KEY = "thamra_quiz_state_v2";
 // consents record exactly which version the user agreed to.
 const POLICY_VERSION = "2026-07-23";
 
-// THAMRA Hair Expert destination. PLACEHOLDER — points at the existing WhatsApp
-// line used elsewhere in the funnel. Swap this for the real Hair Expert chat /
-// consultation link when it exists.
-const HAIR_EXPERT_LINK =
-  "https://wa.me/995598511112?text=" +
-  encodeURIComponent("გამარჯობა, მინდა ჩემი THAMRA შედეგის განხილვა.");
-
 // A single-select question needs an explicit "next" only when it also carries a
 // secondary toggle (Q2); all other single-selects auto-advance.
 function needsManualNext(q: Question): boolean {
@@ -390,26 +383,6 @@ export default function QuizClient() {
         </div>
       </div>
 
-      {/* Persistent CTA — rendered at page level so position:fixed isn't
-          trapped by the transformed screen-transition wrapper. */}
-      {screen === "result" && (
-        <div className={`${styles.stickyBar} ${styles.stickyBarVisible}`}>
-          <div className={styles.stickyBarInner}>
-            <div className={styles.stickyBarLeft}>
-              <span className={styles.stickyBarTitle}>შენი შედეგი მზადაა</span>
-            </div>
-            <a
-              href={HAIR_EXPERT_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.stickyBarBtn}
-              onClick={() => track({ event_type: "hair_expert_click", screen: "result" })}
-            >
-              განიხილე შედეგი
-            </a>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
