@@ -2326,7 +2326,7 @@
 /* Matrix — a soft, refined cream panel (featured THAMRA column inset) */
 .matrix {
   width: 100%;
-  min-width: 560px; /* keeps the 4 columns readable; wrapper scrolls below this */
+  min-width: 0; /* 3 columns are compact enough to fit every width */
   background: #ffffff; /* clearly whiter than the cream page bg */
   border: 1px solid rgba(201, 169, 110, 0.3);
   border-radius: 18px;
@@ -2337,7 +2337,7 @@
 .matrixHead,
 .matrixRow {
   display: grid;
-  grid-template-columns: minmax(190px, 2.6fr) repeat(3, minmax(124px, 1fr));
+  grid-template-columns: minmax(150px, 2.6fr) repeat(3, minmax(84px, 1fr));
   align-items: stretch;
 }
 
@@ -2414,6 +2414,24 @@
 .cellThamra { background: #fbf6ef; } /* soft cream */
 .cellThamraTop { border-radius: 12px 12px 0 0; }
 .cellThamraBottom { border-radius: 0 0 12px 12px; }
+
+/* Glyph markers — ✓ complex · ◐ partial · — not a primary focus */
+.glyph {
+  display: inline-block;
+  font-family: var(--font-jost), var(--font-ge-sans), sans-serif;
+  font-size: 18px;
+  line-height: 1;
+}
+.glyph_full { color: var(--cmp-gold); font-weight: 700; }
+.glyph_partial { color: var(--cmp-gold-soft); font-weight: 600; }
+.glyph_not_primary { color: rgba(77, 60, 56, 0.38); font-weight: 400; }
+.legendGlyph {
+  display: inline-block;
+  width: 15px;
+  text-align: center;
+  flex-shrink: 0;
+  font-size: 14px;
+}
 
 /* Markers — small and refined */
 .markerWrap { display: inline-flex; }
@@ -2541,49 +2559,40 @@
   .marker { width: 15px; height: 15px; }
 }
 
-/* Phones — the two comparator columns are identical, so collapse them into one
-   "others" column. Result: a clean 3-column table (attribute · THAMRA · others)
-   that fits without horizontal scroll. */
+/* Phones — three real columns (attribute · THAMRA · 2 comparators). Glyph
+   markers are compact, so this fits without horizontal scroll; the marker
+   columns are fixed-width and the two comparator headers wrap vertically. */
 @media (max-width: 559px) {
   .compareTableWrap {
-    overflow-x: visible; /* nothing overflows now — kill the scroll affordance */
+    overflow-x: visible; /* the 3 columns fit — no horizontal scroll */
   }
   .matrix {
     min-width: 0;
-    padding: 4px 14px 12px;
+    padding: 4px 10px 12px;
+    border-radius: 14px;
   }
   .matrixHead,
   .matrixRow {
-    grid-template-columns: minmax(0, 1.5fr) minmax(64px, 1fr) minmax(64px, 1fr);
+    grid-template-columns: minmax(0, 1fr) repeat(3, 44px);
   }
-
-  /* Swap the two detailed comparators for the single merged column */
-  .cellHeadComp,
-  .cellComp {
-    display: none;
-  }
-  .cellOthers {
-    display: flex;
-  }
-  /* Row hairline on the attribute + others columns; THAMRA stays a continuous
-     cream band, exactly as on desktop. */
-  .matrixRow .cellOthers {
-    border-top: 1px solid var(--cmp-line);
-  }
-
   .cellLabel {
-    min-height: 60px;
-    padding: 16px 12px 16px 2px;
-    font-size: 15px;
-    line-height: 1.4;
+    min-height: 54px;
+    padding: 13px 7px 13px 2px;
+    font-size: 12.5px;
+    line-height: 1.35;
   }
   .cellMarker {
-    min-height: 60px;
+    min-height: 54px;
   }
   .cellHeadThamra,
-  .cellHeadOthers {
-    font-size: 12px;
-    min-height: 48px;
+  .cellHeadComp {
+    font-size: 10px;
+    min-height: 54px;
+    padding: 6px 2px 10px;
+    letter-spacing: 0.01em;
+  }
+  .glyph {
+    font-size: 15px;
   }
 }
 
