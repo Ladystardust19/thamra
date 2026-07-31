@@ -9,6 +9,7 @@ import {
   visibleQuestions,
   hasTriedTreatment,
   computeResult,
+  humanizeAnswers,
   type Answers,
   type Question,
   type Result,
@@ -275,10 +276,12 @@ export default function QuizClient() {
         name: name.trim(),
         phone: fullPhone,
         email: email.trim() || null,
-        // Consent metadata rides along in the answers JSON so no schema change
-        // is required: status, timestamp and the policy version agreed to.
+        // Store the Georgian labels (not the internal option codes) so the raw
+        // Supabase row is human-readable. Consent metadata rides along in the
+        // same JSON so no schema change is required: status, timestamp and the
+        // policy version agreed to.
         answers: {
-          ...answers,
+          ...humanizeAnswers(answers),
           _consent: {
             accepted: consent,
             accepted_at: consentAt,

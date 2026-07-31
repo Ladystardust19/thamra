@@ -604,3 +604,40 @@ export function computeResult(answers: Answers): Result {
     triggeredRules: triggered,
   };
 }
+
+// ─── Human-readable answer values ──────────────────────────────────────────────
+// The quiz stores option *codes* (e.g. q1: "a1_45_49") in state so scoring and
+// conditional questions can key off stable ids. For anything a human reads back
+// (the raw Supabase `quiz_leads.answers` blob, exports, the admin detail) those
+// codes are opaque, so convert each value to its Georgian label at save time.
+const OPTION_LABEL: Record<string, string> = (() => {
+  const map: Record<string, string> = {};
+  for (const q of QUESTIONS) {
+    for (const opt of q.options) map[opt.id] = opt.label;
+    if (q.secondary) map[q.secondary.id] = q.secondary.label;
+  }
+  return map;
+})();
+
+/**
+ * Turn a raw answers blob (option codes) into the same shape but with Georgian
+ * labels as values — restoring the readable form Supabase used to show. Keys are
+ * preserved; unknown codes fall back to themselves; booleans (e.g. the surgical
+ * toggle) render as დიახ/არა; non-answer metadata keys pass through untouched.
+ */
+export function humanizeAnswers(
+  answers: Record<string, unknown>,
+): Record<string, unknown> {
+  const label = (v: unknown): unknown => {
+    if (Array.isArray(v)) return v.map((x) => OPTION_LABEL[String(x)] ?? x);
+    if (typeof v === "boolean") return v ? "დიახ" : "არა";
+    if (typeof v === "string") return OPTION_LABEL[v] ?? v;
+    return v;
+  };
+  const out: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(answers)) {
+    // Leave metadata (e.g. _consent) exactly as-is.
+    out[k] = k.startsWith("_") ? v : label(v);
+  }
+  return out;
+}
