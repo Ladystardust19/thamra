@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import styles from "./Quiz.module.css";
 import { supabase } from "@/lib/supabase";
@@ -20,6 +21,8 @@ import {
   ABOUT_BENEFITS,
   ABOUT_TRUST,
   ABOUT_ORIGIN,
+  RED_FLAG_RESULT,
+  CONSULTATION_CTA,
   type BenefitTile,
 } from "@/lib/resultContent";
 import {
@@ -1164,8 +1167,54 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
 
 // ─── Result page ──────────────────────────────────────────────────────────────
 
+// Medical-referral result for the q10 red-flag group — no THAMRA assessment,
+// price, consultation or order; refers the user to a doctor + basic test list.
+function RedFlagResultScreen() {
+  const c = RED_FLAG_RESULT;
+  return (
+    <div className={styles.resultWrap}>
+      <RevealSection id="result-redflag" className={`${styles.mSection} ${styles.mHero}`}>
+        <span className={styles.mEyebrow}>{c.eyebrow}</span>
+        <h1 className={styles.mHeadline}>{c.headline}</h1>
+        {c.intro.map((p, i) => (
+          <p key={i} className={styles.mBody}>
+            {p}
+          </p>
+        ))}
+      </RevealSection>
+
+      <RevealSection id="result-redflag-advice" className={styles.mSection}>
+        <h2 className={styles.mSubhead}>{c.recommendTitle}</h2>
+        <ul className={styles.whoList}>
+          {c.recommend.map((b, i) => (
+            <li key={i}>{b}</li>
+          ))}
+        </ul>
+      </RevealSection>
+
+      <RevealSection id="result-redflag-tests" className={styles.mSection}>
+        <h2 className={styles.mSubhead}>{c.testsTitle}</h2>
+        <ul className={styles.whoList}>
+          {c.tests.map((b, i) => (
+            <li key={i}>{b}</li>
+          ))}
+        </ul>
+        <p className={styles.disclaimer} style={{ marginTop: 18 }}>
+          {c.disclaimer}
+        </p>
+      </RevealSection>
+    </div>
+  );
+}
+
 function ResultScreen({ answers }: { answers: Answers }) {
   const r = computeResult(answers);
+
+  // q10 red flag → medical-referral page instead of the normal result.
+  // No THAMRA assessment, price, consultation or order for this group.
+  if (r.redFlag) {
+    return <RedFlagResultScreen />;
+  }
 
   return (
     <div className={styles.resultWrap}>
@@ -1257,16 +1306,55 @@ function ResultScreen({ answers }: { answers: Answers }) {
         </div>
       </RevealSection>
 
-      {/* Closing block — the THAMRA hair expert reviews your answers */}
-      <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
-        <h2 className={styles.mHeadline}>შენი შედეგი თამრას თმის ექსპერტთან ერთად</h2>
-        <p className={styles.mBody}>ამ ეტაპზე თამრა პირველ 50 ქალთან მუშაობს.</p>
-        <p className={styles.mBody}>
-          შენს პასუხებს განვიხილავთ და შევამოწმებთ, ემთხვევა თუ არა შენი თმის
-          ცვლილების მიზეზი იმას, რაზეც თამრა მუშაობს. თუ ემთხვევა, დაგიკავშირდებით
-          და ერთად გავარკვევთ, საიდან სჯობს დაიწყო.
-        </p>
-      </RevealSection>
+      {/* Closing block — paid consultation CTA for the qualifying group,
+          otherwise the passive expert-review note. */}
+      {qualifiesForConsultation(r) ? (
+        <ConsultationCtaSection />
+      ) : (
+        <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
+          <h2 className={styles.mHeadline}>შენი შედეგი თამრას თმის ექსპერტთან ერთად</h2>
+          <p className={styles.mBody}>ამ ეტაპზე თამრა პირველ 50 ქალთან მუშაობს.</p>
+          <p className={styles.mBody}>
+            შენს პასუხებს განვიხილავთ და შევამოწმებთ, ემთხვევა თუ არა შენი თმის
+            ცვლილების მიზეზი იმას, რაზეც თამრა მუშაობს. თუ ემთხვევა, დაგიკავშირდებით
+            და ერთად გავარკვევთ, საიდან სჯობს დაიწყო.
+          </p>
+        </RevealSection>
+      )}
     </div>
+  );
+}
+
+// Consultation is offered when the result is NOT a red flag (handled earlier)
+// AND either the THAMRA fit is high (level index ≥ 2: მაღალი / ძალიან მაღალი)
+// OR a competing cause was flagged (q11 ≠ none) — both mean the case warrants an
+// individual assessment.
+function qualifiesForConsultation(r: Result): boolean {
+  return !r.redFlag && (r.thamraLevel.index >= 2 || r.competingCause);
+}
+
+function ConsultationCtaSection() {
+  const c = CONSULTATION_CTA;
+  return (
+    <RevealSection id="result-consultation" className={`${styles.mSection} ${styles.bookingSection}`}>
+      <span className={styles.mEyebrow}>{c.eyebrow}</span>
+      <h2 className={styles.mHeadline}>{c.headline}</h2>
+      <p className={styles.mBody}>{c.lead}</p>
+      <ul className={styles.whoList}>
+        {c.bullets.map((b, i) => (
+          <li key={i}>{b}</li>
+        ))}
+      </ul>
+      <Link
+        href="/consultation"
+        className={styles.mBtn}
+        onClick={() => track({ event_type: "consultation_checkout_click", screen: "result" })}
+      >
+        {c.cta}
+      </Link>
+      <p className={styles.disclaimer} style={{ marginTop: 12 }}>
+        {c.subtext}
+      </p>
+    </RevealSection>
   );
 }

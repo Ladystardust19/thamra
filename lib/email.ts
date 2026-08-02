@@ -9,6 +9,7 @@
 //   ORDER_EMAIL_BUSINESS  optional, defaults to "infothamra@gmail.com".
 import { Resend } from "resend";
 import { getProduct } from "./products";
+import { formatSlot } from "./consultation";
 
 const FROM = process.env.ORDER_EMAIL_FROM || "Thamra <orders@thamra.ge>";
 const BUSINESS = process.env.ORDER_EMAIL_BUSINESS || "infothamra@gmail.com";
@@ -28,6 +29,7 @@ export interface OrderEmailData {
   customer_email?: string | null;
   city?: string | null;
   address?: string | null;
+  slot_start?: string | null; // consultation only — chosen slot instant (ISO)
 }
 
 const BURGUNDY = "#8B2F3A";
@@ -56,6 +58,7 @@ function detailRows(o: OrderEmailData): string {
   const rows: [string, string][] = [
     ["პროგრამა", esc(o.program_name)],
     ["თანხა", esc(money(o))],
+    ["კონსულტაციის დრო", o.slot_start ? esc(formatSlot(o.slot_start)) : ""],
     ["შეკვეთის ნომერი", esc(o.external_order_id)],
     ["სახელი", esc(o.customer_name)],
     ["ტელეფონი", esc(o.customer_phone)],
@@ -100,7 +103,10 @@ function buyerHtml(o: OrderEmailData): string {
     <div style="background:${CREAM};border-radius:8px;padding:16px 18px;font-size:14px;color:${INK};line-height:1.6;">
       ${
         isService(o)
-          ? `📅 გადახდა მიღებულია. მალე დაგიკავშირდებით ტელეფონით ან WhatsApp-ით კონსულტაციის დროის შესათანხმებლად.`
+          ? o.slot_start
+            ? `📅 კონსულტაცია დაჯავშნილია: <strong>${esc(formatSlot(o.slot_start))}</strong>.
+      ამ დროისთვის დაგიკავშირდებით ტელეფონით ან WhatsApp-ით.`
+            : `📅 გადახდა მიღებულია. მალე დაგიკავშირდებით ტელეფონით ან WhatsApp-ით კონსულტაციის დროის შესათანხმებლად.`
           : `📦 ეს არის წინასწარი შეკვეთა. მიწოდება დაიწყება <strong>${SHIP_DATE}</strong>-დან.
       მიწოდებამდე დაგიკავშირდებით მითითებულ ნომერზე.`
       }
@@ -128,7 +134,9 @@ function buyerText(o: OrderEmailData): string {
     `შეკვეთის ნომერი: ${o.external_order_id}`,
     ``,
     isService(o)
-      ? `გადახდა მიღებულია. მალე დაგიკავშირდებით კონსულტაციის დროის შესათანხმებლად.`
+      ? o.slot_start
+        ? `კონსულტაცია დაჯავშნილია: ${formatSlot(o.slot_start)}. ამ დროისთვის დაგიკავშირდებით.`
+        : `გადახდა მიღებულია. მალე დაგიკავშირდებით კონსულტაციის დროის შესათანხმებლად.`
       : `ეს არის წინასწარი შეკვეთა. მიწოდება დაიწყება ${SHIP_DATE}-დან.`,
     `კითხვის შემთხვევაში: ${REPLY_TO}`,
   ].join("\n");
@@ -139,6 +147,7 @@ function businessText(o: OrderEmailData): string {
     `ახალი შეკვეთა (გადახდა დადასტურებულია)`,
     `პროგრამა: ${o.program_name}`,
     `თანხა: ${money(o)}`,
+    ...(o.slot_start ? [`კონსულტაციის დრო: ${formatSlot(o.slot_start)}`] : []),
     `შეკვეთა: ${o.external_order_id}`,
     `სახელი: ${o.customer_name ?? ""}`,
     `ტელეფონი: ${o.customer_phone ?? ""}`,

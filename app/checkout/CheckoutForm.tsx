@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/products";
+import { peekSessionId } from "@/lib/analytics";
 
 const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
@@ -67,6 +68,9 @@ export default function CheckoutForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           planId,
+          // Link this order to the originating quiz lead (empty when the buyer
+          // didn't come through the quiz in this tab).
+          sessionId: peekSessionId(),
           customer: { name, phone, email, city, address },
         }),
       });

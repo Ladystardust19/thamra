@@ -67,6 +67,7 @@ export interface Order {
   address: string | null;
   payment_detail: Record<string, unknown> | null;
   confirmation_email_sent: boolean | null;
+  session_id: string | null; // joins to quiz_leads.session_id (the originating lead)
   created_at: string;
   updated_at: string;
 }
@@ -222,6 +223,52 @@ export function fetchOrders(range?: DateRange): Promise<Order[]> {
     }
     return q;
   });
+}
+
+export interface ConsultationBooking {
+  slot_start: string;
+  status: string; // held | booked | released
+  external_order_id: string | null;
+}
+
+/** Consultation bookings keyed by external_order_id, for the orders view. */
+export async function fetchBookingsByOrder(
+  orderIds: string[],
+): Promise<Record<string, ConsultationBooking>> {
+  const map: Record<string, ConsultationBooking> = {};
+  const ids = Array.from(new Set(orderIds.filter(Boolean)));
+  if (ids.length === 0) return map;
+  const rows = await fetchAll<ConsultationBooking>((from, to) =>
+    supabase
+      .from("consultation_bookings")
+      .select("slot_start,status,external_order_id")
+      .in("external_order_id", ids)
+      .range(from, to),
+  );
+  for (const b of rows) {
+    if (b.external_order_id) map[b.external_order_id] = b;
+  }
+  return map;
+}
+
+/** Leads keyed by session_id, for linking an order back to its originating lead. */
+export async function fetchLeadsBySession(sessionIds: string[]): Promise<Record<string, Lead>> {
+  const map: Record<string, Lead> = {};
+  const ids = Array.from(new Set(sessionIds.filter(Boolean)));
+  if (ids.length === 0) return map;
+  const leads = await fetchAll<Lead>((from, to) =>
+    supabase
+      .from("quiz_leads")
+      .select(
+        "id,name,phone,email,answers,submitted_at,selected_plan,preorder_terms_accepted,called,called_at,status,attribution,session_id",
+      )
+      .in("session_id", ids)
+      .range(from, to),
+  );
+  for (const l of leads) {
+    if (l.session_id) map[l.session_id] = l;
+  }
+  return map;
 }
 
 export async function fetchNotesByLead(leadIds: string[]): Promise<Record<string, LeadNote[]>> {

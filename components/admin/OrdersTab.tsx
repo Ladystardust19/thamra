@@ -3,12 +3,17 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   Order,
+  Lead,
+  ConsultationBooking,
   DateRange,
   fetchOrders,
+  fetchLeadsBySession,
+  fetchBookingsByOrder,
   fmtDate,
   fmtDateShort,
   fmtGel,
 } from "@/lib/adminData";
+import { formatSlot } from "@/lib/consultation";
 
 const STATUSES = [
   { key: "completed", label: "გადახდილი", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
@@ -29,6 +34,8 @@ function cardLine(pd: Record<string, unknown> | null): string | null {
 
 export default function OrdersTab({ range }: { range: DateRange }) {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [leadsBySession, setLeadsBySession] = useState<Record<string, Lead>>({});
+  const [bookingsByOrder, setBookingsByOrder] = useState<Record<string, ConsultationBooking>>({});
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
@@ -43,6 +50,15 @@ export default function OrdersTab({ range }: { range: DateRange }) {
       if (!alive) return;
       setOrders(o);
       setLoading(false);
+      // Resolve the originating quiz lead for orders that carry a session_id.
+      const sessionIds = o.map((x) => x.session_id).filter((s): s is string => !!s);
+      if (sessionIds.length) {
+        const map = await fetchLeadsBySession(sessionIds);
+        if (alive) setLeadsBySession(map);
+      }
+      // Resolve consultation slot times by order id.
+      const bookings = await fetchBookingsByOrder(o.map((x) => x.external_order_id));
+      if (alive) setBookingsByOrder(bookings);
     })();
     return () => {
       alive = false;
@@ -233,6 +249,32 @@ export default function OrdersTab({ range }: { range: DateRange }) {
                     <Field label="გადახდა">{card || "—"}</Field>
                     <Field label="დადასტურების ელ.წერილი">
                       {o.confirmation_email_sent ? "გაგზავნილია" : "არა"}
+                    </Field>
+                    {bookingsByOrder[o.external_order_id] && (
+                      <Field label="კონსულტაციის დრო">
+                        {formatSlot(bookingsByOrder[o.external_order_id].slot_start)}
+                        <span className="text-muted">
+                          {" · "}
+                          {bookingsByOrder[o.external_order_id].status}
+                        </span>
+                      </Field>
+                    )}
+                    <Field label="ლიდი (ქვიზიდან)">
+                      {o.session_id ? (
+                        leadsBySession[o.session_id] ? (
+                          <>
+                            {leadsBySession[o.session_id].name || "—"}
+                            <span className="text-muted">
+                              {" · "}
+                              {fmtDateShort(leadsBySession[o.session_id].submitted_at)}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-muted">ლიდი ვერ მოიძებნა · {o.session_id}</span>
+                        )
+                      ) : (
+                        "—"
+                      )}
                     </Field>
                     <Field label="შექმნა / განახლება">
                       {fmtDate(o.created_at)}

@@ -39,6 +39,17 @@ export function getSessionId(): string {
   return id;
 }
 
+/**
+ * The current session id WITHOUT minting a new one. Use off the quiz funnel
+ * (e.g. /checkout) so we only attach a session to an order when the buyer
+ * actually came through the quiz — a fresh visit returns "" instead of a
+ * bogus id that matches no lead.
+ */
+export function peekSessionId(): string {
+  if (typeof window === "undefined") return "";
+  return sessionStorage.getItem(SESSION_KEY) ?? "";
+}
+
 /** Read fbclid / utm_* from the landing URL once and remember it for the session. */
 export function captureAttribution(): Attribution {
   if (typeof window === "undefined") return {};

@@ -83,6 +83,56 @@ export const TREATMENT_RESULT: Record<string, string> = {
  * ------------------------------------------------------------------------- */
 
 // Always-visible lead-in: the one-line definition + single strong positioning.
+// ─── Red-flag result (q10) — medical-referral variant ──────────────────────────
+// Shown INSTEAD of the normal result when q10 flags a possible clinical sign
+// (bald patch / painful scalp / rapid frontline or eyebrow loss). No THAMRA
+// recommendation, price or booking here — the user is referred to a doctor.
+// Copy approved by the owner (2026-08). Not medical advice; a disclaimer is shown.
+export const RED_FLAG_RESULT = {
+  eyebrow: "შენი პასუხების მიხედვით",
+  headline: "შენი შემთხვევა ჯერ ექიმის შეფასებას საჭიროებს",
+  intro: [
+    "შენ მიერ მონიშნული ნიშნები — როგორიცაა ცარიელი უბანი, სკალპის ტკივილი ან გაღიზიანება, ან თმის წინა ხაზის სწრაფი ცვლილება — შესაძლოა მიუთითებდეს მდგომარეობაზე, რომელიც ჯერ ექიმის დიაგნოზს საჭიროებს.",
+    "ასეთ დროს ნებისმიერი საშუალების (დანამატის ჩათვლით) დაწყებამდე მნიშვნელოვანია ზუსტად დადგინდეს მიზეზი. ამიტომ THAMRA ამ ეტაპზე შენთვის სწორი პირველი ნაბიჯი არ არის — ჯერ სპეციალისტს უნდა მიმართო.",
+  ],
+  recommendTitle: "რას გირჩევთ",
+  recommend: [
+    "მიმართე დერმატოლოგს ან ტრიქოლოგს — სასურველია, თმისა და სკალპის მიმართულებით.",
+    "ვიზიტამდე შეგიძლია ჩაიტარო საბაზისო ანალიზები, რომ ექიმს სრული სურათი ჰქონდეს.",
+  ],
+  testsTitle: "ანალიზები, რომლებზეც შეიძლება ისაუბრო ექიმთან",
+  tests: [
+    "ფარისებრი ჯირკვლის ჰორმონები — TSH, FT4 (საჭიროებისამებრ FT3)",
+    "ფერიტინი და შრატის რკინა (რკინის მარაგი)",
+    "სისხლის საერთო ანალიზი (CBC) — ანემიის შესამოწმებლად",
+    "ვიტამინი D (25-OH)",
+    "ვიტამინი B12 და ფოლიუმის მჟავა",
+    "თუთია (Zn)",
+    "ჰორმონული პანელი (ტესტოსტერონი, DHEA-S) — ექიმის რეკომენდაციით",
+  ],
+  disclaimer:
+    "ეს არ არის სამედიცინო დიაგნოზი და არ ცვლის ექიმთან კონსულტაციას. სია ორიენტირისთვისაა — ზუსტ ჩამონათვალს ექიმი შეარჩევს.",
+};
+
+// ─── Paid consultation CTA (result) — shown to the qualifying group ─────────────
+// Condition (in QuizClient): NOT a red flag AND (high THAMRA-fit OR competing-cause).
+// Independent section — no longer tied to the competing-cause notice.
+export const CONSULTATION_CTA = {
+  eyebrow: "შენი პასუხების მიხედვით",
+  headline: "შენი შემთხვევა დამატებით ინდივიდუალურ შეფასებას საჭიროებს",
+  lead: "THAMRA-ს თმის ექსპერტთან კონსულტაციისას გაიგებ:",
+  bullets: [
+    "რა ტიპის ცვლილებას გადის შენი თმა",
+    "რომელი ფაქტორები შეიძლება განაპირობებდეს შენი თმის ცვენასა და სისავსის დაკარგვას",
+    "შეესაბამება თუ არა შენი თმის მდგომარეობა THAMRA-ს ეფექტურობის პროფილს",
+    "რა შედეგი იქნება შენთვის რეალისტური",
+    "თმის გაჯანსაღების რომელი პროგრამა შეესაბამება შენს მდგომარეობას",
+  ],
+  cta: "დაჯავშნე ინდივიდუალური კონსულტაცია — 150 ₾",
+  subtext:
+    "შემდეგ ეტაპზე აირჩევ შენთვის სასურველ თავისუფალ დროს და დაადასტურებ ჯავშანს ონლაინ გადახდით.",
+};
+
 export const ABOUT_THAMRA = {
   eyebrow: "გაიგე მეტი",
   heading: "რა არის THAMRA",

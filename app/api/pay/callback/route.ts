@@ -63,6 +63,24 @@ export async function POST(req: NextRequest) {
         .eq("external_order_id", externalOrderId);
       if (error) console.error("[BOG callback] order update failed:", error);
 
+      // Consultation slot: confirm it on success, free it on failure. No-op for
+      // physical orders (they hold no booking).
+      let slotStart: string | null = null;
+      try {
+        const { data: booking } = await admin
+          .from("consultation_bookings")
+          .update({
+            status: status === "completed" ? "booked" : "released",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("external_order_id", externalOrderId)
+          .select("slot_start")
+          .maybeSingle();
+        slotStart = booking?.slot_start ?? null;
+      } catch (e) {
+        console.error("[BOG callback] booking update threw:", e);
+      }
+
       // Send the confirmation email exactly once, even if BOG retries this
       // callback. Atomically claim the row by flipping confirmation_email_sent
       // false→true; only the winning update returns a row, and only it sends.
@@ -78,7 +96,7 @@ export async function POST(req: NextRequest) {
           )
           .maybeSingle();
         if (claimErr) console.error("[BOG callback] email claim failed:", claimErr);
-        if (claimed) await sendOrderEmails(claimed);
+        if (claimed) await sendOrderEmails({ ...claimed, slot_start: slotStart });
       }
     } catch (e) {
       console.error("[BOG callback] order update threw:", e);
