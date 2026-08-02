@@ -999,7 +999,7 @@ function HairStressSection({
   );
 }
 
-function HairChangesSection({ answers, onNext }: { answers: Answers; onNext: () => void }) {
+function HairChangesSection({ answers }: { answers: Answers }) {
   const keys = getSelectedHairChangeKeys(answers);
   const countWord = GEO_COUNT[keys.length - 1] ?? String(keys.length);
   return (
@@ -1019,9 +1019,6 @@ function HairChangesSection({ answers, onNext }: { answers: Answers; onNext: () 
           </div>
         ))}
       </div>
-      <button type="button" className={styles.mBtn} onClick={onNext}>
-        გავაგრძელოთ
-      </button>
     </RevealSection>
   );
 }
@@ -1169,12 +1166,6 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
 
 function ResultScreen({ answers }: { answers: Answers }) {
   const r = computeResult(answers);
-  const reduce = useReducedMotion();
-
-  function scrollTo(id: string) {
-    if (typeof document === "undefined") return;
-    document.getElementById(id)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-  }
 
   return (
     <div className={styles.resultWrap}>
@@ -1185,7 +1176,7 @@ function ResultScreen({ answers }: { answers: Answers }) {
       <HairStressSection r={r} />
 
       {/* SECTION 3 — personalized hair changes */}
-      <HairChangesSection answers={answers} onNext={() => scrollTo("result-treatment")} />
+      <HairChangesSection answers={answers} />
 
       {/* Treatment comparison — how THAMRA differs from what she previously tried */}
       <TreatmentComparisonSection answers={answers} />
