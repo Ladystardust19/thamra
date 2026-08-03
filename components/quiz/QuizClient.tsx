@@ -22,7 +22,6 @@ import {
   ABOUT_BENEFITS,
   ABOUT_TRUST,
   ABOUT_ORIGIN,
-  RED_FLAG_RESULT,
   CONSULTATION_CTA,
   type BenefitTile,
 } from "@/lib/resultContent";
@@ -341,7 +340,7 @@ export default function QuizClient() {
   const showProgress = screen === "quiz";
 
   return (
-    <div className={screen === "result" ? `${styles.page} ${styles.pageResult}` : styles.page}>
+    <div className={styles.page}>
       {/* Logo is intentionally NOT a link on any quiz screen so visitors stay
           in the funnel. */}
       <span className={styles.logo}>Thamra</span>
@@ -1198,57 +1197,25 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
 
 // ─── Result page ──────────────────────────────────────────────────────────────
 
-// Medical-referral result for the q10 red-flag group — no THAMRA assessment,
-// price, consultation or order; refers the user to a doctor + basic test list.
-function RedFlagResultScreen() {
-  const c = RED_FLAG_RESULT;
-  return (
-    <div className={styles.resultWrap}>
-      <RevealSection id="result-redflag" className={`${styles.mSection} ${styles.mHero}`}>
-        <span className={styles.mEyebrow}>{c.eyebrow}</span>
-        <h1 className={styles.mHeadline}>{c.headline}</h1>
-        {c.intro.map((p, i) => (
-          <p key={i} className={styles.mBody}>
-            {p}
-          </p>
-        ))}
-      </RevealSection>
-
-      <RevealSection id="result-redflag-advice" className={styles.mSection}>
-        <h2 className={styles.mSubhead}>{c.recommendTitle}</h2>
-        <ul className={styles.whoList}>
-          {c.recommend.map((b, i) => (
-            <li key={i}>{b}</li>
-          ))}
-        </ul>
-      </RevealSection>
-
-      <RevealSection id="result-redflag-tests" className={styles.mSection}>
-        <h2 className={styles.mSubhead}>{c.testsTitle}</h2>
-        <ul className={styles.whoList}>
-          {c.tests.map((b, i) => (
-            <li key={i}>{b}</li>
-          ))}
-        </ul>
-        <p className={styles.disclaimer} style={{ marginTop: 18 }}>
-          {c.disclaimer}
-        </p>
-      </RevealSection>
-    </div>
-  );
-}
-
 function ResultScreen({ answers }: { answers: Answers }) {
   const r = computeResult(answers);
 
-  // q10 red flag → medical-referral page instead of the normal result.
-  // No THAMRA assessment, price, consultation or order for this group.
-  if (r.redFlag) {
-    return <RedFlagResultScreen />;
-  }
-
   return (
     <div className={styles.resultWrap}>
+      {/* Product hero — a clean, fully-visible banner so the visitor immediately
+          sees what THAMRA is. Sits above the content, never behind text. */}
+      <div className={styles.resultHero}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className={styles.resultHeroImg}
+          src="/product-showcase.webp"
+          alt="THAMRA — Women's Hair Longevity"
+          width={1512}
+          height={1000}
+          loading="eager"
+        />
+      </div>
+
       {/* SECTION 1 — menopause connection (no product compatibility here) */}
       <MenopauseConnectionSection r={r} answers={answers} />
 
@@ -1359,12 +1326,12 @@ function ResultScreen({ answers }: { answers: Answers }) {
   );
 }
 
-// Consultation is offered when the result is NOT a red flag (handled earlier)
-// AND either the THAMRA fit is high (level index ≥ 2: მაღალი / ძალიან მაღალი)
-// OR a competing cause was flagged (q11 ≠ none) — both mean the case warrants an
-// individual assessment.
+// Consultation is offered when either the THAMRA fit is high (level index ≥ 2:
+// მაღალი / ძალიან მაღალი) OR a competing cause was flagged (q11 ≠ none) — both
+// mean the case warrants an individual assessment. Everyone sees the same result
+// flow (no separate medical-referral page); the visitor decides for themselves.
 function qualifiesForConsultation(r: Result): boolean {
-  return !r.redFlag && (r.thamraLevel.index >= 2 || r.competingCause);
+  return r.thamraLevel.index >= 2 || r.competingCause;
 }
 
 function ConsultationCtaSection() {

@@ -13,51 +13,6 @@
   overflow-x: clip;
 }
 
-/* Result page — the THAMRA product photo is anchored softly behind the top of
-   the page so a visitor instantly sees what THAMRA is, then fades into the flat
-   beige so the text-heavy result sections below stay perfectly readable.
-   The photo scrolls away with the page (it's not fixed), so only the first
-   viewport carries it. */
-.pageResult {
-  position: relative;
-}
-.pageResult::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 72vh;
-  z-index: 0;
-  background: url("/product-showcase.webp") center 35% / cover no-repeat;
-  /* fade the photo out toward the bottom */
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 100%);
-  pointer-events: none;
-}
-.pageResult::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 72vh;
-  z-index: 0;
-  /* soft beige veil so the logo + first section read cleanly over the photo */
-  background: linear-gradient(
-    to bottom,
-    rgba(242, 235, 227, 0.32) 0%,
-    rgba(242, 235, 227, 0.64) 55%,
-    rgba(242, 235, 227, 1) 100%
-  );
-  pointer-events: none;
-}
-/* lift the actual content (logo + result column) above the photo layers */
-.pageResult > * {
-  position: relative;
-  z-index: 1;
-}
-
 .logo {
   display: block;
   padding: 28px 0 16px;
@@ -2013,6 +1968,26 @@
 .resultWrap {
   display: flex;
   flex-direction: column;
+}
+
+/* Product hero banner at the top of the result — fully visible, framed, and
+   above the content so it never sits behind (or obscures) any text. */
+.resultHero {
+  margin: 4px 0 8px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(77, 60, 56, 0.14);
+  background-color: var(--thamra-surface);
+}
+.resultHeroImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Landscape crop keeps the product centred and the banner from getting too
+     tall on wide screens. */
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center 42%;
 }
 
 .mSection {
