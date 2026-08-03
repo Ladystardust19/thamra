@@ -956,21 +956,15 @@ function MenopauseConnectionSection({
   answers: Answers;
 }) {
   const c = getMenopauseConnectionContent(r, answers);
+  // Notices removed by request. With no headline/timing there is nothing left to
+  // show, so skip the section entirely rather than render a lone eyebrow.
+  if (!c.headline && !c.timing) return null;
   return (
     <RevealSection id="result-menopause-connection" className={`${styles.mSection} ${styles.mHero}`}>
       <span className={styles.mEyebrow}>შენი შეფასება</span>
       {c.headline && <h1 className={styles.mHeadline}>{c.headline}</h1>}
       {c.timing && (
         <p className={styles.mBody}>{c.timing}</p>
-      )}
-      {r.messages.length > 0 && (
-        <div className={styles.mNotices}>
-          {r.messages.map((m, i) => (
-            <p key={i} className={styles.mNotice}>
-              {m.text}
-            </p>
-          ))}
-        </div>
       )}
     </RevealSection>
   );
