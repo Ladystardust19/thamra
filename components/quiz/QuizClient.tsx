@@ -1341,11 +1341,20 @@ function ConsultationCtaSection() {
       <span className={styles.mEyebrow}>{c.eyebrow}</span>
       <h2 className={styles.mHeadline}>{c.headline}</h2>
       <p className={styles.mBody}>{c.lead}</p>
-      <ul className={styles.whoList}>
-        {c.bullets.map((b, i) => (
-          <li key={i}>{b}</li>
+      <div className={styles.changeRows}>
+        {c.directions.map((d, i) => (
+          <div key={i} className={styles.changeRow}>
+            <span className={styles.changeNum} aria-hidden>
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div className={styles.changeBody}>
+              <h3 className={styles.changeTitle}>{d.title}</h3>
+              <p className={styles.changeText}>{d.text}</p>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
+      <p className={styles.mBody}>{c.closing}</p>
       <Link
         href="/consultation"
         className={styles.mBtn}
