@@ -480,6 +480,34 @@ function buildMessages(redFlag: boolean, competingCause: boolean): ResultMessage
 
 // ─── computeResult — pure ───────────────────────────────────────────────────
 
+export type TriageStatus = "refer_out" | "needs_labs" | "qualified";
+
+/**
+ * Medical triage tag persisted on each quiz_leads row so downstream tooling
+ * (admin CRM, Telegram alerts) can prioritise call-backs without re-deriving the
+ * logic. This is a SEPARATE dimension from the existing quiz_leads.status column,
+ * which is the sales-pipeline status (new/paid/…) set by the admin — do not
+ * conflate them. Driven off stable option ids / the same flags computeResult()
+ * uses — never off display labels, which change with copy edits.
+ *   • refer_out  — q10 medical red flag → refer to a doctor, not a sales call
+ *   • needs_labs — competing cause (q11) OR sudden & severe onset (q7) → labs first
+ *   • qualified  — normal THAMRA candidate
+ */
+export function computeTriageStatus(answers: Answers): TriageStatus {
+  const C = SCORING_CONFIG;
+  const q10 = answers.q10;
+  const q11 = answers.q11;
+
+  const redFlag = !!q10 && C.redFlagOptions.indexOf(q10) !== -1;
+  if (redFlag) return "refer_out";
+
+  const competingCause = !!q11 && C.competingCauseOptions.indexOf(q11) !== -1;
+  const suddenOnset = answers.q7 === "a7_sudden";
+  if (competingCause || suddenOnset) return "needs_labs";
+
+  return "qualified";
+}
+
 export function computeResult(answers: Answers): Result {
   const C = SCORING_CONFIG;
   const triggered: string[] = [];

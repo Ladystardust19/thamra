@@ -10,6 +10,7 @@ import {
   visibleQuestions,
   hasTriedTreatment,
   computeResult,
+  computeTriageStatus,
   humanizeAnswers,
   type Answers,
   type Question,
@@ -72,6 +73,8 @@ export default function QuizClient() {
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   // Required, unchecked-by-default consent to process quiz answers (incl.
   // health-related data). The quiz cannot start until this is checked.
   const [consent, setConsent] = useState(false);
@@ -244,7 +247,8 @@ export default function QuizClient() {
     return !!answers[q.id];
   }
 
-  function handleGateSubmit() {
+  async function handleGateSubmit() {
+    if (submitting) return;
     let valid = true;
 
     if (!name.trim()) {
@@ -275,7 +279,14 @@ export default function QuizClient() {
     const isProd = process.env.NODE_ENV === "production";
 
     if (isProd) {
-      supabase.from("quiz_leads").insert({
+      // The insert is the gate: a lead that isn't persisted is worse than a
+      // slightly slower submit. Await it, and on failure keep the user here with
+      // a message instead of silently advancing (and never fire Lead tracking
+      // for a lead we didn't actually save).
+      setSubmitting(true);
+      setSubmitError("");
+
+      const { error } = await supabase.from("quiz_leads").insert({
         name: name.trim(),
         phone: fullPhone,
         email: email.trim() || null,
@@ -291,12 +302,23 @@ export default function QuizClient() {
             policy_version: POLICY_VERSION,
           },
         },
+        // Medical triage tag for the CRM / Telegram alert
+        // (refer_out / needs_labs / qualified) — distinct from the sales-pipeline
+        // `status` column the admin manages.
+        triage_status: computeTriageStatus(answers),
         submitted_at: new Date().toISOString(),
         attribution: getAttribution(),
         session_id: getSessionId(),
-      }).then(({ error }) => {
-        if (error) console.error("Supabase insert error:", error.message);
       });
+
+      if (error) {
+        console.error("Supabase insert error:", error.message);
+        setSubmitting(false);
+        setSubmitError("დაფიქსირდა შეცდომა. გთხოვ, სცადე ხელახლა.");
+        return; // stay on the gate — no advance, no Lead tracking
+      }
+
+      setSubmitting(false);
 
       track({ event_type: "lead_submit", screen: "gate", attribution: getAttribution() });
 
@@ -319,7 +341,7 @@ export default function QuizClient() {
   const showProgress = screen === "quiz";
 
   return (
-    <div className={styles.page}>
+    <div className={screen === "result" ? `${styles.page} ${styles.pageResult}` : styles.page}>
       {/* Logo is intentionally NOT a link on any quiz screen so visitors stay
           in the funnel. */}
       <span className={styles.logo}>Thamra</span>
@@ -373,6 +395,8 @@ export default function QuizClient() {
               nameError={nameError}
               phoneError={phoneError}
               emailError={emailError}
+              submitting={submitting}
+              submitError={submitError}
               onNameChange={setName}
               onPhoneChange={setPhone}
               onEmailChange={setEmail}
@@ -609,11 +633,13 @@ function ProcessingScreen({ onDone }: { onDone: () => void }) {
 function GateScreen({
   name, phone, email,
   nameError, phoneError, emailError,
+  submitting, submitError,
   onNameChange, onPhoneChange, onEmailChange,
   onSubmit, onBack,
 }: {
   name: string; phone: string; email: string;
   nameError: string; phoneError: string; emailError: string;
+  submitting: boolean; submitError: string;
   onNameChange: (v: string) => void;
   onPhoneChange: (v: string) => void;
   onEmailChange: (v: string) => void;
@@ -680,9 +706,14 @@ function GateScreen({
         </div>
       </div>
 
-      <button className={styles.submitBtn} onClick={onSubmit}>
-        მაჩვენე ჩემი შედეგი
+      <button className={styles.submitBtn} onClick={onSubmit} disabled={submitting}>
+        {submitting ? "იტვირთება…" : "მაჩვენე ჩემი შედეგი"}
       </button>
+      {submitError && (
+        <p className={styles.fieldError} role="alert" style={{ textAlign: "center", marginTop: 10 }}>
+          {submitError}
+        </p>
+      )}
       <p className={styles.disclaimer}>
         შენს ნომერს მხოლოდ შენი შედეგისა და შეთავაზებისთვის გამოვიყენებთ.
       </p>
@@ -1224,6 +1255,10 @@ function ResultScreen({ answers }: { answers: Answers }) {
       {/* SECTION 2 — hair stress level */}
       <HairStressSection r={r} />
 
+      {/* Paid consultation CTA — shown right after the hair-stress level for the
+          qualifying group. Non-qualifying users get the passive note at the end. */}
+      {qualifiesForConsultation(r) && <ConsultationCtaSection />}
+
       {/* SECTION 3 — personalized hair changes */}
       <HairChangesSection answers={answers} />
 
@@ -1306,11 +1341,10 @@ function ResultScreen({ answers }: { answers: Answers }) {
         </div>
       </RevealSection>
 
-      {/* Closing block — paid consultation CTA for the qualifying group,
-          otherwise the passive expert-review note. */}
-      {qualifiesForConsultation(r) ? (
-        <ConsultationCtaSection />
-      ) : (
+      {/* Closing block — passive expert-review note for the non-qualifying group.
+          The qualifying group's paid consultation CTA is shown earlier, right
+          after the hair-stress level. */}
+      {!qualifiesForConsultation(r) && (
         <RevealSection id="result-booking" className={`${styles.mSection} ${styles.bookingSection}`}>
           <h2 className={styles.mHeadline}>შენი შედეგი თამრას თმის ექსპერტთან ერთად</h2>
           <p className={styles.mBody}>ამ ეტაპზე თამრა პირველ 50 ქალთან მუშაობს.</p>

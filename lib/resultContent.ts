@@ -161,7 +161,7 @@ export interface BenefitTile {
 }
 export const ABOUT_BENEFITS = {
   cardLabel: "რას აკეთებს ფორმულა",
-  teaser: "ერთი ფორმულა, ხუთი მიმართულება — ცვენიდან ძილამდე.",
+  teaser: "ერთი ფორმულა, ხუთი მიმართულება.",
   tiles: [
     {
       icon: "shed",
