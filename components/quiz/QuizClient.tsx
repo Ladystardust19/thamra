@@ -1354,7 +1354,6 @@ function ConsultationCtaSection() {
           </div>
         ))}
       </div>
-      <p className={styles.mBody}>{c.closing}</p>
       <Link
         href="/consultation"
         className={styles.mBtn}
@@ -1362,9 +1361,6 @@ function ConsultationCtaSection() {
       >
         {c.cta}
       </Link>
-      <p className={styles.disclaimer} style={{ marginTop: 12 }}>
-        {c.subtext}
-      </p>
     </RevealSection>
   );
 }
