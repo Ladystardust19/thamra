@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { computeResult, type Answers } from "@/lib/scoring";
+import { diagnoseLead, formatDiagnosis } from "@/lib/leadDiagnosis";
 import {
   Lead,
   LeadNote,
@@ -24,19 +24,11 @@ const STATUSES = [
 ];
 const statusCls = (k: string | null) => STATUSES.find((s) => s.key === k)?.cls ?? STATUSES[0].cls;
 
+// Prefer the stored v2 `_result` snapshot, else recompute from `_raw`, else mark
+// the row as legacy (v1) — never re-score humanized labels (that produced a false
+// all-zero diagnosis before). See lib/leadDiagnosis.ts.
 function diagnose(answers: Record<string, unknown> | null): string {
-  if (!answers) return "—";
-  try {
-    const r = computeResult(answers as Answers);
-    // New model: hair-stress level · menopause-connection level, plus flags.
-    const flags: string[] = [];
-    if (r.redFlag) flags.push("⚑ სამედ. შემოწმება");
-    if (r.competingCause) flags.push("± მრავალფაქტორული");
-    const base = `სტრესი: ${r.hairStressLevel.label} · მენოპაუზა: ${r.menoLevel.label}`;
-    return flags.length ? `${base} · ${flags.join(" · ")}` : base;
-  } catch {
-    return "—";
-  }
+  return formatDiagnosis(diagnoseLead(answers));
 }
 
 export default function LeadsTab() {

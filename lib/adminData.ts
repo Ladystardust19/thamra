@@ -2,6 +2,7 @@
 
 import { supabase } from "./supabase";
 import { QUESTIONS } from "./scoring";
+import { QUESTIONS as LEGACY_QUESTIONS } from "./legacyScoring";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -73,23 +74,53 @@ export interface Order {
 }
 
 // ─── Quiz screen metadata (order + Georgian labels) ────────────────────────────
-// Funnel order: landing → 9 questions → gate → lead → result.
+// Funnel order: landing → questions (v2 stable ids) → gate → lead → result.
+// NOTE: several questions are conditional, so per-screen arrivals naturally vary;
+// the funnel reports arrivals for whichever screens actually fired.
 
 export const QUESTION_SCREENS = [
-  "q1", "q2", "q3", "q_severity", "q4", "q5", "q_stress", "q6", "q7",
+  "age_group",
+  "menstrual_cycle",
+  "hair_change_type",
+  "associated_symptoms",
+  "perceived_cycle_connection",
+  "thinning_onset",
+  "shedding_onset",
+  "previous_hair_history",
+  "possible_triggers",
+  "bald_patches",
+  "scalp_warning_signs",
+  "doctor_visit",
+  "tests_completed",
+  "test_results",
+  "previous_treatments",
+  "longest_treatment_duration",
+  "previous_treatment_results",
+  "concern_level",
+  "primary_goal",
 ] as const;
 
 export const SCREEN_LABELS: Record<string, string> = {
   intro: "შესვლა",
-  q1: "1. ასაკი",
-  q2: "2. როდის შენიშნა",
-  q3: "3. სიმპტომები",
-  q_severity: "4. რამდენად აწუხებს",
-  q4: "5. თანმხლები ნიშნები",
-  q5: "6. ძილი",
-  q_stress: "7. სტრესი",
-  q6: "8. რა სცადა",
-  q7: "9. პრიორიტეტი",
+  age_group: "1. ასაკი",
+  menstrual_cycle: "2. ციკლი",
+  hair_change_type: "3. ცვლილების ტიპი",
+  associated_symptoms: "4. თანმხლები სიმპტომები",
+  perceived_cycle_connection: "5. ციკლთან კავშირი",
+  thinning_onset: "6. შეთხელების დაწყება",
+  shedding_onset: "7. ცვენის დაწყება",
+  previous_hair_history: "8. წარსული ისტორია",
+  possible_triggers: "9. შესაძლო ტრიგერები",
+  bald_patches: "10. გამელოტება",
+  scalp_warning_signs: "11. სკალპის ნიშნები",
+  doctor_visit: "12. ექიმთან ვიზიტი",
+  tests_completed: "13. ჩატარებული კვლევები",
+  test_results: "14. კვლევის შედეგები",
+  previous_treatments: "15. წინა მკურნალობა",
+  longest_treatment_duration: "16. ხანგრძლივობა",
+  previous_treatment_results: "17. მკურნალობის შედეგი",
+  concern_level: "18. შეშფოთების დონე",
+  primary_goal: "19. მთავარი მიზანი",
   gate: "კონტაქტის შევსება",
   result: "შედეგის გვერდი",
 };
@@ -477,15 +508,30 @@ export function fmtDate(iso: string): string {
 }
 
 // ─── Human-readable quiz answers ───────────────────────────────────────────────
-// Raw leads store answer codes (q1: "a1_45_49"); map them to the Georgian
-// question titles + option labels defined in the quiz itself.
+// v2 leads store humanized Georgian labels at the top level (values pass through
+// as-is). v1/legacy leads may store option codes; map those to their labels.
+// Titles + labels are drawn from BOTH the current (v2) and legacy (v1) question
+// sets so every historical row stays readable. v2 ids take precedence on clash.
 
 const QUESTION_TITLE: Record<string, string> = {};
 const OPTION_LABEL: Record<string, string> = {};
-for (const q of QUESTIONS) {
+for (const q of [...LEGACY_QUESTIONS, ...QUESTIONS]) {
   QUESTION_TITLE[q.id] = q.title;
-  for (const opt of q.options) OPTION_LABEL[opt.id] = opt.label;
+  for (const opt of q.options ?? []) OPTION_LABEL[opt.id] = opt.label;
 }
+
+// Ordered question ids: v2 questionnaire first, then any legacy-only ids.
+const ORDERED_QUESTION_IDS: string[] = (() => {
+  const seen = new Set<string>();
+  const order: string[] = [];
+  for (const q of [...QUESTIONS, ...LEGACY_QUESTIONS]) {
+    if (!seen.has(q.id)) {
+      seen.add(q.id);
+      order.push(q.id);
+    }
+  }
+  return order;
+})();
 
 export interface ReadableAnswer {
   question: string;
@@ -503,15 +549,15 @@ export function readableAnswers(answers: Record<string, unknown> | null): Readab
       ? v.map((x) => OPTION_LABEL[String(x)] ?? String(x)).join(" · ")
       : OPTION_LABEL[String(v)] ?? String(v);
 
-  // Quiz order first, so the detail reads like the questionnaire.
-  for (const q of QUESTIONS) {
-    const v = answers[q.id];
-    seen.add(q.id);
+  // Questionnaire order first (v2 then legacy), so the detail reads like the quiz.
+  for (const id of ORDERED_QUESTION_IDS) {
+    seen.add(id);
+    const v = answers[id];
     if (v == null || (Array.isArray(v) && v.length === 0)) continue;
-    out.push({ question: q.title, answer: render(v) });
+    out.push({ question: QUESTION_TITLE[id] ?? id, answer: render(v) });
   }
 
-  // Any extra keys we don't recognise (skip internal/consent metadata).
+  // Any extra keys we don't recognise (skip internal/consent/metadata keys).
   for (const [k, v] of Object.entries(answers)) {
     if (seen.has(k) || k.startsWith("_")) continue;
     if (v == null || (Array.isArray(v) && v.length === 0)) continue;
