@@ -45,7 +45,7 @@ export const PRODUCTS: Product[] = [
     id: "consultation",
     name: "Thamra კონსულტაცია",
     duration: "ინდივიდუალური თმის კონსულტაცია",
-    price: 150,
+    price: 100,
     service: true,
     features: [
       "ინდივიდუალური კონსულტაცია Thamra-ს ექსპერტთან",

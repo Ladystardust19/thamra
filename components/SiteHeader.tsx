@@ -27,7 +27,11 @@ export default function SiteHeader() {
 
   if (pathname === "/quiz") return null;
 
-  const dark = scrolled || menuOpen || pathname?.startsWith("/cabinet");
+  // Pages with a light background at the very top (no dark hero) need the solid
+  // header from the start, otherwise the light nav text is invisible.
+  const solidHeader =
+    pathname?.startsWith("/cabinet") || pathname?.startsWith("/product");
+  const dark = scrolled || menuOpen || solidHeader;
   const links = NAV_LINKS;
 
   return (
@@ -48,7 +52,7 @@ export default function SiteHeader() {
                 key={l.href}
                 href={l.href}
                 className={`font-body text-[17px] font-normal uppercase tracking-[0.1em] transition-colors duration-500 ${
-                  scrolled ? "text-ink hover:text-oxblood" : "text-cream-soft/90 hover:text-white"
+                  dark ? "text-ink hover:text-oxblood" : "text-cream-soft/90 hover:text-white"
                 }`}
               >
                 {l.label}

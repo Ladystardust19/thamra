@@ -13,7 +13,11 @@ const config: Config = {
         paper: "#FDFBF8", // white cards
         oxblood: "#8B2F3A", // primary (from packaging)
         "oxblood-dark": "#722530", // hover
-        gold: "#C9A96E", // decorative / labels / lines
+        burgundy: "#37121A", // deep formula-section background
+        "burgundy-soft": "#4C1D27", // selector default / elevated on burgundy
+        gold: "#C9A96E", // decorative fills / hairlines ONLY (fails text contrast)
+        "gold-ink": "#6E5626", // darkened gold for text + interactive (~5.6:1 on cream, passes AA)
+        champagne: "#C9A96E", // alias of gold, used by ResultsTimeline
         ink: "#3D3335", // body text (warm dark brown)
         read: "#4A3F3C", // readable body/paragraph text (warm, dark)
         muted: "#6B5F5A", // secondary/caption text (floor — never lighter)

@@ -19,7 +19,9 @@ import {
   type QuizResult,
 } from "@/lib/scoring";
 import { type Answers as LegacyAnswers } from "@/lib/legacyScoring";
+import { resultPage } from "@/lib/resultPolicy";
 import LegacyResultScreen from "./LegacyResultScreen";
+import ResultScreen from "./ResultScreen";
 import {
   track,
   captureAttribution,
@@ -398,6 +400,12 @@ export default function QuizClient() {
 
 function ResultRouter({ answers }: { answers: RawAnswers }) {
   const result = computeResult(answers);
+  // verified_high_fit gets the new dynamic result page (dev + production).
+  if (resultPage(result) === "vhf") {
+    return <ResultScreen answers={answers} />;
+  }
+  // Every other category keeps the legacy screen in production; dev shows the
+  // debug summary of the v2 model.
   if (process.env.NODE_ENV === "production") {
     return (
       <LegacyResultScreen

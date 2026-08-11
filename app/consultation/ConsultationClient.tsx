@@ -10,7 +10,7 @@ const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
 
 const CONSULT = getProduct("consultation");
-const PRICE = CONSULT?.price ?? 150;
+const PRICE = CONSULT?.price ?? 100;
 
 const labelStyle: React.CSSProperties = {
   fontFamily: FB,
