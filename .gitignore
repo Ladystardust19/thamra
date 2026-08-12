@@ -32,3 +32,5 @@ next-env.d.ts
 # local dev scratch (not part of the app)
 .review/
 .devserver.log
+scripts/
+public/screenshots/

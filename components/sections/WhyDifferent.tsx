@@ -41,7 +41,7 @@ export default function WhyDifferent() {
     <section className="relative flex min-h-[500px] flex-col justify-between overflow-hidden rounded-3xl p-4 md:min-h-[620px] md:p-5">
       {/* Background photo */}
       <Image
-        src="/why-different.png"
+        src="/why-different.webp"
         alt=""
         fill
         sizes="(max-width: 1152px) 100vw, 1152px"

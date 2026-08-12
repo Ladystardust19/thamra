@@ -132,7 +132,7 @@ const advisors = [
     institution: "Georgia Institute of Technology, USA",
     quote:
       "იაპონია ბიომედიცინის და ინოვაციების ერთ-ერთი მსოფლიო ლიდერია. Thamra-ს ფორმულის შექმნისას ჩემი მიზანი იყო თანამდეროვე ბიომედიცინის პრინციპებზე დაყრდნობით შეგვექმნა მრავალმხრივი ფორმულა, რომელიც თმის ჯანმრთელობას არა ერთი, არამედ რამდენიმე მნიშვნელოვანი ბიოლოგიური მექანიზმის მხარდაჭერით ეხმარება.",
-    photo: "/tomoyuki-amano.jpg",
+    photo: "/tomoyuki-amano.webp",
     photoPosition: "center 22%",
     initial: "T",
   },

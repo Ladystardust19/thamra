@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "THAMRA-ს პროგრამები და ფასები — Foundation (149 ₾), Signature (399 ₾) და Hair Longevity (749 ₾). ყველა ფასი ლარში.",
 };
 
-const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
+const FD = "LariSerif, var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
 
 function Check() {

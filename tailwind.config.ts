@@ -27,8 +27,10 @@ const config: Config = {
         hairline: "rgba(61, 51, 53, 0.12)", // warm hairline on light
       },
       fontFamily: {
-        // Latin → Cormorant; Georgian falls through to Noto Serif Georgian
+        // Latin → Cormorant; Georgian falls through to Noto Serif Georgian.
+        // "LariSerif" (unicode-range U+20BE only) supplies a size-matched ₾.
         display: [
+          "LariSerif",
           "var(--font-cormorant)",
           "var(--font-ge-serif)",
           "Georgia",

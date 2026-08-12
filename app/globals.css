@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Georgian Lari sign (₾, U+20BE): Cormorant Garamond has no glyph for it, so it
+   silently falls back to a taller, heavier serif that sits off-baseline next to
+   the numerals (the currency mark ends up bigger than the price it belongs to).
+   LariSerif is a tiny single-glyph webfont — Noto Serif Georgian's ₾ scaled to
+   match Cormorant's old-style figure height. unicode-range pins it to U+20BE, so
+   it supplies ONLY ₾ and Cormorant keeps rendering everything else. Prepend
+   "LariSerif" ahead of Cormorant in any serif stack to pick it up. */
+@font-face {
+  font-family: "LariSerif";
+  src: url("/fonts/lari-serif.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+20BE;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

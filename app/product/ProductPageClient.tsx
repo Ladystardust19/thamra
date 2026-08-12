@@ -21,8 +21,8 @@ const DESCRIPTION =
 
 const IMAGES = [
   { src: "/product-main.webp", alt: "Thamra — ყუთი, ბოთლი და ფხვნილი" },
-  { src: "/product-drinking.png", alt: "ქალი სვამს Thamra-ს დილის შუქზე" },
-  { src: "/product-bottle.png", alt: "Thamra-ს ბოთლი ქვაზე, ყვავილებთან" },
+  { src: "/product-drinking.webp", alt: "ქალი სვამს Thamra-ს დილის შუქზე" },
+  { src: "/product-bottle.webp", alt: "Thamra-ს ბოთლი ქვაზე, ყვავილებთან" },
 ];
 
 // Primary outcomes (checkmark bullets).
@@ -170,7 +170,7 @@ export default function ProductPageClient() {
             {/* Bundle / upgrade card */}
             <div className="mt-6 flex items-center gap-4 rounded-xl bg-surface p-4">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-cream">
-                <Image src="/product-bottle.png" alt="" fill sizes="64px" className="object-cover" />
+                <Image src="/product-bottle.webp" alt="" fill sizes="64px" className="object-cover" />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="font-body text-[14px] font-normal text-ink">

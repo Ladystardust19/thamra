@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
+const FD = "LariSerif, var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
 
 const BENEFITS = [

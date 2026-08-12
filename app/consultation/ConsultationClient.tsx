@@ -6,7 +6,7 @@ import { peekSessionId } from "@/lib/analytics";
 import { getProduct } from "@/lib/products";
 import { slotDayLabel, slotTimeLabel, type Slot } from "@/lib/consultation";
 
-const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
+const FD = "LariSerif, var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
 
 const CONSULT = getProduct("consultation");

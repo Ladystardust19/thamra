@@ -2117,10 +2117,10 @@
   background: linear-gradient(
     90deg,
     #f4ecdf 0%,
-    #ecd6cd 30%,
-    #d7a3a6 56%,
-    #b25a60 78%,
-    #8b2f3a 100%
+    #dbe3e1 30%,
+    #a7bcbb 56%,
+    #6e8a8e 78%,
+    #3e5c61 100%
   );
   /* matte — no inner gloss or drop shadow */
 }
@@ -2139,7 +2139,7 @@
   height: 14px;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  background: #8b2f3a; /* flat, matte */
+  background: #3e5c61; /* teal-slate — deliberately NOT the THAMRA oxblood */
   box-shadow: 0 0 0 3px #f4ecdf; /* thin cream ring */
   z-index: 2;
 }
@@ -2152,7 +2152,7 @@
   width: 1px;
   height: 15px;
   transform: translateX(-50%);
-  background: rgba(58, 20, 24, 0.32);
+  background: rgba(62, 92, 97, 0.4);
 }
 .spectrumEnds {
   display: flex;

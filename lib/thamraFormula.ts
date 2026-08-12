@@ -45,14 +45,14 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         name: "ჯუჯა პალმა (სო პალმეტო)",
         description:
           "მენოპაუზის დროს, თმისთვის მუშაობს როგორც ბუნებრივი „ფარი“, რომელიც ბლოკავს თმის ცვენის მთავარ ჰორმონს და განაპირობებს სავსე თმის ზრდას.",
-        image: "/ingredients/saw-palmetto.png",
+        image: "/ingredients/saw-palmetto.webp",
         featured: true,
       },
       {
         name: "მაკა",
         description:
           "სხეულს ეხმარება მენოპაუზასთან ადაპტაციაში ჰორმონების დასტაბილურებით. ასევე აწვდის თმას, თმისთვის ყველაზე საჭირო ამინომჟავებს, მინერალებს და ვიტამინებს, რომლებიც აძლიერებენ თმის ღერებს.",
-        image: "/ingredients/maca.png",
+        image: "/ingredients/maca.webp",
         featured: true,
       },
     ],
@@ -67,19 +67,19 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         name: "ზღვის პეპტიდების კომპლექსი",
         description:
           "ველური ორაგულის კოლაგენი ამცირებს მენოპაუზურ თმის ცვენას და აცოცხლებს მიძინებულ თმის ფოლიკულის უჯრედებს. აძლიერებს თმის ძირებს და თმას ხდის უფრო ბზინვარეს.",
-        image: "/ingredients/marine-collagen.jpg",
+        image: "/ingredients/marine-collagen.webp",
         featured: true,
       },
       {
         name: "ვიტამინი C",
         description:
           "ეხმარება სხეულს თმის ზრდაში, ყველა საჭირო ნუტრიენტის ათვისებით და იცავს თმის ღერებს დაბერებისგან.",
-        image: "/ingredients/vitamin-c.png",
+        image: "/ingredients/vitamin-c.webp",
       },
       {
         name: "L-ცისტეინი",
         description: "აშენებს კერატინს, რომელიც თმას ხდის უფრო ძლიერს.",
-        image: "/ingredients/l-cysteine.png",
+        image: "/ingredients/l-cysteine.webp",
       },
     ],
   },
@@ -93,19 +93,19 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         name: "მაგნეზიუმ ბისგლიცინატი",
         description:
           "ეხმარება ქალის ორგანიზმს სტრესის ჰორმონის შემცირებაში და აუმჯობესებს ღრმა ძილის ფაზას, რომელიც აუცილებელია თმის ძირების გაჯანსაღებისთვის. მონაწილეობს თმის ღერების ზრდაში სკალპის სისხლის მიმოქცევის გაძლიერებით, რომელიც მენოპაუზის დროს მცირდება.",
-        image: "/ingredients/magnesium-bisglycinate.jpg",
+        image: "/ingredients/magnesium-bisglycinate.webp",
       },
       {
         name: "L-თიანინი",
         description:
           "ამცირებს ანთებას სხეულში და ეხმარება სხეულს ღრმა მოსვენებაში, რომელიც აუცილებელია დასტრესილი თმისთვის.",
-        image: "/ingredients/l-theanine.png",
+        image: "/ingredients/l-theanine.webp",
       },
       {
         name: "ზაფრანას ექსტრაქტი",
         description:
           "აუმჯობესებს განწყობასა და ემოციურ კეთილდღეობას, რომელიც მენოპაუზამ გააუარესა. არის ძლიერი ანტიოქსიდანტი, რომელიც იცავს თმის ფოლიკულებს უჯრედული დაბერებისგან.",
-        image: "/ingredients/saffron.png",
+        image: "/ingredients/saffron.webp",
       },
     ],
   },
@@ -119,26 +119,26 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         description:
           "ვიტამინი E-ს სუპერ-ძლიერი ფორმა. კლინიკურად დამტკიცებულია, რომ თმის რაოდენობას ზრდის საშუალოდ 34.5%-ით. იცავს თმის ძირებს დაზიანებისგან, ანელებს გაჭაღარავების პროცესს.",
         clinical: true,
-        image: "/ingredients/tocotrienols.jpg",
+        image: "/ingredients/tocotrienols.webp",
         featured: true,
       },
       {
         name: "თერაკურმინი",
         description:
           "კურკუმინის 27-ჯერ უფრო უკეთ შეწოვადი ფორმა. აუმჯობესებს სისხლის მიმოქცევას სკალპში და ამცირებს ანთებით პროცესებს, რაც ხელს უწყობს ჯანსაღი და ძლიერი თმის ზრდას.",
-        image: "/ingredients/theracurmin.png",
+        image: "/ingredients/theracurmin.webp",
         featured: true,
       },
       {
         name: "ასტაქსანტინი",
         description:
           "იცავს თმას დაზიანებისგან, რომელსაც იწვევს მენოპაუზისგან გამოწვეული ჰორმონების მკვეთრი ცვალებადობა.",
-        image: "/ingredients/astaxanthin.png",
+        image: "/ingredients/astaxanthin.webp",
       },
       {
         name: "შვიტას ექსტრაქტი",
         description: "მდიდარია პოლიფენოლებით, რომელიც აჩქარებს თმის ზრდას.",
-        image: "/ingredients/horsetail.png",
+        image: "/ingredients/horsetail.webp",
       },
     ],
   },
@@ -152,14 +152,14 @@ export const FORMULA_GROUPS: FormulaGroup[] = [
         name: "ჰიალურონი",
         description:
           "ღრმად ატენიანებს გამომშრალ სკალპს. იცავს თმას მტვრევისგან და უნარჩუნებს უფრო სქელ, ჯანსაღ იერს.",
-        image: "/ingredients/hyaluronic-acid.png",
+        image: "/ingredients/hyaluronic-acid.webp",
         featured: true,
       },
       {
         name: "ფუკოიდანი",
         description:
           "ოკინავას (იაპონია) მოზუკუს წყალმცენარისგან მიღებული ბუნებრივი შაქარი, რომელიც გამოიყენება კანისა და ქსოვილების გაჯანსაღების მიმართულებით. ასტაბილურებს ჰორმონალურ თმის ცვენას და ასტიმულირებს თმის ზრდას.",
-        image: "/ingredients/fucoidan.png",
+        image: "/ingredients/fucoidan.webp",
         featured: true,
       },
     ],

@@ -6,14 +6,12 @@ import { useEffect, useRef, useState } from "react";
 // (pure-CSS pseudo-element dot + connector). Scroll reveal is opacity-only and
 // reversible, driven by a single IntersectionObserver — no animation library.
 
-export type Stage = { badge: string; title: string; points: string[] };
+export type Stage = { badge: string; points: string[] };
 
-// Bullets are the approved body copy, split verbatim at sentence boundaries.
-// Exported so the product-page timeline can reuse the same source of truth.
+// Approved body copy, verbatim. Each stage is a time window and its outcomes.
 export const STAGES: Stage[] = [
   {
     badge: "1-2 კვირა",
-    title: "მშვიდი ღამეები",
     points: [
       "ძილი ღრმავდება, დილით უფრო მოსვენებული იღვიძებ.",
       "სხეული სტრესის რეჟიმიდან გამოდის.",
@@ -21,29 +19,27 @@ export const STAGES: Stage[] = [
     ],
   },
   {
-    badge: "4-8 კვირა",
-    title: "ცვენა ნელდება",
+    badge: "1–3 თვე",
     points: [
-      "სავარცხელზე და ბალიშზე ნაკლებ თმას ხედავ.",
-      "თმა უფრო სავსე და მოვლილი ჩანს.",
-      "ეს პირველი ნიშანია, რომ ფესვი უკვე სხვა პირობებში მუშაობს.",
+      "ყოველდღიური თმის ცვენა შესამჩნევად მცირდება",
+      "სავარცხელზე და ბალიშზე ნაკლებ თმას ხედავ",
+      "თმა უფრო სავსე, ჯანსაღი და მოვლილია",
     ],
   },
   {
-    badge: "3-4 თვე",
-    title: "ახალი ღერი",
+    badge: "4–6 თვე",
     points: [
-      "საფეთქლებთან და გაყოფის ხაზზე ახალი, მოკლე ღერები ჩნდება.",
-      "თმა უფრო მკვრივია შეხებით.",
-      "ეს ის მომენტია, როდესაც სარკეში ყურება ხდება სასიამოვნო.",
+      "თმა ხდება უფრო სქელი და მოცულობითი",
+      "ახალი ღერი იზრდება უფრო ძლიერი",
+      "თმა უფრო ბზინვარე და ჯანსაღია",
     ],
   },
   {
-    badge: "6+ თვე",
-    title: "სიმკვრივე რჩება",
+    badge: "7+ თვე",
     points: [
-      "თმა უფრო სქელი, ძლიერი და გამძლეა.",
-      "ფორმულა აგრძელებს მუშაობას იმ ძირითად ბიოლოგიურ ფაქტორებზე, რომლებიც მენოპაუზის პერიოდში თმის ცვლილებას განაპირობებს.",
+      "გრძელდება ზრუნვა თმის ზრდასა და ჯანმრთელობაზე",
+      "ფორმულა განაგრძობს მუშაობას ხუთივე მიზეზზე",
+      "მიღწეული შედეგი ნარჩუნდება",
     ],
   },
 ];
@@ -86,51 +82,88 @@ export default function ResultsTimeline() {
 
   return (
     <section className="bg-surface/40">
-      <div className="mx-auto w-full max-w-[820px] px-6 py-20 md:py-28">
+      <div className="mx-auto w-full max-w-[760px] px-6 py-20 md:py-28">
         <header className="text-center">
-          <h2 className="mx-auto max-w-[16ch] font-display text-[28px] font-normal leading-[1.2] text-oxblood md:text-[40px]">
+          <h2 className="mx-auto max-w-[18ch] font-display text-[28px] font-normal leading-[1.18] text-oxblood md:text-[40px]">
             THAMRA პირველივე კვირიდან იწყებს მუშაობას.
           </h2>
+          <span className="mx-auto mt-6 block h-px w-10 bg-gold/50" aria-hidden />
         </header>
 
-        <div className="mt-10 rounded-2xl border border-champagne/25 bg-cream p-8 md:mt-14 md:p-12">
-          <ol ref={olRef} className="m-0 list-none p-0">
-            {STAGES.map((s, i) => (
+        <ol ref={olRef} className="mx-auto mt-14 max-w-[620px] list-none p-0 md:mt-20">
+          {STAGES.map((s, i) => {
+            // "on" once the row is active on scroll. Before the observer runs
+            // (no-JS / reduced motion), dimmed is false → every stage renders
+            // complete: filled nodes, gold rail, full-opacity copy.
+            const on = !dimmed || active.has(i);
+            const notLast = i < STAGES.length - 1;
+            return (
               <li
                 key={s.badge}
                 data-i={i}
-                style={{ opacity: dimmed && !active.has(i) ? 0.35 : 1 }}
-                className={
-                  // Rail via pseudo-elements: ::after = dot, ::before = connector.
-                  // currentColor (oxblood) drives both; children set their own colors.
-                  "relative pl-8 pb-12 text-oxblood transition-opacity duration-200 " +
-                  "before:absolute before:left-0 before:top-[13px] before:-bottom-[13px] before:w-px before:bg-current before:content-[''] " +
-                  "last:pb-0 last:before:content-none " +
-                  "after:absolute after:-left-[3px] after:top-[13px] after:h-[7px] after:w-[7px] after:rounded-full after:bg-current after:content-['']"
-                }
+                className="relative grid grid-cols-[56px_1fr] gap-5 pb-16 last:pb-0 md:gap-8"
               >
-                <div className="flex flex-wrap items-center gap-3">
-                  <span className="whitespace-nowrap rounded-full bg-champagne px-3 py-1 font-body text-[11px] font-semibold uppercase tracking-[0.12em] text-oxblood">
-                    {s.badge}
+                {/* Rail — positioned at row level so the line spans the whole gap
+                    between nodes (into the bottom padding), giving one unbroken
+                    rail rather than segments. */}
+                {notLast && (
+                  <>
+                    <span
+                      aria-hidden
+                      className="absolute left-7 top-11 bottom-0 w-px -translate-x-1/2 bg-hairline"
+                    />
+                    {/* gold progress fill — grows downward once this stage is on */}
+                    <span
+                      aria-hidden
+                      className={
+                        "absolute left-7 top-11 bottom-0 w-px -translate-x-1/2 origin-top bg-gold transition-transform duration-700 ease-out " +
+                        (on ? "scale-y-100" : "scale-y-0")
+                      }
+                    />
+                  </>
+                )}
+
+                {/* Numbered milestone node */}
+                <div className="flex justify-center">
+                  <span
+                    className={
+                      "relative z-10 flex h-11 w-11 items-center justify-center rounded-full border font-display text-[15px] leading-none transition-colors duration-500 [font-variant-numeric:tabular-nums] " +
+                      (on
+                        ? "border-oxblood bg-oxblood text-cream-soft"
+                        : "border-hairline bg-cream text-muted")
+                    }
+                  >
+                    {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="font-display text-[19px] font-semibold leading-tight text-ink md:text-[22px]">
-                    {s.title}
-                  </h3>
                 </div>
-                <ul className="mt-3 list-disc space-y-1.5 pl-5 marker:text-champagne">
-                  {s.points.map((p) => (
-                    <li
-                      key={p}
-                      className="max-w-[60ch] font-body text-[15px] font-light leading-[1.7] text-read md:text-[16px]"
-                    >
-                      {p}
-                    </li>
-                  ))}
-                </ul>
+
+                {/* Stage content — the time window is the header */}
+                <div
+                  className="pt-1 transition-opacity duration-300"
+                  style={{ opacity: dimmed && !active.has(i) ? 0.5 : 1 }}
+                >
+                  <h3 className="font-display text-[24px] font-normal leading-[1.15] text-oxblood md:text-[30px]">
+                    {s.badge}
+                  </h3>
+                  <ul className="mt-4 space-y-2.5">
+                    {s.points.map((p) => (
+                      <li
+                        key={p}
+                        className="flex gap-3 font-body text-[15px] font-light leading-[1.65] text-read md:text-[16px]"
+                      >
+                        <span
+                          aria-hidden
+                          className="mt-[9px] h-[5px] w-[5px] shrink-0 rounded-full bg-gold/70"
+                        />
+                        <span className="max-w-[52ch]">{p}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </li>
-            ))}
-          </ol>
-        </div>
+            );
+          })}
+        </ol>
       </div>
     </section>
   );

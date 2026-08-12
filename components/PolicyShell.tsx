@@ -8,7 +8,7 @@ import type { CSSProperties, ReactNode } from "react";
  * All pages are static server components — public, no login required.
  */
 
-const FD = "var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
+const FD = "LariSerif, var(--font-cormorant), var(--font-ge-serif), Georgia, serif";
 const FB = "var(--font-jost), var(--font-ge-sans), sans-serif";
 
 export default function PolicyShell({
