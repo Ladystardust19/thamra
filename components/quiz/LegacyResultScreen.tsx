@@ -149,21 +149,6 @@ function BenefitIcon({ name }: { name: BenefitTile["icon"] }) {
   }
 }
 
-// ─── Result editorial content helpers (unchanged logic) ───────────────────────
-
-const HAIR_CHANGE_ORDER = ["shedding", "volume", "partcrown", "quality", "stresssleep"] as const;
-type HairChangeKey = (typeof HAIR_CHANGE_ORDER)[number];
-
-const HAIR_CHANGE_ROWS: Record<HairChangeKey, { title: string; text: string }> = {
-  shedding: { title: "ცვენა", text: "დაბანის ან დავარცხნის შემდეგ უფრო მეტი თმა გრჩება, ვიდრე ადრე." },
-  volume: { title: "მოცულობა", text: "თმის საერთო სისქე ან კუდის მოცულობა შენთვის შესამჩნევად შემცირდა." },
-  partcrown: { title: "გაყოფის ხაზი და გვირგვინი", text: "გაყოფის ხაზი ან გვირგვინის არე უფრო გამოკვეთილი გახდა." },
-  quality: { title: "თმის ხარისხი", text: "თმა გახდა უფრო მშრალი, თხელი, მტვრევადი ან დაკარგა ბზინვარება." },
-  stresssleep: { title: "ძილი და სტრესი", text: "თმის ცვლილებასთან ერთად ძილის ან სტრესის ცვლილებაც გამოიკვეთა." },
-};
-
-const GEO_COUNT = ["ერთ", "ორ", "სამ", "ოთხ", "ხუთ"];
-
 // ─── Hair-spectrum visualization — organic overlapping-strand band ─────────────
 const fmtN = (n: number) => Math.round(n * 10) / 10;
 
@@ -204,27 +189,6 @@ const HAIR_STRANDS = Array.from({ length: 13 }, (_, i) => {
 function orbPosition(idx: number): number {
   const clamped = Math.max(0, Math.min(3, idx));
   return 12 + clamped * (76 / 3);
-}
-
-/** Derive the meaningful hair-change categories from the raw answers. */
-function getSelectedHairChangeKeys(a: Answers): HairChangeKey[] {
-  const set = new Set<HairChangeKey>();
-  const q3 = Array.isArray(a.q3) ? a.q3 : [];
-  const q5 = Array.isArray(a.q5) ? a.q5 : [];
-  if (q5.includes("a5_shedding")) set.add("shedding");
-  if (q5.includes("a5_volume") || a.q9 === "a9_finer" || a.q8 === "a8_selfonly") set.add("volume");
-  if (
-    q5.includes("a5_partcrown") ||
-    a.q6 === "a6_part" ||
-    a.q6 === "a6_crown" ||
-    a.q8 === "a8_wider" ||
-    a.q8 === "a8_scalp" ||
-    a.q8 === "a8_bald"
-  )
-    set.add("partcrown");
-  if (q5.includes("a5_finedry") || a.q9 === "a9_drier" || a.q9 === "a9_breaks" || a.q9 === "a9_several") set.add("quality");
-  if (q3.indexOf("a3_sleep") !== -1 || q3.indexOf("a3_stress") !== -1) set.add("stresssleep");
-  return HAIR_CHANGE_ORDER.filter((k) => set.has(k));
 }
 
 type MenoBucket = "strong" | "moderate" | "low";
@@ -347,43 +311,6 @@ function HairStressSection({ r }: { r: Result }) {
           <span>მსუბუქი ცვლილება</span>
           <span>მკვეთრად გამოხატული</span>
         </div>
-      </div>
-    </RevealSection>
-  );
-}
-
-function HairChangesSection({ answers }: { answers: Answers }) {
-  const keys = getSelectedHairChangeKeys(answers);
-  const countWord = GEO_COUNT[keys.length - 1] ?? String(keys.length);
-  return (
-    <RevealSection id="result-hair-changes" className="mx-auto max-w-[640px] px-5 py-8">
-      <div className="text-center">
-        <Eyebrow>შენი პასუხების მიხედვით</Eyebrow>
-        <h2 className="mx-auto mt-4 max-w-[20ch] font-display text-[26px] font-normal leading-[1.2] text-oxblood md:text-[32px]">
-          {`შენს შემთხვევაში ცვლილება ${countWord} მიმართულებაში იკვეთება`}
-        </h2>
-        <GoldRule className="mt-6" />
-      </div>
-
-      <div className="mx-auto mt-12 flex max-w-[560px] flex-col gap-8">
-        {keys.map((k, i) => (
-          <div key={k} className="flex gap-5 md:gap-7">
-            <span
-              aria-hidden
-              className="select-none font-display text-[34px] font-normal leading-[0.8] text-gold/60 md:text-[44px] [font-variant-numeric:tabular-nums]"
-            >
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <div className="flex-1 pt-1">
-              <h3 className="font-display text-[20px] font-semibold leading-tight text-ink md:text-[22px]">
-                {HAIR_CHANGE_ROWS[k].title}
-              </h3>
-              <p className="mt-2 font-body text-[15px] font-light leading-[1.65] text-read md:text-[16px]">
-                {HAIR_CHANGE_ROWS[k].text}
-              </p>
-            </div>
-          </div>
-        ))}
       </div>
     </RevealSection>
   );
@@ -649,9 +576,6 @@ export default function LegacyResultScreen({
 
       {/* SECTION 2 — hair stress level */}
       <HairStressSection r={r} />
-
-      {/* SECTION 3 — personalized hair changes */}
-      <HairChangesSection answers={answers} />
 
       {/* CTA — paid consult if qualified, otherwise the expert-review block */}
       {allowConsultationCta ? <ConsultationCtaSection /> : <ExpertReviewSection />}
