@@ -781,13 +781,13 @@ export interface ConsentSnapshot {
 export function buildLeadAnswers(
   raw: RawAnswers,
   result: QuizResult,
-  consent: ConsentSnapshot,
+  consent?: ConsentSnapshot,
 ): Record<string, unknown> {
   return {
     ...humanizeAnswers(raw),
     _quizVersion: QUIZ_VERSION,
     _raw: raw,
     _result: result,
-    _consent: consent,
+    ...(consent ? { _consent: consent } : {}),
   };
 }
