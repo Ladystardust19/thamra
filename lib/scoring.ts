@@ -186,8 +186,8 @@ export const SCORING_CONFIG = {
     symptom: { high: 7, moderate: 4 }, //     high ≥7,  moderate 4–6, low 0–3
   },
 
-  // Buying urgency from the 1–10 concern rating.
-  urgency: { moderate: 4, high: 7, veryHigh: 9 },
+  // Buying urgency from the 1–5 concern rating.
+  urgency: { moderate: 3, high: 4, veryHigh: 5 },
 
   // Flag-driving option sets.
   strongCompetingTriggers: ["illness_or_virus", "surgery", "rapid_weight_loss", "medication_change"],
@@ -339,7 +339,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "scalp_warning_signs",
     type: "single",
-    title: "გაქვს თუ არა თავის კანის ტკივილი, ძლიერი სიწითლე ან ნაწიბურის მსგავსი უბნები?",
+    title: "გაქვს თუ არა თავის კანის ტკივილი, ძლიერი სიწითლე ან ქავილი?",
     showIf: notNoChange,
     options: [
       { id: "yes", label: "დიახ" },
@@ -395,7 +395,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "previous_treatments",
     type: "multi",
-    title: "კონკრეტულად რა გამოგიყენებია?",
+    title: "თმის პრობლემის მოსაგვარებლად კონკრეტულად რა გამოგიყენებია?",
     helper: "მონიშნე ყველა შესაბამისი პასუხი.",
     exclusiveOptions: ["nothing_specific"],
     showIf: notNoChange,
@@ -441,9 +441,9 @@ export const QUESTIONS: Question[] = [
     id: "concern_level",
     type: "rating",
     title: "რამდენად გაწუხებს შენი თმის ამჟამინდელი მდგომარეობა?",
-    helper: "შეაფასე 1-დან 10-მდე.",
+    helper: "შეაფასე 1-დან 5-მდე.",
     min: 1,
-    max: 10,
+    max: 5,
     step: 1,
     minLabel: "თითქმის არ მაწუხებს",
     maxLabel: "ძალიან მაწუხებს და მსურს დროულად ვიმოქმედო",

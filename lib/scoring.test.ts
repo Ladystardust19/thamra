@@ -421,13 +421,10 @@ describe("buying urgency", () => {
   const u = (n: number) => computeResult({ concern_level: n }).buyingUrgency;
   it("maps concern rating to urgency bands", () => {
     expect(u(1)).toBe("low");
-    expect(u(3)).toBe("low");
-    expect(u(4)).toBe("moderate");
-    expect(u(6)).toBe("moderate");
-    expect(u(7)).toBe("high");
-    expect(u(8)).toBe("high");
-    expect(u(9)).toBe("very_high");
-    expect(u(10)).toBe("very_high");
+    expect(u(2)).toBe("low");
+    expect(u(3)).toBe("moderate");
+    expect(u(4)).toBe("high");
+    expect(u(5)).toBe("very_high");
   });
 });
 
