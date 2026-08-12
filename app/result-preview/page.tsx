@@ -1,12 +1,12 @@
 import ResultScreen from "@/components/quiz/ResultScreen";
 import LegacyResultScreen from "@/components/quiz/LegacyResultScreen";
 import type { RawAnswers } from "@/lib/scoring";
-import type { Answers as LegacyAnswers } from "@/lib/legacyScoring";
+import { v2ToLegacyAnswers } from "@/lib/legacyAdapter";
 
 // Standalone preview of the result pages. Not linked anywhere; for review only.
 //   ?profile=sudden|gradual|both   → new verified_high_fit page
-//   ?profile=legacy                → re-skinned legacy page (with paid CTA)
-//   ?profile=legacy-nocta          → re-skinned legacy page (expert-review close)
+//   ?profile=legacy                → non-VHF page (v2 answers → legacy adapter)
+//   ?profile=legacy2               → a different non-VHF respondent (varies)
 const SAMPLES: Record<string, RawAnswers> = {
   sudden: {
     hair_change_type: "sudden_shedding",
@@ -36,20 +36,30 @@ const SAMPLES: Record<string, RawAnswers> = {
   },
 };
 
-// Sample legacy answers — exercises every content branch (5 hair-change rows,
-// a tried-treatment comparison category, sleep/stress signals).
-const LEGACY_SAMPLE: LegacyAnswers = {
-  q3: ["a3_sleep", "a3_stress"],
-  q4: "a4_same",
-  q5: ["a5_shedding", "a5_volume", "a5_partcrown"],
-  q6: "a6_crown",
-  q8: "a8_wider",
-  q9: "a9_drier",
-  q_emotion: "e_confidence",
-  q12: ["a12_supp"],
-  q13: "d_1_3",
-  q14: "r_none",
-  q15: "g_density",
+// v2 non-VHF respondents, routed through the adapter — proves the legacy screen
+// now personalizes (these two produce visibly different results).
+const LEGACY_V2: Record<string, RawAnswers> = {
+  legacy: {
+    age_group: "age_56_60",
+    menstrual_cycle: "stopped_over_12_months",
+    hair_change_type: "gradual_thinning",
+    associated_symptoms: ["hot_flashes", "worse_sleep"],
+    perceived_cycle_connection: "yes",
+    previous_treatments: ["plasma_therapy"],
+    bald_patches: "no",
+    scalp_warning_signs: "no",
+  },
+  legacy2: {
+    age_group: "age_46_50",
+    menstrual_cycle: "irregular",
+    hair_change_type: "sudden_shedding",
+    associated_symptoms: ["stress_anxiety"],
+    perceived_cycle_connection: "no",
+    possible_triggers: ["major_stress"],
+    previous_treatments: ["biotin"],
+    bald_patches: "no",
+    scalp_warning_signs: "no",
+  },
 };
 
 export default function ResultPreviewPage({
@@ -60,9 +70,10 @@ export default function ResultPreviewPage({
   const key = searchParams.profile ?? "sudden";
 
   if (key.startsWith("legacy")) {
+    const v2 = LEGACY_V2[key] ?? LEGACY_V2.legacy;
     return (
       <main className="bg-cream">
-        <LegacyResultScreen answers={LEGACY_SAMPLE} allowConsultationCta={key !== "legacy-nocta"} />
+        <LegacyResultScreen answers={v2ToLegacyAnswers(v2)} allowConsultationCta={false} />
       </main>
     );
   }

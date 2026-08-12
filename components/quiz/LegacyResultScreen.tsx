@@ -499,7 +499,7 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
   const intro = getPersonalizedComparisonIntro(categories[0]);
 
   return (
-    <RevealSection id="result-treatment" className="border-y border-hairline bg-surface py-16 md:py-20">
+    <RevealSection id="result-treatment" className={`${styles.compareSection} border-y border-hairline bg-surface py-16 md:py-20`}>
       <div className="mx-auto max-w-[680px] px-5">
         <h2 className="text-center font-display text-[26px] font-normal leading-[1.22] text-oxblood md:text-[32px]">
           რით განსხვავდება THAMRA?

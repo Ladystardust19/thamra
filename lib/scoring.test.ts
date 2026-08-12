@@ -29,7 +29,7 @@ const FULL: RawAnswers = {
   menstrual_cycle: "irregular",
   hair_change_type: "both",
   associated_symptoms: ["hot_flashes"],
-  perceived_cycle_connection: "direct",
+  perceived_cycle_connection: "yes",
   thinning_onset: "months_1_3",
   shedding_onset: "months_1_3",
   previous_hair_history: "new_problem",
@@ -328,10 +328,9 @@ describe("menopause fit contributions", () => {
   });
   it("perceived connection points", () => {
     const p = (v: string) => computeMenopauseFitScore({ perceived_cycle_connection: v });
-    expect(p("direct")).toBe(2);
-    expect(p("partial")).toBe(1);
+    expect(p("yes")).toBe(2);
+    expect(p("no")).toBe(0);
     expect(p("unsure")).toBe(0);
-    expect(p("none")).toBe(0);
   });
   it("triggers are capped at 3", () => {
     expect(computeMenopauseFitScore({ possible_triggers: ["menopause_changes"] })).toBe(2);
@@ -378,7 +377,7 @@ describe("fit-level threshold boundaries", () => {
   it("menopause: 5→low, 6→moderate, 9→moderate, 10→high", () => {
     const lvl = (a: RawAnswers) => computeResult(a).menopauseFitLevel;
     // 5
-    let a: RawAnswers = { age_group: "over_60", menstrual_cycle: "stopped_over_12_months", perceived_cycle_connection: "direct" };
+    let a: RawAnswers = { age_group: "over_60", menstrual_cycle: "stopped_over_12_months", perceived_cycle_connection: "yes" };
     expect(computeMenopauseFitScore(a)).toBe(5);
     expect(lvl(a)).toBe("low");
     // 6
@@ -393,8 +392,8 @@ describe("fit-level threshold boundaries", () => {
     a = {
       age_group: "age_51_55",
       menstrual_cycle: "irregular",
-      associated_symptoms: ["hot_flashes", "worse_sleep", "stress_anxiety"],
-      perceived_cycle_connection: "partial",
+      associated_symptoms: ["worse_sleep", "stress_anxiety"],
+      perceived_cycle_connection: "yes",
     };
     expect(computeMenopauseFitScore(a)).toBe(10);
     expect(lvl(a)).toBe("high");
@@ -437,7 +436,7 @@ function highFit(overrides: RawAnswers = {}): RawAnswers {
     menstrual_cycle: "irregular",
     hair_change_type: "sudden_shedding",
     associated_symptoms: ["hot_flashes", "worse_sleep"],
-    perceived_cycle_connection: "direct",
+    perceived_cycle_connection: "yes",
     shedding_onset: "months_1_3",
     previous_hair_history: "new_problem",
     possible_triggers: ["menopause_changes"],

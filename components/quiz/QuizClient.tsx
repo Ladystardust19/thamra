@@ -18,7 +18,7 @@ import {
   type Question,
   type QuizResult,
 } from "@/lib/scoring";
-import { type Answers as LegacyAnswers } from "@/lib/legacyScoring";
+import { v2ToLegacyAnswers } from "@/lib/legacyAdapter";
 import { resultPage } from "@/lib/resultPolicy";
 import LegacyResultScreen from "./LegacyResultScreen";
 import ResultScreen from "./ResultScreen";
@@ -406,7 +406,7 @@ function ResultRouter({ answers }: { answers: RawAnswers }) {
   if (process.env.NODE_ENV === "production") {
     return (
       <LegacyResultScreen
-        answers={answers as unknown as LegacyAnswers}
+        answers={v2ToLegacyAnswers(answers)}
         allowConsultationCta={qualifiesForConsultation(result)}
       />
     );
@@ -516,7 +516,7 @@ function RatingScale({
   for (let n = min; n <= max; n += step) scale.push(n);
 
   return (
-    <div>
+    <div style={{ marginBottom: 24 }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
         {scale.map((n) => {
           const selected = value === n;
@@ -534,10 +534,11 @@ function RatingScale({
           );
         })}
       </div>
-      {(question.minLabel || question.maxLabel) && (
+      {(question.minLabel || question.midLabel || question.maxLabel) && (
         <div className={styles.spectrumEnds} style={{ marginTop: 12 }}>
-          <span>{question.minLabel}</span>
-          <span style={{ textAlign: "right" }}>{question.maxLabel}</span>
+          <span style={{ flex: 1, textAlign: "left" }}>{question.minLabel}</span>
+          <span style={{ flex: 1, textAlign: "center" }}>{question.midLabel}</span>
+          <span style={{ flex: 1, textAlign: "right" }}>{question.maxLabel}</span>
         </div>
       )}
     </div>

@@ -44,6 +44,7 @@ export interface Question {
   step?: number;
   minLabel?: string;
   maxLabel?: string;
+  midLabel?: string;
   /** Return false to hide this question for the given answers. */
   showIf?: (a: RawAnswers) => boolean;
 }
@@ -140,10 +141,9 @@ export const SCORING_CONFIG = {
     } as Record<string, number>,
     associatedSymptomsCap: 3,
     perceivedConnection: {
-      direct: 2,
-      partial: 1,
+      yes: 2,
+      no: 0,
       unsure: 0,
-      none: 0,
     } as Record<string, number>,
     triggers: {
       menopause_changes: 2,
@@ -265,10 +265,9 @@ export const QUESTIONS: Question[] = [
         a.menstrual_cycle === "stopped_under_12_months" ||
         a.menstrual_cycle === "stopped_over_12_months"),
     options: [
-      { id: "direct", label: "პირდაპირ ვუკავშირებ მენსტრუალური ციკლის ცვლილებას" },
-      { id: "partial", label: "ნაწილობრივ ვუკავშირებ მენსტრუალური ციკლის ცვლილებას და სხვა ფაქტორებს" },
+      { id: "yes", label: "კი" },
+      { id: "no", label: "არა" },
       { id: "unsure", label: "არ ვარ დარწმუნებული" },
-      { id: "none", label: "მენსტრუალური ციკლის ცვლილებას საერთოდ არ ვუკავშირებ" },
     ],
   },
   {
@@ -331,9 +330,8 @@ export const QUESTIONS: Question[] = [
     title: "გაქვს თუ არა ერთი ან რამდენიმე სრულიად გამელოტებული უბანი?",
     showIf: notNoChange,
     options: [
-      { id: "yes", label: "დიახ" },
+      { id: "yes", label: "კი" },
       { id: "no", label: "არა" },
-      { id: "unsure", label: "ზუსტად ვერ ვაფასებ" },
     ],
   },
   {
@@ -342,9 +340,8 @@ export const QUESTIONS: Question[] = [
     title: "გაქვს თუ არა თავის კანის ტკივილი, ძლიერი სიწითლე ან ქავილი?",
     showIf: notNoChange,
     options: [
-      { id: "yes", label: "დიახ" },
+      { id: "yes", label: "კი" },
       { id: "no", label: "არა" },
-      { id: "unsure", label: "ზუსტად ვერ ვაფასებ" },
     ],
   },
   {
@@ -445,8 +442,9 @@ export const QUESTIONS: Question[] = [
     min: 1,
     max: 5,
     step: 1,
-    minLabel: "თითქმის არ მაწუხებს",
-    maxLabel: "ძალიან მაწუხებს და მსურს დროულად ვიმოქმედო",
+    minLabel: "არ მაწუხებს",
+    midLabel: "ნეიტრალური",
+    maxLabel: "ძალიან მაწუხებს",
   },
   {
     id: "primary_goal",
