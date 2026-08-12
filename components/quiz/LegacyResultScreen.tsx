@@ -592,6 +592,43 @@ function ConsultationCtaSection() {
   );
 }
 
+// Expert-review block for the non-qualifying group — a passive "we'll review
+// and contact you" note plus a booking CTA.
+function ExpertReviewSection() {
+  return (
+    <RevealSection id="result-booking" className="mx-auto max-w-[640px] px-5 py-12 text-center md:py-16">
+      <GoldRule />
+      <h2 className="mx-auto mt-8 max-w-[24ch] font-display text-[24px] font-normal leading-[1.25] text-oxblood md:text-[30px]">
+        შენი შედეგი თამრას თმის ექსპერტთან ერთად
+      </h2>
+      <p className="mx-auto mt-5 max-w-[52ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
+        ამ ეტაპზე თამრა პირველ 50 ქალთან მუშაობს.
+      </p>
+      <p className="mx-auto mt-3 max-w-[52ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
+        შენს პასუხებს განვიხილავთ და შევამოწმებთ, ემთხვევა თუ არა შენი თმის ცვლილების მიზეზი იმას, რაზეც თამრა
+        მუშაობს. თუ ემთხვევა, დაგიკავშირდებით და ერთად გავარკვევთ, საიდან სჯობს დაიწყო.
+      </p>
+      <Link
+        href="/consultation"
+        className="group mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-gold px-8 py-[18px] font-body text-[16px] font-semibold text-oxblood shadow-[0_10px_28px_-12px_rgba(201,169,110,0.7)] transition-all duration-200 hover:bg-[#bfa15f] hover:shadow-[0_14px_32px_-10px_rgba(201,169,110,0.85)] sm:w-auto sm:min-w-[320px]"
+        onClick={() => track({ event_type: "consultation_checkout_click", screen: "result" })}
+      >
+        <span>განიხილე შენი შედეგი თამრას თმის ექსპერტთან</span>
+        <svg
+          className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          aria-hidden
+        >
+          <path d="M3 8h9M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Link>
+    </RevealSection>
+  );
+}
+
 // ─── Result page ──────────────────────────────────────────────────────────────
 
 export default function LegacyResultScreen({
@@ -613,15 +650,11 @@ export default function LegacyResultScreen({
       {/* SECTION 2 — hair stress level */}
       <HairStressSection r={r} />
 
-      {/* Paid consultation CTA — gated by the v2 model (never for red-flag /
-          medical-review; never on strong competing trigger alone). */}
-      {allowConsultationCta && <ConsultationCtaSection />}
-
       {/* SECTION 3 — personalized hair changes */}
       <HairChangesSection answers={answers} />
 
-      {/* Treatment comparison */}
-      <TreatmentComparisonSection answers={answers} />
+      {/* CTA — paid consult if qualified, otherwise the expert-review block */}
+      {allowConsultationCta ? <ConsultationCtaSection /> : <ExpertReviewSection />}
 
       {/* გაიგე მეტი THAMRA-ზე — independent progressive-disclosure rows */}
       <RevealSection id="result-about" className="mx-auto max-w-[760px] px-5 py-16 md:py-20">
@@ -716,25 +749,8 @@ export default function LegacyResultScreen({
         </div>
       </RevealSection>
 
-      {/* Closing block — passive expert-review note for the non-qualifying group. */}
-      {!allowConsultationCta && (
-        <RevealSection
-          id="result-booking"
-          className="mx-auto max-w-[640px] px-5 pb-8 text-center"
-        >
-          <GoldRule />
-          <h2 className="mx-auto mt-8 max-w-[24ch] font-display text-[24px] font-normal leading-[1.25] text-oxblood md:text-[30px]">
-            შენი შედეგი თამრას თმის ექსპერტთან ერთად
-          </h2>
-          <p className="mx-auto mt-5 max-w-[52ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
-            ამ ეტაპზე თამრა პირველ 50 ქალთან მუშაობს.
-          </p>
-          <p className="mx-auto mt-3 max-w-[52ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
-            შენს პასუხებს განვიხილავთ და შევამოწმებთ, ემთხვევა თუ არა შენი თმის ცვლილების მიზეზი იმას, რაზეც თამრა
-            მუშაობს. თუ ემთხვევა, დაგიკავშირდებით და ერთად გავარკვევთ, საიდან სჯობს დაიწყო.
-          </p>
-        </RevealSection>
-      )}
+      {/* How THAMRA compares — last */}
+      <TreatmentComparisonSection answers={answers} />
     </div>
   );
 }
