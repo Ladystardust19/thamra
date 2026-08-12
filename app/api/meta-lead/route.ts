@@ -9,6 +9,12 @@ function sha256(value: string) {
 }
 
 export async function POST(req: NextRequest) {
+  // Backstop: never fire server-side Leads from preview/dev deploys. The client
+  // already gates on the real domain; this protects against direct calls.
+  if (process.env.VERCEL_ENV === "preview" || process.env.VERCEL_ENV === "development") {
+    return NextResponse.json({ ok: true, skipped: "non-production" });
+  }
+
   const { name, phone, email, eventId, fbc } = await req.json();
 
   const accessToken = process.env.META_CAPI_ACCESS_TOKEN;

@@ -53,6 +53,17 @@ function needsManualNext(q: Question): boolean {
   return q.type === "multi" || q.type === "rating";
 }
 
+// Fire a Meta Pixel event from the browser. No-ops when the pixel isn't loaded
+// (it only loads on production — see layout.tsx), and deliberately carries NO
+// quiz answer content (no hair / menopause / health data ever goes to Meta).
+function fbPixel(name: string, params: Record<string, unknown> = {}, custom = false) {
+  const fbq = typeof window !== "undefined"
+    ? (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq
+    : undefined;
+  if (!fbq) return;
+  fbq(custom ? "trackCustom" : "track", name, params);
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function QuizClient() {
@@ -161,6 +172,11 @@ export default function QuizClient() {
     const list = visibleQuestions(snapshot);
     const idx = list.findIndex((q) => q.id === fromQid);
     if (idx === -1 || idx === list.length - 1) {
+      // Reached the end of the questions = "completed the quiz" (the number
+      // that was missing in Meta). Fires once per session, no answer content.
+      if (oncePerSession("fb_quiz_complete")) {
+        fbPixel("CompleteRegistration", { content_name: "quiz" });
+      }
       goToPhase("gate", "forward");
     } else {
       goToQuestion(list[idx + 1].id, "forward");
@@ -172,6 +188,7 @@ export default function QuizClient() {
   }
 
   function startQuiz() {
+    if (oncePerSession("fb_quiz_start")) fbPixel("QuizStart", {}, true);
     const list = visibleQuestions(answers);
     goToQuestion(list[0].id, "forward");
   }
@@ -241,10 +258,12 @@ export default function QuizClient() {
 
     const result = computeResult(answers);
 
-    // Skip lead persistence + Meta conversion tracking outside production so the
-    // funnel can be tested locally without polluting the CRM or firing real
-    // Lead conversions.
-    const isProd = process.env.NODE_ENV === "production";
+    // Only the REAL production domain persists leads + fires Meta conversions.
+    // NODE_ENV is "production" on Vercel preview builds too, so gating on the
+    // hostname is what actually keeps test runs (localhost + *.vercel.app
+    // previews) from writing real rows or firing real Leads into your data.
+    const host = typeof window !== "undefined" ? window.location.hostname : "";
+    const isProd = host === "thamra.ge" || host.endsWith(".thamra.ge");
 
     if (isProd) {
       // The insert is the gate: a lead that isn't persisted is worse than a
