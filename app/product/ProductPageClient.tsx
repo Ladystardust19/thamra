@@ -206,6 +206,13 @@ export default function ProductPageClient() {
         <BenefitsTimeline />
       </div>
 
+      {/* Formula lead-in — sits just above the 14-ingredient section */}
+      <div className="mx-auto mt-20 max-w-3xl px-4 text-center md:mt-28">
+        <p className="font-display text-[1.5rem] font-normal leading-snug text-oxblood md:text-[1.9rem]">
+          THAMRA აერთიანებს 14 ინგრედიენტს მენოპაუზასთან დაკავშირებული თმის ცვენის მთავარ მიზეზზე ზრუნვისთვის
+        </p>
+      </div>
+
       <IngredientsDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </main>
 
