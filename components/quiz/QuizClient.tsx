@@ -483,9 +483,9 @@ function BackArrow() {
 function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
     <div className={styles.introWrap}>
-      <h1 className={styles.introHeadline}>გაიგე, რა სჭირდება შენს თმას</h1>
+      <h1 className={styles.introHeadline}>გაიგე, კავშირშია თუ არა შენი თმის ცვლილება მენოპაუზასთან</h1>
       <p className={styles.introText}>
-        უპასუხე რამდენიმე კითხვას და გაიგე, როგორ იზრუნო თმის სიჯანსაღეზე მენოპაუზის პერიოდში.
+        უპასუხე რამდენიმე კითხვას. შენი პასუხების გაცნობის შემდეგ დაგიკავშირდებით და ერთად განვიხილავთ, რა არის შენი თმის ცვლილების მიზეზი და არის თუ არა თამრა სწორი შენთვის.
       </p>
 
       <button className={styles.primaryBtn} onClick={onStart}>
