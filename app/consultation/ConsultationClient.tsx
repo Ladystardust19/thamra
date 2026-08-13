@@ -282,11 +282,6 @@ export default function ConsultationClient() {
           >
             {submitting ? "..." : `დაადასტურე და გადაიხადე ${PRICE} ₾`}
           </button>
-
-          <p style={{ fontFamily: FB, fontSize: 12, fontWeight: 300, color: "#6B5F5A", margin: 0, lineHeight: 1.5 }}>
-            გადახდა მუშავდება საქართველოს ბანკის დაცულ გვერდზე. ბარათის მონაცემები
-            Thamra-ს არ ეხება. ჯავშნის დადასტურებას მიიღებ ტელეფონით ან WhatsApp-ით.
-          </p>
         </form>
       </div>
     </main>
