@@ -501,8 +501,11 @@ export default function Home() {
       <ThamraDivider />
 
       {/* ============================================================ */}
-      {/* 7 — TESTIMONIALS                                             */}
+      {/* 7 — TESTIMONIALS — TEMPORARILY HIDDEN per request.           */}
+      {/* Restore: delete the `{false && (` line below and its closing */}
+      {/* `)}`, and re-add a <ThamraDivider /> after </section>.       */}
       {/* ============================================================ */}
+      {false && (
       <section style={{ backgroundColor: "#F2EBE3" }}>
         <div className="flex flex-col lg:flex-row lg:min-h-screen">
 
@@ -571,8 +574,7 @@ export default function Home() {
 
         </div>
       </section>
-
-      <ThamraDivider />
+      )}
 
       {/* ============================================================ */}
       {/* 8 — FINAL CTA                                                */}

@@ -11,13 +11,12 @@
  * visualizations (hair-stress spectrum meter, comparison matrix) keep their
  * Quiz.module.css internals; only their section chrome was restyled.
  *
- * The paid-consultation CTA stays gated by `allowConsultationCta` (computed by
- * QuizClient from the v2 model). Delete this file together with
+ * The paid-consultation CTA has been retired — every category now ends with the
+ * text-only expert-review note (EXPERT_REVIEW). Delete this file together with
  * lib/legacyScoring.ts when a full v2 page ships for these categories.
  * ========================================================================== */
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import styles from "./Quiz.module.css";
 import { computeResult, type Answers, type Result } from "@/lib/legacyScoring";
@@ -27,10 +26,9 @@ import {
   ABOUT_BENEFITS,
   ABOUT_TRUST,
   ABOUT_ORIGIN,
-  CONSULTATION_CTA,
   type BenefitTile,
 } from "@/lib/resultContent";
-import { track } from "@/lib/analytics";
+import { EXPERT_REVIEW } from "@/lib/resultContentV2";
 
 // ─── Shared premium bits (mirror ResultScreen's language) ─────────────────────
 
@@ -458,100 +456,24 @@ function TreatmentComparisonSection({ answers }: { answers: Answers }) {
   );
 }
 
-function ConsultationCtaSection() {
-  const c = CONSULTATION_CTA;
-  return (
-    <RevealSection id="result-consultation" className="mx-auto mt-12 max-w-[720px] scroll-mt-24 px-5 md:mt-16">
-      <div className="rounded-[22px] border border-gold/40 bg-paper p-8 shadow-[0_16px_50px_-24px_rgba(61,51,53,0.28)] md:p-12">
-        <div className="text-center">
-          <Eyebrow>{c.eyebrow}</Eyebrow>
-          <h2 className="mx-auto mt-4 max-w-[22ch] font-display text-[26px] font-normal leading-[1.22] text-oxblood md:text-[32px]">
-            {c.headline}
-          </h2>
-          <GoldRule className="mt-5" />
-          <p className="mx-auto mt-6 max-w-[56ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
-            {c.lead}
-          </p>
-        </div>
-
-        <div className="mx-auto mt-10 flex max-w-[560px] flex-col gap-8 border-t border-hairline pt-8">
-          {c.directions.map((d, i) => (
-            <div key={i} className="flex gap-5 md:gap-7">
-              <span
-                aria-hidden
-                className="select-none font-display text-[30px] font-normal leading-[0.8] text-gold/60 md:text-[40px] [font-variant-numeric:tabular-nums]"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="flex-1 pt-1">
-                <h3 className="font-display text-[19px] font-semibold leading-tight text-ink md:text-[21px]">
-                  {d.title}
-                </h3>
-                <p className="mt-2 font-body text-[15px] font-light leading-[1.65] text-read md:text-[16px]">
-                  {d.text}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-10 border-t border-hairline pt-8 text-center">
-          <Link
-            href="/consultation"
-            className="group inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-gold px-8 py-[18px] font-body text-[16px] font-semibold text-oxblood shadow-[0_10px_28px_-12px_rgba(201,169,110,0.7)] transition-all duration-200 hover:bg-[#bfa15f] hover:shadow-[0_14px_32px_-10px_rgba(201,169,110,0.85)] sm:w-auto sm:min-w-[320px]"
-            onClick={() => track({ event_type: "consultation_checkout_click", screen: "result" })}
-          >
-            <span>{c.cta}</span>
-            <svg
-              className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              aria-hidden
-            >
-              <path d="M3 8h9M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </Link>
-        </div>
-      </div>
-    </RevealSection>
-  );
-}
-
-// Expert-review block for the non-qualifying group — a passive "we'll review
-// and contact you" note plus a booking CTA.
+// Closing "expert review" block — shown at the end of the quiz for EVERY
+// category. Text only: contact info is captured at the gate, so this is a
+// passive "we'll review and contact you" note with no price and no button.
 function ExpertReviewSection() {
   return (
     <RevealSection id="result-booking" className="mx-auto max-w-[640px] px-5 py-12 text-center md:py-16">
       <GoldRule />
       <h2 className="mx-auto mt-8 max-w-[24ch] font-display text-[24px] font-normal leading-[1.25] text-oxblood md:text-[30px]">
-        შენი შედეგი თამრას თმის ექსპერტთან ერთად
+        {EXPERT_REVIEW.heading}
       </h2>
-      <p className="mx-auto mt-5 max-w-[52ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
-        ამ ეტაპზე თამრა პირველ 50 ქალთან მუშაობს.
-      </p>
-      <p className="mx-auto mt-3 max-w-[52ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
-        შენს პასუხებს განვიხილავთ და შევამოწმებთ, ემთხვევა თუ არა შენი თმის ცვლილების მიზეზი იმას, რაზეც თამრა
-        მუშაობს. თუ ემთხვევა, დაგიკავშირდებით და ერთად გავარკვევთ, საიდან სჯობს დაიწყო.
-      </p>
-      <Link
-        href="/consultation"
-        className="group mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-gold px-8 py-[18px] font-body text-[16px] font-semibold text-oxblood shadow-[0_10px_28px_-12px_rgba(201,169,110,0.7)] transition-all duration-200 hover:bg-[#bfa15f] hover:shadow-[0_14px_32px_-10px_rgba(201,169,110,0.85)] sm:w-auto sm:min-w-[320px]"
-        onClick={() => track({ event_type: "consultation_checkout_click", screen: "result" })}
-      >
-        <span>განიხილე შენი შედეგი თამრას თმის ექსპერტთან</span>
-        <svg
-          className="shrink-0 transition-transform duration-200 group-hover:translate-x-1"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden
+      {EXPERT_REVIEW.paragraphs.map((p, i) => (
+        <p
+          key={i}
+          className="mx-auto mt-5 max-w-[52ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px] first-of-type:mt-8"
         >
-          <path d="M3 8h9M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      </Link>
+          {p}
+        </p>
+      ))}
     </RevealSection>
   );
 }
@@ -560,12 +482,8 @@ function ExpertReviewSection() {
 
 export default function LegacyResultScreen({
   answers,
-  allowConsultationCta,
 }: {
   answers: Answers;
-  /** Computed by QuizClient from the v2 result model. A red-flag / medical-review
-   *  respondent is never allowed the paid CTA. */
-  allowConsultationCta: boolean;
 }) {
   const r = computeResult(answers);
 
@@ -577,8 +495,9 @@ export default function LegacyResultScreen({
       {/* SECTION 2 — hair stress level */}
       <HairStressSection r={r} />
 
-      {/* CTA — paid consult if qualified, otherwise the expert-review block */}
-      {allowConsultationCta ? <ConsultationCtaSection /> : <ExpertReviewSection />}
+      {/* Closing block — text-only expert-review note for every category. The
+          paid consultation CTA has been retired from the quiz end. */}
+      <ExpertReviewSection />
 
       {/* გაიგე მეტი THAMRA-ზე — independent progressive-disclosure rows */}
       <RevealSection id="result-about" className="mx-auto max-w-[760px] px-5 py-16 md:py-20">

@@ -421,6 +421,19 @@ export const CONSULTATION = {
   ctaButton: "კონსულტაციის დაჯავშნა",
 };
 
+// Closing "expert review" ending — shown at the end of the quiz result for
+// EVERY category (VHF + legacy). Replaces the paid consultation CTA: contact
+// info is already captured at the gate, so this is a passive "we'll review and
+// contact you" note with no price and no booking button.
+export const EXPERT_REVIEW = {
+  eyebrow: "შემდეგი ნაბიჯი",
+  heading: "შენი შედეგის თამრას თმის ექსპერტთან ერთად განხილვა",
+  paragraphs: [
+    "ამ ეტაპზე თამრა-ს თმის ზრდის საკვები დანამატი ხელმისაწვდომია 50 ქალისთვის.",
+    "შენს პასუხებს განვიხილავთ და შევისწავლით, არის თუ არა შენი თმის ცვლილება კავშირში მენოპაუზასთან. თუ კი, დაგიკავშირდებით და დაგეხმარებით ერთად გავარკვიოთ საიდან სჯობს დაიწყო.",
+  ],
+};
+
 // Section labels used by ResultScreen.
 export const SECTION_LABELS = {
   founderEyebrow: "დამფუძნებლის ისტორია",

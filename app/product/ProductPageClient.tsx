@@ -8,6 +8,13 @@ import WhyDifferent from "@/components/sections/WhyDifferent";
 import BenefitsTimeline from "@/components/sections/BenefitsTimeline";
 import FormulaMap from "@/components/quiz/FormulaMap";
 import { FULL_LIST_CTA } from "@/lib/thamraFormula";
+import { getProduct } from "@/lib/products";
+
+// 6-month program (Thamra Hair Longevity) — total price + monthly equivalent
+// for the bundle card. Sourced from lib/products.ts so it stays in sync.
+const LONGEVITY = getProduct("longevity");
+const LONGEVITY_PRICE = LONGEVITY?.price ?? 749;
+const LONGEVITY_MONTHLY = Math.round(LONGEVITY_PRICE / 6);
 
 // --- Product config -------------------------------------------------------
 // Featured program shown on this PDP (Thamra Signature, 90-day). Prices and
@@ -175,6 +182,9 @@ export default function ProductPageClient() {
               <div className="min-w-0 flex-1">
                 <div className="font-body text-[14px] font-normal text-ink">
                   6-თვიანი სრული პროგრამა
+                </div>
+                <div className="mt-0.5 font-body text-[13px] font-light text-muted">
+                  {LONGEVITY_PRICE} ₾ · ≈{LONGEVITY_MONTHLY} ₾ თვეში
                 </div>
               </div>
               <Link

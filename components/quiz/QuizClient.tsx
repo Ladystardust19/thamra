@@ -405,10 +405,7 @@ function ResultRouter({ answers }: { answers: RawAnswers }) {
   // debug summary of the v2 model.
   if (process.env.NODE_ENV === "production") {
     return (
-      <LegacyResultScreen
-        answers={v2ToLegacyAnswers(answers)}
-        allowConsultationCta={qualifiesForConsultation(result)}
-      />
+      <LegacyResultScreen answers={v2ToLegacyAnswers(answers)} />
     );
   }
   return <DevResultSummary result={result} />;

@@ -73,7 +73,7 @@ export default function ResultPreviewPage({
     const v2 = LEGACY_V2[key] ?? LEGACY_V2.legacy;
     return (
       <main className="bg-cream">
-        <LegacyResultScreen answers={v2ToLegacyAnswers(v2)} allowConsultationCta={false} />
+        <LegacyResultScreen answers={v2ToLegacyAnswers(v2)} />
       </main>
     );
   }

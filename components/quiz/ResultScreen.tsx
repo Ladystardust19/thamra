@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import type { RawAnswers } from "@/lib/scoring";
 import {
   buildVhfNarrative,
@@ -10,7 +9,7 @@ import {
 } from "@/lib/resultNarrative";
 import {
   FOUNDER_STORY,
-  CONSULTATION,
+  EXPERT_REVIEW,
   SECTION_LABELS,
   SUMMARY_LABELS,
   BRIDGES,
@@ -371,91 +370,23 @@ export default function ResultScreen({ answers }: { answers: RawAnswers }) {
       {/* Results timeline */}
       <ResultsTimeline />
 
-      {/* Consultation CTA (100 ₾, quiz-finisher discount) — the closing invitation.
-          One refined panel: masthead → what's included → booking. */}
-      <section id="consultation" className="mx-auto mt-12 max-w-[720px] scroll-mt-24 px-5 md:mt-16">
-        <div className="rounded-[22px] border border-gold/40 bg-paper p-8 shadow-[0_16px_50px_-24px_rgba(61,51,53,0.28)] md:p-12">
-          {/* Masthead */}
-          <div className="text-center">
-            <h2 className="mx-auto max-w-[22ch] font-display text-[26px] font-normal leading-[1.22] text-oxblood md:text-[34px]">
-              {CONSULTATION.heading}
-            </h2>
-            <span className="mx-auto mt-5 block h-px w-10 bg-gold/50" aria-hidden />
-            <p className="mx-auto mt-6 max-w-[56ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px]">
-              {CONSULTATION.lead}
-            </p>
-          </div>
-
-          {/* What's included */}
-          <div className="mx-auto mt-10 max-w-[520px] border-t border-hairline pt-8">
-            <p className="font-body text-[15px] font-medium leading-[1.5] text-ink md:text-[16px]">
-              {CONSULTATION.bulletsIntro}
-            </p>
-            <ul className="mt-4 flex flex-col gap-3">
-              {CONSULTATION.bullets.map((b) => (
-                <li
-                  key={b}
-                  className="flex gap-3 font-body text-[15px] font-light leading-[1.6] text-read md:text-[16px]"
-                >
-                  <svg
-                    className="mt-[5px] shrink-0 text-gold-ink"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    aria-hidden
-                  >
-                    <path d="M3.5 8.5l3 3 6-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span>{b}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Booking */}
-          <div className="mt-10 border-t border-hairline pt-8 text-center">
-            <p className="font-display text-[20px] font-normal leading-[1.3] text-oxblood md:text-[22px]">
-              {CONSULTATION.ctaTitle}
-            </p>
-            <p className="mx-auto mt-2 max-w-[46ch] font-body text-[14px] font-light leading-[1.6] text-read">
-              {CONSULTATION.ctaSub}
-            </p>
-
-            {/* Price */}
-            <div className="mt-6">
-              <div className="flex items-baseline justify-center gap-3">
-                <span className="font-body text-[44px] font-semibold leading-none tracking-[-0.015em] text-oxblood [font-variant-numeric:tabular-nums]">
-                  {CONSULTATION.priceNow}
-                  <span className="ml-[0.16em] text-[0.52em] font-medium tracking-normal">₾</span>
-                </span>
-                <span className="font-body text-[18px] font-light text-muted line-through decoration-1 decoration-muted/55">
-                  {CONSULTATION.priceOriginal} ₾
-                </span>
-              </div>
-              <p className="mt-2 font-body text-[12.5px] tracking-[0.04em] text-muted">
-                −{CONSULTATION.discountPct}% ტესტის მონაწილეებისთვის
-              </p>
-            </div>
-
-            <Link
-              href="/checkout?plan=consultation"
-              className="group mt-7 inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-gold px-8 py-[18px] font-body text-[16px] font-semibold text-oxblood shadow-[0_10px_28px_-12px_rgba(201,169,110,0.7)] transition-all duration-200 hover:bg-[#bfa15f] hover:shadow-[0_14px_32px_-10px_rgba(201,169,110,0.85)] sm:w-auto sm:min-w-[300px]"
-            >
-              <span>{CONSULTATION.ctaButton}</span>
-              <svg
-                className="transition-transform duration-200 group-hover:translate-x-1"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden
-              >
-                <path d="M3 8h9M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
-          </div>
-        </div>
+      {/* Closing "expert review" note — text only. Replaces the former paid
+          consultation CTA: contact info is already captured at the gate, so we
+          reach out to qualifying women; no price, no booking button. */}
+      <section id="consultation" className="mx-auto mt-12 max-w-[640px] scroll-mt-24 px-5 py-4 text-center md:mt-16">
+        <Eyebrow>{EXPERT_REVIEW.eyebrow}</Eyebrow>
+        <span className="mx-auto mt-5 block h-px w-10 bg-gold/50" aria-hidden />
+        <h2 className="mx-auto mt-6 max-w-[24ch] font-display text-[26px] font-normal leading-[1.22] text-oxblood md:text-[34px]">
+          {EXPERT_REVIEW.heading}
+        </h2>
+        {EXPERT_REVIEW.paragraphs.map((p, i) => (
+          <p
+            key={i}
+            className="mx-auto mt-6 max-w-[54ch] font-body text-[16px] font-light leading-[1.75] text-read md:text-[17px] first-of-type:mt-8"
+          >
+            {p}
+          </p>
+        ))}
       </section>
     </div>
   );
