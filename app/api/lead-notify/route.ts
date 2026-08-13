@@ -50,20 +50,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "no record" }, { status: 400 });
   }
 
-  // Consultation requests come through the same table, tagged in `answers`.
-  // They carry no quiz answers, so give them their own header + call-me line.
-  const isConsult = record?.answers?.source === "consultation_request";
-
   const status = (record.triage_status ?? "qualified") as TriageStatus;
-  const statusLine = isConsult
-    ? "🟢 კონსულტაცია — დაურეკე"
-    : STATUS_LABEL[status] ?? String(status);
+  const statusLine = STATUS_LABEL[status] ?? String(status);
 
   // Plain text (no parse_mode) — an ops alert doesn't need formatting, and it
   // avoids Telegram's MarkdownV2 parse errors on names/labels containing
   // reserved characters like ( ) - . which would otherwise drop the message.
   const lines = [
-    isConsult ? "ახალი კონსულტაციის მოთხოვნა — 150₾" : "ახალი ლიდი — THAMRA ქვიზი",
+    "ახალი ლიდი — THAMRA ქვიზი",
     statusLine,
     "",
     `👤 ${record.name ?? ""}`,

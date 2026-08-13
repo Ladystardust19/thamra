@@ -7,7 +7,7 @@ const NAV_LINKS = [
   { label: "ჩვენ შესახებ", href: "/about" },
   { label: "პროდუქტები",   href: "/product" },
   { label: "პროგრამები",   href: "/programs" },
-  { label: "კონსულტაცია",  href: "/consultation-request" },
+  { label: "კონსულტაცია",  href: "/consultation" },
   { label: "მეცნიერება",   href: "/#science" },
   { label: "ჩემი ოთახი",    href: "/cabinet" },
 ];
