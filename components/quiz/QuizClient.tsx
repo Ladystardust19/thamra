@@ -32,7 +32,11 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Screen = "intro" | "quiz" | "gate" | "processing" | "result";
+type Screen = "intro" | "quiz" | "optin" | "gate" | "processing" | "result" | "done";
+
+// Which thank-you message the "done" screen shows: "call" = she opted in and
+// submitted her contact info; "nocall" = she declined the consultation.
+type Outcome = "call" | "nocall" | null;
 
 const PROCESSING_MS = 4000;
 const PROCESSING_TEXTS = [
@@ -45,7 +49,9 @@ const PROCESSING_TEXTS = [
 // sessionStorage key holding the visitor's in-progress quiz state (survives
 // refresh). Bumped to v3 for the v2 quiz — the answer shape changed, so any
 // stale v1/v2-prototype state must be ignored rather than restored.
-const STATE_KEY = "thamra_quiz_state_v3";
+// Bumped to v4 with the consultation opt-in step — the flow now ends at a
+// thank-you screen (no result page), so any stale v3 state must be dropped.
+const STATE_KEY = "thamra_quiz_state_v4";
 
 // Multi-selects and the rating scale need an explicit "next"; single-selects
 // auto-advance once tapped.
@@ -79,6 +85,7 @@ export default function QuizClient() {
   const [emailError, setEmailError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [outcome, setOutcome] = useState<Outcome>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fbcRef = useRef<string | null>(null);
   const enteredAtRef = useRef<number>(Date.now());
@@ -101,6 +108,7 @@ export default function QuizClient() {
         if (st.name) setName(st.name);
         if (st.phone) setPhone(st.phone);
         if (st.email) setEmail(st.email);
+        if (st.outcome) setOutcome(st.outcome);
         if (st.qid) setQid(st.qid);
         let target: Screen = st.screen ?? "intro";
         if (target === "processing") target = "result"; // don't re-run the loader
@@ -121,9 +129,9 @@ export default function QuizClient() {
       return;
     }
     try {
-      sessionStorage.setItem(STATE_KEY, JSON.stringify({ screen, qid, answers, name, phone, email }));
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({ screen, qid, answers, name, phone, email, outcome }));
     } catch {}
-  }, [screen, qid, answers, name, phone, email]);
+  }, [screen, qid, answers, name, phone, email, outcome]);
 
   // Result page view — only counts if they stay 3+ seconds, once per session.
   useEffect(() => {
@@ -177,7 +185,7 @@ export default function QuizClient() {
       if (oncePerSession("fb_quiz_complete")) {
         fbPixel("CompleteRegistration", { content_name: "quiz" });
       }
-      goToPhase("gate", "forward");
+      goToPhase("optin", "forward");
     } else {
       goToQuestion(list[idx + 1].id, "forward");
     }
@@ -195,9 +203,13 @@ export default function QuizClient() {
 
   function goBack() {
     if (timerRef.current) clearTimeout(timerRef.current);
-    if (screen === "gate") {
+    if (screen === "optin") {
       const list = visibleQuestions(answers);
       goToQuestion(list[list.length - 1].id, "back");
+      return;
+    }
+    if (screen === "gate") {
+      goToPhase("optin", "back");
       return;
     }
     const list = visibleQuestions(answers);
@@ -228,6 +240,18 @@ export default function QuizClient() {
     if (q.type === "multi") return Array.isArray(v) && v.length > 0;
     if (q.type === "rating") return typeof v === "number";
     return !!v;
+  }
+
+  // Consultation opt-in: "Yes, call me" → collect contact info; "No" → end at
+  // the thank-you screen without collecting anything.
+  function handleOptinYes() {
+    setOutcome("call");
+    goToPhase("gate", "forward");
+  }
+
+  function handleOptinNo() {
+    setOutcome("nocall");
+    goToPhase("done", "forward");
   }
 
   async function handleGateSubmit() {
@@ -315,7 +339,9 @@ export default function QuizClient() {
       });
     }
 
-    goToPhase("processing", "forward");
+    // She opted in and submitted her contact info → confirmation message.
+    setOutcome("call");
+    goToPhase("done", "forward");
   }
 
   const showProgress = screen === "quiz";
@@ -362,6 +388,12 @@ export default function QuizClient() {
               answered={isAnswered(currentQuestion)}
             />
           )}
+
+          {screen === "optin" && (
+            <OptinScreen onYes={handleOptinYes} onNo={handleOptinNo} onBack={goBack} />
+          )}
+
+          {screen === "done" && <DoneScreen outcome={outcome} />}
 
           {screen === "gate" && (
             <GateScreen
@@ -491,6 +523,79 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
       <button className={styles.primaryBtn} onClick={onStart}>
         დაიწყე ტესტი
       </button>
+    </div>
+  );
+}
+
+// ─── Consultation opt-in screen ────────────────────────────────────────────────
+// Shown after the last question, before any contact info is collected. "Yes"
+// leads to the contact form; "No" ends the flow at the thank-you screen.
+
+function OptinScreen({
+  onYes,
+  onNo,
+  onBack,
+}: {
+  onYes: () => void;
+  onNo: () => void;
+  onBack: () => void;
+}) {
+  return (
+    <div className={styles.optinWrap}>
+      <button className={styles.backBtn} onClick={onBack} aria-label="უკან">
+        <BackArrow />
+        უკან
+      </button>
+
+      <p className={styles.optinLead}>
+        მადლობა, რომ გაიარე ტესტი. შენი პასუხები შენახულია.
+      </p>
+
+      <h2 className={styles.optinHeadline}>
+        გსურს, THAMRA-ს თმის ექსპერტი-კონსულტანტი დაგიკავშირდეს?
+      </h2>
+
+      <p className={styles.optinText}>
+        კონსულტანტი შენთან ერთად განიხილავს ტესტის შედეგებს და შეაფასებს რამდენად
+        შეესაბამება THAMRA-ს პროდუქცია შენი თმის საჭიროებებს.
+      </p>
+
+      <div className={styles.optinBtns}>
+        <button className={styles.primaryBtn} onClick={onYes}>
+          კი, დამირეკეთ
+        </button>
+        <button className={styles.secondaryBtn} onClick={onNo}>
+          არა, არ დამირეკოთ
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Thank-you (done) screen ────────────────────────────────────────────────────
+// Terminal screen for both opt-in paths. "call" = she submitted her contact
+// info; "nocall" = she declined the consultation.
+
+function DoneScreen({ outcome }: { outcome: Outcome }) {
+  const message =
+    outcome === "call"
+      ? "მადლობა THAMRA-ს თმის ექსპერტი-კონსულტანტი მალე დაგიკავშირდებათ."
+      : "მადლობა ტესტის გავლისთვის.";
+
+  return (
+    <div className={styles.doneWrap}>
+      <div className={styles.doneMark} aria-hidden>
+        <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
+          <path
+            d="M2 11l8 8L26 3"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+      <p className={styles.doneText}>{message}</p>
     </div>
   );
 }

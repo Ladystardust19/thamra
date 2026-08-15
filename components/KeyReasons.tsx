@@ -36,6 +36,7 @@ export default function KeyReasons() {
   const [active, setActive] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const touchStartX = useRef(0);
+  const pressed = useRef(false);
 
   const startTimer = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -43,6 +44,19 @@ export default function KeyReasons() {
       setActive((prev) => (prev + 1) % CAUSES.length);
     }, AUTO_INTERVAL);
   }, []);
+
+  // Press-and-hold pauses the auto-advance so she can read at her own pace;
+  // releasing resumes the rotation from a fresh interval.
+  const pause = useCallback(() => {
+    pressed.current = true;
+    if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
+  }, []);
+
+  const resume = useCallback(() => {
+    if (!pressed.current) return;
+    pressed.current = false;
+    startTimer();
+  }, [startTimer]);
 
   useEffect(() => {
     startTimer();
@@ -101,6 +115,10 @@ export default function KeyReasons() {
               const dx = e.changedTouches[0].clientX - touchStartX.current;
               if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
             }}
+            onPointerDown={pause}
+            onPointerUp={resume}
+            onPointerLeave={resume}
+            onPointerCancel={resume}
             role="tabpanel"
           >
             <div key={active} className="kr-slide-content">

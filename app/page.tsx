@@ -5,7 +5,7 @@ import KeyReasons from "@/components/KeyReasons";
 import Transformation from "@/components/Transformation";
 import ThamraDivider from "@/components/ThamraDivider";
 import QuizCTABanner from "@/components/QuizCTABanner";
-import IngredientsAccordion from "@/components/IngredientsAccordion";
+import FormulaMap from "@/components/quiz/FormulaMap";
 import PricingSection from "@/components/PricingSection";
 
 /* ------------------------------------------------------------------ */
@@ -450,7 +450,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Reveal><IngredientsAccordion /></Reveal>
+      <Reveal><FormulaMap /></Reveal>
 
       {/* ============================================================ */}
       {/* TRANSFORMATION — 5-part section                             */}
@@ -472,7 +472,7 @@ export default function Home() {
             <div className="px-8 py-20 md:py-[120px] md:px-14 xl:px-20 w-full">
               <span className={`${LABEL} text-gold`}>ჩვენი ისტორია</span>
               <h2 className="mt-5 font-display text-[2rem] font-normal italic leading-[1.15] md:text-[3.25rem] xl:text-[3.75rem]" style={{ color: "#8B2F3A" }}>
-                შთაგონებული შინაგანი სიძლიერით
+                ვიტამინებისა და მიდგომების ცალკე მიღება აღარ მოგიწევს
               </h2>
               <p className="mt-6 font-body text-[17px] sm:text-[20px] font-light leading-[1.8] text-read">
                 Thamra შეიქმნა იდეით, რომ მენოპაუზის პერიოდში თმის ცვლილება იშვიათად არის მხოლოდ ერთი მიზეზის შედეგი.
