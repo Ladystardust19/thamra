@@ -12,6 +12,10 @@ export interface Product {
   // A non-physical product (e.g. a consultation): no delivery address is
   // collected at checkout, and it is not listed on the /programs page.
   service?: boolean;
+  // Kept out of the /programs list and the checkout program dropdown. Still a
+  // valid catalog entry — reachable via a direct /checkout?plan=<id> link (e.g.
+  // its own dedicated product page).
+  hidden?: boolean;
 }
 
 export const PRODUCTS: Product[] = [
@@ -22,6 +26,18 @@ export const PRODUCTS: Product[] = [
     price: 149,
     features: [
       "ერთი თვისთვის განკუთვნილი Thamra",
+    ],
+  },
+  {
+    id: "nano-collagen",
+    name: "THAMRA NANO COLLAGEN HAIR",
+    duration: "ერთთვიანი პროგრამა",
+    price: 149,
+    hidden: true,
+    features: [
+      "30 სთიკი — ერთი თვის სრული პროგრამა",
+      "ნანო კოლაგენი, კერატინი, ბიოტინი, ჰიალურონის მჟავა და L-თიანინი",
+      "ერთი პაკეტი დღეში — უფრო სქელი და ჯანსაღი თმისთვის",
     ],
   },
   {

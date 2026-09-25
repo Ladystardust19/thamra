@@ -49,6 +49,9 @@ export default function CheckoutForm({
 
   const product = products.find((p) => p.id === planId) ?? products[0];
   const isService = !!product.service;
+  // Hidden products (reached via a direct product-page link) show a fixed title
+  // instead of the program dropdown — they aren't in the dropdown's option list.
+  const showFixedTitle = isService || !!product.hidden;
 
   const canSubmit =
     name.trim() &&
@@ -133,7 +136,7 @@ export default function CheckoutForm({
               alignSelf: "start",
             }}
           >
-            {isService ? (
+            {showFixedTitle ? (
               <div
                 style={{
                   fontFamily: FD,
@@ -154,7 +157,7 @@ export default function CheckoutForm({
                   style={{ ...inputStyle, cursor: "pointer", marginBottom: 20 }}
                 >
                   {products
-                    .filter((p) => !p.service)
+                    .filter((p) => !p.service && !p.hidden)
                     .map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name} — {p.price} ₾
