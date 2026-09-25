@@ -33,7 +33,6 @@ export const PRODUCTS: Product[] = [
     name: "THAMRA NANO COLLAGEN HAIR",
     duration: "ერთთვიანი პროგრამა",
     price: 149,
-    hidden: true,
     features: [
       "30 სთიკი — ერთი თვის სრული პროგრამა",
       "ნანო კოლაგენი, კერატინი, ბიოტინი, ჰიალურონის მჟავა და L-თიანინი",
