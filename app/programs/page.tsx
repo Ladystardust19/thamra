@@ -215,11 +215,11 @@ export default function ProgramsPage() {
               <div style={{ flex: 1 }} />
 
               <Link
-                href={`/checkout?plan=${p.id}`}
+                href={p.productPage ?? `/checkout?plan=${p.id}`}
                 className="key-reasons-cta"
                 style={{ marginTop: 28, textAlign: "center" }}
               >
-                შეუკვეთე →
+                {p.productPage ? "ნახე პროდუქტი →" : "შეუკვეთე →"}
               </Link>
             </article>
           ))}

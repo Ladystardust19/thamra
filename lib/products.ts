@@ -16,6 +16,9 @@ export interface Product {
   // valid catalog entry — reachable via a direct /checkout?plan=<id> link (e.g.
   // its own dedicated product page).
   hidden?: boolean;
+  // If set, the /programs card links here (its own product page) instead of
+  // going straight to /checkout.
+  productPage?: string;
 }
 
 export const PRODUCTS: Product[] = [
@@ -33,6 +36,7 @@ export const PRODUCTS: Product[] = [
     name: "THAMRA NANO COLLAGEN HAIR",
     duration: "ერთთვიანი პროგრამა",
     price: 149,
+    productPage: "/product/nano-collagen",
     features: [
       "30 სთიკი — ერთი თვის სრული პროგრამა",
       "ნანო კოლაგენი, კერატინი, ბიოტინი, ჰიალურონის მჟავა და L-თიანინი",
