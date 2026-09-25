@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { label: "ჩვენ შესახებ", href: "/about" },
-  { label: "პროდუქტები",   href: "/product" },
+  { label: "პროდუქტები",   href: "/product/nano-collagen" },
   { label: "პროგრამები",   href: "/programs" },
   { label: "კონსულტაცია",  href: "/consultation" },
   { label: "მეცნიერება",   href: "/#science" },
