@@ -3,9 +3,21 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
-const NAV_LINKS = [
+type NavLink = {
+  label: string;
+  href?: string;
+  children?: { label: string; href: string }[];
+};
+
+const NAV_LINKS: NavLink[] = [
   { label: "ჩვენ შესახებ", href: "/about" },
-  { label: "პროდუქტები",   href: "/product/nano-collagen" },
+  {
+    label: "პროდუქტები",
+    children: [
+      { label: "მენოპაუზის თმის ფორმულა", href: "/product" },
+      { label: "ნანო კოლაგენი", href: "/product/nano-collagen" },
+    ],
+  },
   { label: "პროგრამები",   href: "/programs" },
   { label: "კონსულტაცია",  href: "/consultation" },
   { label: "მეცნიერება",   href: "/#science" },
@@ -49,17 +61,57 @@ export default function SiteHeader() {
 
           {/* Desktop nav links */}
           <div className="hidden items-center gap-8 lg:flex">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                className={`font-body text-[17px] font-normal uppercase tracking-[0.1em] transition-colors duration-500 ${
-                  dark ? "text-ink hover:text-oxblood" : "text-cream-soft/90 hover:text-white"
-                }`}
-              >
-                {l.label}
-              </a>
-            ))}
+            {links.map((l) =>
+              l.children ? (
+                <div key={l.label} className="group relative">
+                  <button
+                    type="button"
+                    className={`flex items-center gap-1.5 font-body text-[17px] font-normal uppercase tracking-[0.1em] transition-colors duration-500 ${
+                      dark ? "text-ink hover:text-oxblood" : "text-cream-soft/90 hover:text-white"
+                    }`}
+                  >
+                    {l.label}
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="transition-transform duration-300 group-hover:rotate-180"
+                      aria-hidden
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                  <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                    <div className="min-w-[240px] overflow-hidden rounded-md border border-gold/15 bg-cream/98 py-2 shadow-[0_12px_32px_-12px_rgba(61,51,53,0.35)] backdrop-blur-sm">
+                      {l.children.map((c) => (
+                        <a
+                          key={c.href}
+                          href={c.href}
+                          className="block px-5 py-3 font-body text-[15px] font-normal uppercase tracking-[0.08em] text-ink transition-colors hover:bg-gold/5 hover:text-oxblood"
+                        >
+                          {c.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className={`font-body text-[17px] font-normal uppercase tracking-[0.1em] transition-colors duration-500 ${
+                    dark ? "text-ink hover:text-oxblood" : "text-cream-soft/90 hover:text-white"
+                  }`}
+                >
+                  {l.label}
+                </a>
+              )
+            )}
           </div>
 
           {/* Right actions */}
@@ -84,16 +136,37 @@ export default function SiteHeader() {
           } bg-cream/98 backdrop-blur-sm border-t border-gold/10`}
         >
           <div className="px-6 pb-6 pt-3 flex flex-col gap-1">
-            {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setMenuOpen(false)}
-                className="font-body text-[18px] font-normal uppercase tracking-[0.1em] text-ink py-3.5 border-b border-gold/10 last:border-0 hover:text-oxblood transition-colors"
-              >
-                {l.label}
-              </a>
-            ))}
+            {links.map((l) =>
+              l.children ? (
+                <div
+                  key={l.label}
+                  className="border-b border-gold/10 last:border-0 py-2"
+                >
+                  <span className="block font-body text-[13px] font-normal uppercase tracking-[0.2em] text-ink/50 py-2">
+                    {l.label}
+                  </span>
+                  {l.children.map((c) => (
+                    <a
+                      key={c.href}
+                      href={c.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block font-body text-[17px] font-normal uppercase tracking-[0.1em] text-ink py-3 pl-4 hover:text-oxblood transition-colors"
+                    >
+                      {c.label}
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="font-body text-[18px] font-normal uppercase tracking-[0.1em] text-ink py-3.5 border-b border-gold/10 last:border-0 hover:text-oxblood transition-colors"
+                >
+                  {l.label}
+                </a>
+              )
+            )}
           </div>
         </div>
       </nav>
