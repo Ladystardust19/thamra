@@ -10,7 +10,6 @@ export default function HeroCover() {
         alt=""
         fill
         priority
-        unoptimized
         className={styles.heroImage}
         style={{ objectFit: "cover" }}
         sizes="100vw"
@@ -25,7 +24,7 @@ export default function HeroCover() {
           </h1>
 
           <p className={styles.description}>
-            თმის ჯანმრთელობაზე ზრუნვა მენოპაუზის დროს
+            ქალის თმის ჯანმრთელობაზე ზრუნვა
           </p>
 
           <a href="/quiz" className={styles.cta}>
