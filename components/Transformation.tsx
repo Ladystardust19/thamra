@@ -71,8 +71,6 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
         src="/transformation-hero.webp"
         alt="Thamra transformation"
         fill
-        priority
-        quality={100}
         sizes="100vw"
         style={{ objectFit: "cover", objectPosition: "center top" }}
       />
