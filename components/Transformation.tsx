@@ -116,7 +116,7 @@ function Part1Hero({ isInView }: { isInView: boolean }) {
           letterSpacing: "0.01em",
           textShadow: "0 2px 18px rgba(0,0,0,0.35)",
         }}>
-          შედეგის გზა
+          სავსე თმის დაბრუნება
         </h2>
 
         <p style={{
