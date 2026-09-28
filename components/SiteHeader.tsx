@@ -15,7 +15,7 @@ const NAV_LINKS: NavLink[] = [
     label: "პროდუქტები",
     children: [
       { label: "მენოპაუზის თმის ფორმულა", href: "/product" },
-      { label: "ნანო კოლაგენი", href: "/product/nano-collagen" },
+      { label: "THAMRA CROWN Nº05", href: "/product/nano-collagen" },
     ],
   },
   { label: "პროგრამები",   href: "/programs" },

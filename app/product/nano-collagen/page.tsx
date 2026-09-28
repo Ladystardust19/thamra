@@ -8,7 +8,7 @@ const CHECKOUT_HREF = `/checkout?plan=${PRODUCT.id}`;
 const CTA_LABEL = "შეუკვეთე ახლა";
 
 export const metadata: Metadata = {
-  title: "THAMRA NANO COLLAGEN HAIR — თმის ფორმულა",
+  title: "THAMRA CROWN Nº05 — თმის ფორმულა",
   description:
     "ნანო კოლაგენი, კერატინი, ბიოტინი, ჰიალურონის მჟავა და L-თიანინი. ერთი პაკეტი დღეში — უფრო სქელი და ჯანსაღი თმისთვის. ერთთვიანი პროგრამა.",
 };
@@ -35,7 +35,7 @@ export default function NanoCollagenPage() {
               THAMRA · Women&apos;s Hair Longevity
             </p>
             <h1 className="mt-3 font-display text-[2rem] font-normal leading-tight text-oxblood md:text-[2.6rem]">
-              THAMRA NANO COLLAGEN HAIR
+              THAMRA CROWN Nº05
             </h1>
             <p className="mx-auto mt-4 max-w-md font-body text-[15px] font-light leading-relaxed text-read">
               ნანო კოლაგენი, კერატინი, ბიოტინი, ჰიალურონის მჟავა და L-თიანინი —

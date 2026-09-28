@@ -33,7 +33,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "nano-collagen",
-    name: "THAMRA NANO COLLAGEN HAIR",
+    name: "THAMRA CROWN Nº05",
     duration: "ერთთვიანი პროგრამა",
     price: 149,
     productPage: "/product/nano-collagen",
