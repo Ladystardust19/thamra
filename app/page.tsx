@@ -118,7 +118,7 @@ const advisors = [
     initial: "L",
   },
   {
-    name: "Maia Sidamonishvili-Jakeli",
+    name: "Maia Sidamonishvili",
     title: "MD · Founder · Gynecologist",
     institution: "თამრას მთავარი მრჩეველი",
     quote:
