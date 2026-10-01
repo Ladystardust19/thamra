@@ -5,7 +5,7 @@ import { getProduct } from "@/lib/products";
 
 const PRODUCT = getProduct("nano-collagen")!;
 const CHECKOUT_HREF = `/checkout?plan=${PRODUCT.id}`;
-const CTA_LABEL = "შეუკვეთე ახლა";
+const CTA_LABEL = "შეკვეთა";
 
 export const metadata: Metadata = {
   title: "THAMRA CROWN Nº05 — თმის ფორმულა",
