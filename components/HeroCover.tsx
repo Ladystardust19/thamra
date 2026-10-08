@@ -20,7 +20,7 @@ export default function HeroCover() {
       <div className={styles.container}>
         <div className={styles.content}>
           <h1 className={styles.headline}>
-            <span className={styles.headlineItalic}>Thamra</span>
+            <span className={styles.headlineItalic}>THAMRA</span>
           </h1>
 
           <p className={styles.description}>
