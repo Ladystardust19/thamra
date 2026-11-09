@@ -6,13 +6,13 @@ export default function HeroCover() {
     <section className={styles.hero} aria-label="Hero">
 
       <Image
-        src="/hero-cover.webp"
+        src="/hero-cover-v2.webp"
         alt=""
         fill
         priority
         className={styles.heroImage}
         style={{ objectFit: "cover" }}
-        sizes="100vw"
+        sizes="(max-width: 767px) 190vh, 100vw"
       />
 
       <div className={styles.overlay} aria-hidden="true" />
