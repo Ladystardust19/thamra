@@ -7,6 +7,7 @@ import ThamraDivider from "@/components/ThamraDivider";
 import QuizCTABanner from "@/components/QuizCTABanner";
 import FormulaMap from "@/components/quiz/FormulaMap";
 import PricingSection from "@/components/PricingSection";
+import FormulaSelector from "@/components/FormulaSelector";
 
 /* ------------------------------------------------------------------ */
 /* Data                                                                */
@@ -408,6 +409,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ============================================================ */}
+      {/* FORMULA SELECTOR — one powder photo, three product tabs      */}
+      {/* ============================================================ */}
+      <FormulaSelector />
 
       <ThamraDivider />
 
