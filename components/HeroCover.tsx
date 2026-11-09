@@ -6,8 +6,8 @@ export default function HeroCover() {
   const common = { alt: "", fill: true, priority: true };
   const {
     props: { srcSet: mobile },
-  } = getImageProps({ ...common, src: "/hero-cover-mobile.webp", sizes: "100vw", quality: 80 });
-  const { props: desktop } = getImageProps({ ...common, src: "/hero-cover-v2.webp", sizes: "100vw" });
+  } = getImageProps({ ...common, src: "/hero-cover-mobile-v2.webp", sizes: "100vw", quality: 80 });
+  const { props: desktop } = getImageProps({ ...common, src: "/hero-cover-v3.webp", sizes: "100vw" });
 
   return (
     <section className={styles.hero} aria-label="Hero">
