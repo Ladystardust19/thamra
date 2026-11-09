@@ -1,19 +1,21 @@
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import styles from "./HeroCover.module.css";
 
 export default function HeroCover() {
+  // Art direction: portrait crop for phones, wide lineup for desktop
+  const common = { alt: "", fill: true, priority: true };
+  const {
+    props: { srcSet: mobile },
+  } = getImageProps({ ...common, src: "/hero-cover-mobile.webp", sizes: "100vw", quality: 80 });
+  const { props: desktop } = getImageProps({ ...common, src: "/hero-cover-v2.webp", sizes: "100vw" });
+
   return (
     <section className={styles.hero} aria-label="Hero">
 
-      <Image
-        src="/hero-cover-v2.webp"
-        alt=""
-        fill
-        priority
-        className={styles.heroImage}
-        style={{ objectFit: "cover" }}
-        sizes="(max-width: 767px) 190vh, 100vw"
-      />
+      <picture>
+        <source media="(max-width: 767px)" srcSet={mobile} />
+        <img {...desktop} alt="" className={styles.heroImage} />
+      </picture>
 
       <div className={styles.overlay} aria-hidden="true" />
 
