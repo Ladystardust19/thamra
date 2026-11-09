@@ -41,7 +41,7 @@ export default function SiteFooter() {
   return (
     <footer id="footer" className="bg-oxblood text-cream-soft">
       <div className={`${CONTAINER} pt-[100px] pb-[60px]`}>
-        <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-8">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-4 md:gap-8">
           {/* nav */}
           <div>
             <h4 className={`${LABEL} text-cream-soft/70`}>ნავიგაცია</h4>
@@ -81,7 +81,7 @@ export default function SiteFooter() {
                 </a>
               </li>
               <li>
-                <a href="mailto:infothamra@gmail.com" className={linkCls}>
+                <a href="mailto:infothamra@gmail.com" className={`${linkCls} [overflow-wrap:anywhere]`}>
                   infothamra@gmail.com
                 </a>
               </li>

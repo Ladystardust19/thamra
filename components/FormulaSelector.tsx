@@ -9,7 +9,8 @@ import { FORMULAS, FORMULA_HEADLINE, FORMULA_CTA } from "@/lib/formulas";
  * "Every stage" formula selector: one static powder photo, three product tabs.
  * Switching a tab swaps only the name, the two paragraphs and the CTA target.
  *
- * Grid areas — mobile:  head / tabs / img / panel
+ * Grid areas — mobile:  head / img / tabs / panel (tabs sit right above
+ *                        the text, so a tap visibly changes it)
  *              desktop: img + head over (panel | tabs)
  * All three panels share one grid cell on desktop so the tallest one sets the
  * height and the CTA doesn't jump between tabs.
@@ -44,7 +45,7 @@ export default function FormulaSelector() {
       style={{ backgroundColor: IVORY }}
     >
       <div
-        className="mx-auto grid w-full max-w-[1280px] gap-x-12 px-5 py-16 sm:px-10 md:py-24 lg:gap-x-14 lg:px-12 lg:py-[120px] [grid-template-areas:'head'_'tabs'_'img'_'panel'] lg:grid-cols-[44%_minmax(0,1fr)_168px] lg:[grid-template-areas:'img_head_head'_'img_panel_tabs']"
+        className="mx-auto grid w-full max-w-[1280px] gap-x-12 px-5 py-12 sm:px-10 sm:py-16 md:py-24 lg:gap-x-14 lg:px-12 lg:py-[120px] [grid-template-areas:'head'_'img'_'tabs'_'panel'] lg:grid-cols-[44%_minmax(0,1fr)_168px] lg:[grid-template-areas:'img_head_head'_'img_panel_tabs']"
       >
         {/* Shared headline */}
         <h2
@@ -52,7 +53,7 @@ export default function FormulaSelector() {
           className="font-display font-normal [grid-area:head] lg:max-w-[560px] lg:self-end"
           style={{
             color: BURGUNDY,
-            fontSize: "clamp(1.75rem, 3vw, 2.625rem)",
+            fontSize: "clamp(1.5rem, 6vw, 2.625rem)",
             lineHeight: 1.3,
           }}
         >
@@ -63,7 +64,7 @@ export default function FormulaSelector() {
         <div
           role="tablist"
           aria-label="THAMRA ფორმულები"
-          className="mt-8 grid grid-cols-3 gap-2 [grid-area:tabs] lg:mt-10 lg:flex lg:flex-col lg:gap-2.5 lg:self-start"
+          className="mt-5 grid grid-cols-3 gap-2 [grid-area:tabs] lg:mt-10 lg:flex lg:flex-col lg:gap-2.5 lg:self-start"
         >
           {FORMULAS.map((f, i) => {
             const selected = i === active;
@@ -97,14 +98,15 @@ export default function FormulaSelector() {
         </div>
 
         {/* The one static photograph — never changes with the tab */}
-        <div className="mt-8 flex items-center justify-center [grid-area:img] lg:mt-0">
+        <div className="mt-5 flex items-center justify-center [grid-area:img] lg:mt-0">
           <Image
             src="/thamra-powder.webp"
             alt="THAMRA-ს ბორდოსფერი ფხვნილი ოქროსფერ კოვზში"
             width={1254}
             height={1254}
-            sizes="(min-width: 1024px) 520px, (min-width: 640px) 420px, 80vw"
-            className="h-auto w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[540px]"
+            sizes="(min-width: 1024px) 540px, (min-width: 640px) 300px, 210px"
+            loading="eager"
+            className="h-auto w-full max-w-[210px] sm:max-w-[300px] lg:max-w-[540px]"
             style={{
               // Feather the photo's own backdrop into the section ivory; the
               // powder itself is untouched (mask only, no filter).
@@ -117,7 +119,7 @@ export default function FormulaSelector() {
         </div>
 
         {/* Text panel */}
-        <div className="mt-6 [grid-area:panel] lg:mt-10 lg:border-t lg:pt-10" style={{ borderColor: "rgba(184, 154, 101, 0.45)" }}>
+        <div className="mt-7 [grid-area:panel] lg:mt-10 lg:border-t lg:pt-10" style={{ borderColor: "rgba(184, 154, 101, 0.45)" }}>
           <div className="grid lg:max-w-[480px]">
             {FORMULAS.map((f, i) => {
               const selected = i === active;
@@ -149,7 +151,7 @@ export default function FormulaSelector() {
                   </p>
                   {/* mt-auto pins the CTA to the bottom of the shared cell, so
                       it holds the same spot on desktop for every tab */}
-                  <div className="mt-auto pt-9">
+                  <div className="mt-auto pt-7 lg:pt-9">
                     <Link
                       href={f.href}
                       tabIndex={selected ? 0 : -1}
