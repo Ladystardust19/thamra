@@ -27,7 +27,7 @@ const DESCRIPTION =
   "ყოველდღიური თმის დანამატი, რომელიც შექმნილია თმის ცვენის შესამცირებლად, შესამჩნევად სქელი და უფრო სწრაფი თმის ზრდისთვის მენოპაუზის პერიოდში.";
 
 const IMAGES = [
-  { src: "/product-main.webp", alt: "Thamra — ყუთი, ბოთლი და ფხვნილი" },
+  { src: "/venice-hair-elixir.webp", alt: "THAMRA VENICE HAIR ELIXIR — ქილა და ოქროსფერი კოვზი ფხვნილით" },
   { src: "/product-drinking.webp", alt: "ქალი სვამს Thamra-ს დილის შუქზე" },
   { src: "/product-bottle.webp", alt: "Thamra-ს ბოთლი ქვაზე, ყვავილებთან" },
 ];
@@ -85,7 +85,7 @@ export default function ProductPageClient() {
       <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
         {/* ---------------- Gallery (left) ---------------- */}
         <div className="flex flex-col gap-3">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-surface">
+          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-surface">
             <Image
               src={IMAGES[0].src}
               alt={IMAGES[0].alt}
@@ -117,7 +117,7 @@ export default function ProductPageClient() {
         <div className="lg:pt-2">
           <div className="lg:sticky lg:top-28">
             <h1 className="font-display text-[2rem] font-normal leading-tight text-oxblood md:text-[2.4rem]">
-              THAMRA-თმის ჯანმრთელობა მენოპაუზის დროს
+              THAMRA VENICE HAIR ELIXIR
             </h1>
 
             <p className="mt-4 max-w-md font-body text-[15px] font-light leading-relaxed text-read">
