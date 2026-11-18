@@ -423,9 +423,14 @@ function Expert() {
           <blockquote className="mt-6 font-display text-[1.25rem] font-light italic leading-relaxed text-read md:text-[1.5rem]">
             „{EXPERT.quote}“
           </blockquote>
-          <p className="mt-6 font-body text-[14px] uppercase tracking-[0.14em] text-gold-ink">
-            {EXPERT.name}
-          </p>
+          <div className="mt-6 border-t border-hairline pt-5">
+            <p className="font-body text-[15px] font-normal text-ink">
+              {EXPERT.name}
+            </p>
+            <p className="mt-1.5 max-w-md font-body text-[13px] font-light leading-relaxed text-muted">
+              {EXPERT.role}
+            </p>
+          </div>
         </div>
       </div>
     </section>
