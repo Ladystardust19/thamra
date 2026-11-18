@@ -44,6 +44,20 @@ export const PRODUCTS: Product[] = [
     ],
   },
   {
+    // 3-month bundle shown on the nano-collagen landing page ("most popular").
+    // Brand-confirmed discounted price (regular 3× = 270 ₾, shown struck through).
+    id: "nano-collagen-3m",
+    name: "THAMRA NANO COLLAGEN HAIR ACTIVE DA-1 — 3 თვის კურსი",
+    duration: "3-თვიანი კურსი (90 პორცია)",
+    price: 202.5,
+    hidden: true,
+    productPage: "/product/nano-collagen",
+    features: [
+      "90 სთიკი — 3 თვის სრული კურსი",
+      "მაქსიმალური შედეგისთვის + სპეციალური ფასდაკლება",
+    ],
+  },
+  {
     id: "signature",
     name: "Thamra Signature",
     duration: "90-დღიანი პროგრამა",
