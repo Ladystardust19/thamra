@@ -8,7 +8,7 @@ const CHECKOUT_HREF = `/checkout?plan=${PRODUCT.id}`;
 const CTA_LABEL = "შეკვეთა";
 
 export const metadata: Metadata = {
-  title: "THAMRA CROWN Nº05 — თმის ფორმულა",
+  title: "THAMRA NANO COLLAGEN HAIR ACTIVE DA-1 — თმის ფორმულა",
   description:
     "ნანო კოლაგენი, კერატინი, ბიოტინი, ჰიალურონის მჟავა და L-თიანინი. ერთი პაკეტი დღეში — უფრო სქელი და ჯანსაღი თმისთვის. ერთთვიანი პროგრამა.",
 };
@@ -32,10 +32,10 @@ export default function NanoCollagenPage() {
           {/* ---------------- Title + buy ---------------- */}
           <div className="text-center">
             <p className="font-body text-[12px] uppercase tracking-[0.22em] text-muted">
-              THAMRA · Women&apos;s Hair Longevity
+              THAMRA · Women&apos;s Hair Essentials
             </p>
             <h1 className="mt-3 font-display text-[2rem] font-normal leading-tight text-oxblood md:text-[2.6rem]">
-              THAMRA CROWN Nº05
+              THAMRA NANO COLLAGEN HAIR ACTIVE DA-1
             </h1>
             <p className="mx-auto mt-4 max-w-md font-body text-[15px] font-light leading-relaxed text-read">
               ნანო კოლაგენი, კერატინი, ბიოტინი, ჰიალურონის მჟავა და L-თიანინი —

@@ -1,5 +1,5 @@
-// Content for the landing-page formula selector (FormulaSelector) and the
-// /formulas/[slug] detail views. Copy is supplied verbatim — do not edit.
+// Content for the landing-page formula selector (FormulaSelector).
+// Copy is supplied verbatim — do not edit.
 
 export interface Formula {
   slug: string;
@@ -7,7 +7,7 @@ export interface Formula {
   name: string;
   paragraphs: [string, string];
   // Where "აღმოაჩინე ფორმულა →" leads. Points at a real product page when one
-  // exists, otherwise at the formula's own detail view.
+  // exists.
   href: string;
 }
 
@@ -45,10 +45,6 @@ export const FORMULAS: Formula[] = [
       "თმის ანტი-ასაკობრივი უჯრედული აქტივატორი, სპეციალურად შექმნილი ქალებისთვის თმის ხარისხის, ელასტიურობისა და პირვანდელი სიცოცხლისუნარიანობის დასაბრუნებლად.",
       "მოლეკულური ელიქსირი აღადგენს თმის ფოლიკულების ენერგეტიკულ ბალანსს, მუხტავს მათ NAD+ აქტივატორით და უზრუნველყოფს მძლავრ ანტიოქსიდანტურ ფარს, რათა დაიცვას თმის სტრუქტურა ნაადრევი დაბერებისა და ქრონიკული გამოფიტვისგან.",
     ],
-    href: "/formulas/hair-cell-nad",
+    href: "/product/hair-cell-nad",
   },
 ];
-
-export function getFormula(slug: string): Formula | undefined {
-  return FORMULAS.find((f) => f.slug === slug);
-}

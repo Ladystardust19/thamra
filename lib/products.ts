@@ -33,7 +33,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: "nano-collagen",
-    name: "THAMRA CROWN Nº05",
+    name: "THAMRA NANO COLLAGEN HAIR ACTIVE DA-1",
     duration: "ერთთვიანი პროგრამა",
     price: 90,
     productPage: "/product/nano-collagen",
@@ -59,6 +59,16 @@ export const PRODUCTS: Product[] = [
     price: 749,
     equivalent: "საორიენტაციო ეკვივალენტი: ≈125 ₾ თვეში / ≈4.16 ₾ დღეში",
     features: [],
+  },
+  {
+    id: "hair-cell-nad",
+    name: "THAMRA HAIR CELL NAD+",
+    duration: "თმის ანტი-ასაკობრივი უჯრედული აქტივატორი",
+    price: 250,
+    features: [],
+    // Sold from its own page (/product/hair-cell-nad), not the programs list.
+    hidden: true,
+    productPage: "/product/hair-cell-nad",
   },
   {
     id: "consultation",
