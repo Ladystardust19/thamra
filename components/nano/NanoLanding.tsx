@@ -340,25 +340,140 @@ function Ingredients() {
 }
 
 /* ==================== 4. 90-DAY TIMELINE ==================== */
+// Ascending S-curve with a dot per month, a soft chip above each dot, and a
+// serif "N თვე" axis label below. The curve is one SVG path drawn in a 0..100
+// viewBox with preserveAspectRatio="none" + non-scaling stroke, so it stretches
+// to any width while the line stays crisp. Dots/chips/labels are HTML absolutely
+// positioned at the same percentage coords so they always sit on the curve.
+// Shown on sm+; a readable vertical version renders on mobile.
+const CURVE_NODES = [
+  { xp: 16, yp: 64, anchor: "left" as const },
+  { xp: 50, yp: 46, anchor: "center" as const },
+  { xp: 84, yp: 28, anchor: "right" as const },
+];
+const CURVE_PATH =
+  "M0,72 C6,72 10,66 16,64 C30,60 42,52 50,46 C60,39 76,32 84,28 C91,25 96,24 100,23";
+const CURVE_BASELINE = 80; // y% where connectors end / month labels sit
+
 function Timeline() {
   return (
-    <section className="px-5 py-20 md:px-8 md:py-28">
-      <div className="mx-auto max-w-4xl">
-        <h2 className="mx-auto max-w-2xl text-center font-display text-[1.8rem] font-normal leading-tight text-oxblood md:text-[2.4rem]">
+    <section className="bg-cream px-5 py-20 md:px-8 md:py-28">
+      <div className="mx-auto max-w-5xl">
+        {/* Title in a soft chip, top-left (per reference) */}
+        <h2 className="inline-block max-w-xl rounded-[1.5rem] bg-surface/70 px-6 py-4 font-display text-[1.7rem] font-normal leading-[1.15] text-oxblood md:text-[2.3rem]">
           {TIMELINE.title}
         </h2>
 
-        <ol className="relative mt-14 flex flex-col gap-10 before:absolute before:left-[18px] before:top-2 before:h-[calc(100%-2rem)] before:w-px before:bg-hairline md:before:left-[22px]">
-          {TIMELINE.steps.map((s, i) => (
-            <li key={s.label} className="relative flex gap-5 md:gap-7">
-              <span className="z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-oxblood font-display text-[16px] text-cream-soft md:h-11 md:w-11 md:text-[18px]">
-                {i + 1}
-              </span>
-              <div className="pt-1">
-                <h3 className="font-body text-[13px] uppercase tracking-[0.12em] text-gold-ink">
+        {/* ---- Curve (sm and up) ---- */}
+        <div className="relative mt-6 hidden h-[26rem] w-full sm:block md:h-[30rem]">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            className="absolute inset-0 h-full w-full"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="nano-curve" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#C9A96E" />
+                <stop offset="55%" stopColor="#A85A4A" />
+                <stop offset="100%" stopColor="#722530" />
+              </linearGradient>
+            </defs>
+            {/* connectors */}
+            {CURVE_NODES.map((n) => (
+              <line
+                key={`c-${n.xp}`}
+                x1={n.xp}
+                y1={n.yp}
+                x2={n.xp}
+                y2={CURVE_BASELINE}
+                stroke="#8B2F3A"
+                strokeOpacity="0.35"
+                strokeWidth="1"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+            {/* the ascending curve */}
+            <path
+              d={CURVE_PATH}
+              fill="none"
+              stroke="url(#nano-curve)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+
+          {/* dots */}
+          {CURVE_NODES.map((n) => (
+            <span
+              key={`d-${n.xp}`}
+              className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-oxblood-dark ring-4 ring-cream"
+              style={{ left: `${n.xp}%`, top: `${n.yp}%` }}
+            />
+          ))}
+
+          {/* chips (label + text) above each dot */}
+          {TIMELINE.steps.map((s, i) => {
+            const n = CURVE_NODES[i];
+            const pos =
+              n.anchor === "left"
+                ? { left: "0%", top: "30%", maxWidth: "31%" }
+                : n.anchor === "center"
+                ? {
+                    left: "50%",
+                    top: "13%",
+                    maxWidth: "31%",
+                    transform: "translateX(-50%)",
+                  }
+                : { right: "0%", top: "0%", maxWidth: "31%" };
+            const textAlign =
+              n.anchor === "center"
+                ? "text-center"
+                : n.anchor === "right"
+                ? "text-right"
+                : "text-left";
+            return (
+              <div
+                key={s.label}
+                className={`absolute rounded-[1.25rem] bg-surface/65 px-5 py-4 ${textAlign}`}
+                style={pos}
+              >
+                <h3 className="font-body text-[13px] font-normal uppercase tracking-[0.1em] text-gold-ink">
                   {s.label}
                 </h3>
-                <p className="mt-2 max-w-xl font-body text-[15px] font-light leading-relaxed text-read md:text-[16px]">
+                <p className="mt-1.5 font-body text-[13.5px] font-light leading-relaxed text-read">
+                  {s.text}
+                </p>
+              </div>
+            );
+          })}
+
+          {/* month axis labels */}
+          {CURVE_NODES.map((n, i) => (
+            <span
+              key={`m-${n.xp}`}
+              className="absolute -translate-x-1/2 font-display text-[1.6rem] text-oxblood md:text-[2rem]"
+              style={{ left: `${n.xp}%`, top: `${CURVE_BASELINE + 4}%` }}
+            >
+              {i + 1} თვე
+            </span>
+          ))}
+        </div>
+
+        {/* ---- Vertical version (mobile) ---- */}
+        <ol className="relative mt-10 flex flex-col gap-9 sm:hidden before:absolute before:bottom-3 before:left-[11px] before:top-3 before:w-px before:bg-gradient-to-b before:from-gold before:to-oxblood">
+          {TIMELINE.steps.map((s, i) => (
+            <li key={s.label} className="relative flex gap-5">
+              <span className="relative z-10 mt-1 h-[22px] w-[22px] shrink-0 rounded-full bg-oxblood-dark ring-4 ring-cream" />
+              <div>
+                <span className="font-display text-[1.35rem] leading-none text-oxblood">
+                  {i + 1} თვე
+                </span>
+                <h3 className="mt-2 font-body text-[13px] font-normal uppercase tracking-[0.1em] text-gold-ink">
+                  {s.label}
+                </h3>
+                <p className="mt-1.5 font-body text-[15px] font-light leading-relaxed text-read">
                   {s.text}
                 </p>
               </div>
