@@ -35,12 +35,12 @@ export default function NadHero({
           {/* Packaging — full image, never cropped */}
           <div className="lg:order-1">
             <Image
-              src="/hair-cell-nad/box.webp"
-              alt="THAMRA HAIR CELL NAD+ — ყუთი და პაკეტები"
-              width={1536}
-              height={1024}
+              src="/hair-cell-nad/hero-packaging.webp"
+              alt="THAMRA HAIR CELL NAD+ გახსნილ შინდისფერ ყუთში"
+              width={1122}
+              height={1402}
               priority
-              sizes="(min-width: 1024px) 640px, 100vw"
+              sizes="(min-width: 1280px) 564px, (min-width: 1024px) calc(50vw - 76px), 100vw"
               className="h-auto w-full"
             />
           </div>
