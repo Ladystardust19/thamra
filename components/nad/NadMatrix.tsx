@@ -14,21 +14,22 @@ export default function NadMatrix() {
         <h2 id="nad-matrix" className="text-center font-display text-[1.8rem] leading-tight text-[#5A1A1F] md:text-[2.4rem]">
           შემადგენლობა
         </h2>
-        <div className="mt-8 grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-center lg:gap-9 xl:gap-12">
-          <Image
-            src="/hair-cell-nad/ingredients-packaging.webp"
-            alt="THAMRA HAIR CELL NAD+ — ყუთი და ინდივიდუალური პაკეტები"
-            width={1200}
-            height={800}
-            sizes="(min-width: 1280px) 414px, (min-width: 1024px) calc(37.5vw - 61.5px), (min-width: 680px) 600px, (min-width: 640px) calc(100vw - 80px), calc(100vw - 40px)"
-            className="mx-auto h-auto w-full max-w-[600px] rounded-[1.5rem] lg:max-w-none"
-          />
-          <div className="grid gap-8 md:grid-cols-3 lg:gap-4 xl:gap-6">
+        <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-9 xl:gap-12">
+          <div className="relative mx-auto aspect-[2/3] w-full max-w-md overflow-hidden rounded-[1.5rem] lg:aspect-auto lg:max-w-none">
+            <Image
+              src="/hair-cell-nad/ingredients-berry-sachet.webp"
+              alt="THAMRA HAIR CELL NAD+-ის პაკეტი ყურძნისა და ჟოლოს გვერდით"
+              fill
+              sizes="(min-width: 1280px) 552px, (min-width: 1024px) calc(50vw - 82px), (min-width: 488px) 448px, calc(100vw - 40px)"
+              className="object-cover object-[58%_40%]"
+            />
+          </div>
+          <div className="grid min-w-0 gap-8 md:grid-cols-3 lg:grid-cols-1 lg:gap-5">
             {MATRIX.map((col, ci) => (
               <div key={col.title} className="min-w-0">
-                <div className="flex items-baseline gap-2 border-b border-[#5A1A1F] pb-4">
+                <div className="flex items-baseline gap-2 border-b border-[#5A1A1F] pb-3">
                   <span className="font-display text-[15px] text-[#B89A65]">0{ci + 1}</span>
-                  <h3 className="min-w-0 break-words font-display text-[1.375rem] font-normal leading-snug text-[#5A1A1F] lg:text-[1.125rem] xl:text-[1.25rem]">
+                  <h3 className="min-w-0 break-words font-display text-[1.375rem] font-normal leading-snug text-[#5A1A1F]">
                     {col.title}
                   </h3>
                 </div>
@@ -56,7 +57,7 @@ function Ingredient({ name, desc, defaultOpen }: { name: string; desc: string; d
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen((o) => !o)}
-        className="flex min-h-[56px] w-full items-center justify-between gap-2 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5A1A1F]"
+        className="flex min-h-[56px] w-full items-center justify-between gap-2 py-3 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5A1A1F] lg:min-h-12 lg:py-2.5"
       >
         <span className="min-w-0 break-words font-body text-[16px] text-[#2A2526]">{name}</span>
         {/* plus / minus */}
@@ -75,7 +76,7 @@ function Ingredient({ name, desc, defaultOpen }: { name: string; desc: string; d
         style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
         <p className="overflow-hidden font-body text-[15px] font-light leading-[1.65] text-[#4A3F3C]">
-          <span className="block pb-4">{desc}</span>
+          <span className="block pb-4 lg:pb-3">{desc}</span>
         </p>
       </div>
     </li>
