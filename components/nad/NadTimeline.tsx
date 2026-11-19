@@ -1,8 +1,7 @@
 import Image from "next/image";
 import { TIMELINE } from "@/lib/hairCellNad";
 
-// Section 2. The portrait is an illustrative image, not a documented customer
-// result, so it is captioned as such and not split into "before/after" tabs.
+// Section 2 uses an illustrative portrait.
 export default function NadTimeline() {
   return (
     <section aria-labelledby="nad-timeline" className="w-full bg-[#E9DFD1]">
@@ -16,9 +15,6 @@ export default function NadTimeline() {
             sizes="(min-width: 1024px) 720px, 100vw"
             className="h-auto w-full"
           />
-          <figcaption className="mt-3 font-body text-[13px] font-light text-[#6B5F5A]">
-            ილუსტრაციული გამოსახულება
-          </figcaption>
         </figure>
         <div>
           <h2
