@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUp, Check, ChevronDown, Clock3, GlassWater, Orbit, Sparkle, Waypoints, X } from "lucide-react";
+import { ArrowUp, Check, ChevronDown, Clock3, GlassWater, Maximize2, Minimize2, Orbit, Sparkle, Waypoints, X } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -596,74 +596,74 @@ function Ritual() {
 
 /* ==================== 6. EXPERT PERSPECTIVES ==================== */
 function Experts() {
-  const { title, featured, additional } = EXPERTS;
+  const [hoveredExpert, setHoveredExpert] = useState<string | null>(null);
+  const [selectedExpert, setSelectedExpert] = useState<string | null>(null);
+  const enlargedExpert = hoveredExpert ?? selectedExpert;
 
   return (
     <section id="nano-experts" aria-labelledby="nano-experts-title" className="px-5 py-20 md:px-8 md:py-28">
       <div className="mx-auto max-w-6xl">
         <h2 id="nano-experts-title" className="text-center font-display text-[2rem] leading-tight text-oxblood md:text-[2.65rem]">
-          {title}
+          {EXPERTS.title}
         </h2>
 
-        <article className="mt-8 grid items-center gap-6 rounded-[2rem] border border-gold/30 bg-gradient-to-br from-paper to-surface/75 p-3.5 sm:p-5 md:grid-cols-[0.7fr_1.3fr] md:gap-8 lg:gap-11 lg:p-6">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.4rem] bg-surface md:aspect-[5/6]">
-            <Image
-              src={featured.image}
-              alt=""
-              fill
-              sizes="(min-width: 1216px) 370px, (min-width: 768px) 35vw, (min-width: 640px) calc(100vw - 82px), calc(100vw - 70px)"
-              className="object-cover object-[50%_22%]"
-            />
-          </div>
+        <ul className="mt-8 grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {EXPERTS.items.map((expert) => {
+            const isEnlarged = enlargedExpert === expert.name;
+            const isSelected = selectedExpert === expert.name;
+            const ToggleIcon = isSelected ? Minimize2 : Maximize2;
 
-          <div className="min-w-0 px-2 pb-3 sm:px-3 md:py-4 md:pl-0 md:pr-5 lg:pr-9">
-            <h3 className="font-display text-[1.9rem] leading-none text-oxblood md:text-[2.35rem]">
-              {featured.name}
-            </h3>
-            <p className="mt-2.5 font-body text-[14px] italic leading-snug text-muted">
-              {featured.role}
-            </p>
-            <blockquote className="mt-5 border-l border-gold/70 pl-4 font-display text-[1.2rem] leading-relaxed text-read md:mt-6 md:pl-5 lg:text-[1.45rem]">
-              <ExpertQuote quote={featured.quote} />
-            </blockquote>
-          </div>
-        </article>
-
-        <ul className="mt-4 grid gap-4 lg:grid-cols-3">
-          {additional.map((expert) => (
-            <li key={expert.name} className="rounded-[1.5rem] border border-hairline bg-paper p-5 sm:p-6">
-              <div className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-3.5 lg:min-h-[6rem]">
-                <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
+            return (
+              <li
+                key={expert.name}
+                onPointerEnter={(event) => {
+                  if (event.pointerType === "mouse") setHoveredExpert(expert.name);
+                }}
+                onPointerLeave={(event) => {
+                  if (event.pointerType === "mouse") setHoveredExpert(null);
+                }}
+                className={`relative min-w-0 rounded-[1.5rem] border bg-paper p-3.5 motion-safe:transition-[transform,border-color,box-shadow] motion-safe:duration-200 ${
+                  isEnlarged
+                    ? "z-10 scale-[1.035] border-oxblood/35 shadow-[0_16px_38px_rgba(55,18,26,0.16)] lg:scale-[1.08]"
+                    : "border-hairline"
+                }`}
+              >
+                <div className="relative aspect-[5/3] overflow-hidden rounded-2xl bg-surface lg:aspect-[5/4]">
                   <Image
                     src={expert.image}
                     alt=""
                     fill
-                    sizes="64px"
+                    sizes="(min-width: 1216px) 243px, (min-width: 1024px) calc(25vw - 61px), (min-width: 768px) calc(50vw - 72px), (min-width: 640px) calc(50vw - 60px), calc(100vw - 70px)"
                     className="object-cover"
                     style={{ objectPosition: expert.imagePosition }}
                   />
                 </div>
-                <div>
-                  <h3 className="font-display text-[1.35rem] leading-tight text-oxblood">
-                    {expert.name}
-                  </h3>
-                  <p className="mt-1 font-body text-[13px] italic leading-snug text-muted">
-                    {expert.role}
-                  </p>
+                <button
+                  type="button"
+                  aria-label={`${expert.name} — ბარათის გადიდება`}
+                  aria-pressed={isSelected}
+                  onClick={() => setSelectedExpert((current) => current === expert.name ? null : expert.name)}
+                  className="absolute right-5 top-5 grid h-11 w-11 place-items-center rounded-full border border-gold/30 bg-paper/95 text-oxblood shadow-sm transition-colors hover:bg-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oxblood"
+                >
+                  <ToggleIcon aria-hidden size={17} strokeWidth={1.5} />
+                </button>
+                <div className="mt-4 px-1 lg:min-h-[6rem]">
+                  <h3 className="font-display text-[1.45rem] leading-tight text-oxblood">{expert.name}</h3>
+                  <p className="mt-1.5 font-body text-[13px] italic leading-snug text-muted">{expert.role}</p>
                 </div>
-              </div>
-              <blockquote className="mt-4 border-t border-hairline pt-4 font-body text-[15px] leading-relaxed text-read">
-                <ExpertQuote quote={expert.quote} />
-              </blockquote>
-            </li>
-          ))}
+                <blockquote className="mx-1 mt-3 border-t border-hairline pb-2 pt-4 font-body text-[15px] leading-relaxed text-read">
+                  <ExpertQuote quote={expert.quote} />
+                </blockquote>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>
   );
 }
 
-function ExpertQuote({ quote }: { quote: typeof EXPERTS.featured.quote }) {
+function ExpertQuote({ quote }: { quote: (typeof EXPERTS.items)[number]["quote"] }) {
   return (
     <>
       „{quote.beforeProduct}

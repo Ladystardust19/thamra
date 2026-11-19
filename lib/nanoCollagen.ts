@@ -202,17 +202,18 @@ export const RITUAL = {
 export const EXPERTS = {
   title: "ექსპერტების სიტყვა",
   productName: "NANO COLLAGEN HAIR ACTIVE DA-1",
-  featured: {
-    name: "Andries Van Riezen",
-    role: "Biochemist · Nutraceutical Formulation Expert · Acenzia Bio-Science R&D (Ontario, Canada)",
-    quote: {
-      beforeProduct: "",
-      afterProduct:
-        "-ის მთავარი ძალა მის სწრაფ შეწოვასა და 9 კომპონენტის ზუსტ ბალანსშია. ნანო-კოლაგენი და აქტიური ვიტამინები პირდაპირ აღწევს თმის ძირებამდე, შესამჩნევად ამცირებს თმის ცვენას, ამკვრივებს თმის ღერს და ააქტიურებს ახალი, ძლიერი თმის ზრდას.",
+  items: [
+    {
+      name: "Andries Van Riezen",
+      role: "Biochemist · Nutraceutical Formulation Expert · Acenzia Bio-Science R&D (Ontario, Canada)",
+      quote: {
+        beforeProduct: "",
+        afterProduct:
+          "-ის მთავარი ძალა მის სწრაფ შეწოვასა და 9 კომპონენტის ზუსტ ბალანსშია. ნანო-კოლაგენი და აქტიური ვიტამინები პირდაპირ აღწევს თმის ძირებამდე, შესამჩნევად ამცირებს თმის ცვენას, ამკვრივებს თმის ღერს და ააქტიურებს ახალი, ძლიერი თმის ზრდას.",
+      },
+      image: "/andries-van-riezen.webp",
+      imagePosition: "50% 22%",
     },
-    image: "/andries-van-riezen.webp",
-  },
-  additional: [
     {
       name: "Lasha Jakeli",
       role: "MD · Neurologist · Stress Physiology Expert · პლატფორმა „Mindor“-ის დამფუძნებელი",

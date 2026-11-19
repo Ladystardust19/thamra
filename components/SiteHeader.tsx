@@ -16,6 +16,7 @@ const NAV_LINKS: NavLink[] = [
     children: [
       { label: "მენოპაუზის თმის ფორმულა", href: "/product" },
       { label: "THAMRA NANO COLLAGEN HAIR ACTIVE DA-1", href: "/product/nano-collagen" },
+      { label: "THAMRA HAIR CELL NAD+", href: "/product/hair-cell-nad" },
     ],
   },
   { label: "პროგრამები",   href: "/programs" },
@@ -121,6 +122,8 @@ export default function SiteHeader() {
               className="flex lg:hidden flex-col justify-center items-center w-9 h-9 gap-[5px] shrink-0"
               onClick={() => setMenuOpen((o) => !o)}
               aria-label={menuOpen ? "მენიუს დახურვა" : "მენიუს გახსნა"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-site-nav"
             >
               <span className={`block w-6 h-[1.5px] transition-all duration-300 origin-center ${dark ? "bg-ink" : "bg-cream-soft"} ${menuOpen ? "translate-y-[6.5px] rotate-45" : ""}`} />
               <span className={`block w-6 h-[1.5px] transition-all duration-300 ${dark ? "bg-ink" : "bg-cream-soft"} ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
@@ -131,8 +134,11 @@ export default function SiteHeader() {
 
         {/* Mobile dropdown menu */}
         <div
-          className={`lg:hidden overflow-hidden transition-all duration-300 ${
-            menuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+          id="mobile-site-nav"
+          className={`lg:hidden transition-all duration-300 ${
+            menuOpen
+              ? "visible max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain opacity-100"
+              : "invisible max-h-0 overflow-hidden opacity-0"
           } bg-cream/98 backdrop-blur-sm border-t border-gold/10`}
         >
           <div className="px-6 pb-6 pt-3 flex flex-col gap-1">
