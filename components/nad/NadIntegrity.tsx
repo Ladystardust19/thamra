@@ -1,21 +1,23 @@
 import Image from "next/image";
-import { INTEGRITY } from "@/lib/hairCellNad";
+import { INTEGRITY, NAD } from "@/lib/hairCellNad";
 
 // Section 4 — philosophy and daily ritual.
 export default function NadIntegrity() {
   return (
     <section aria-labelledby="nad-integrity" className="w-full bg-[#EFE7DC]">
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-9 px-5 py-16 sm:px-10 md:py-24 lg:grid-cols-2 lg:gap-14 lg:px-12 lg:py-28">
-        <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
-          <p className="font-display text-[1.375rem] font-normal leading-[1.55] text-[#2A2526] md:text-[1.75rem]">
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-9 px-5 py-16 sm:px-10 md:py-24 lg:grid-cols-2 lg:gap-x-14 lg:gap-y-12 lg:px-12 lg:py-28">
+        <div className="mx-auto w-full max-w-md lg:max-w-none">
+          <h2 id="nad-integrity" className="font-display text-[clamp(1.875rem,4vw,3rem)] font-normal leading-[1.2] text-burgundy">
+            <span className="block text-balance">{INTEGRITY.heading}</span>{" "}
+            <span className="mt-3 block text-balance text-[0.64em] leading-[1.45] text-oxblood-dark">
+              {INTEGRITY.headingAccent}
+            </span>
+          </h2>
+          <p className="mt-6 max-w-[44ch] text-pretty font-body text-base font-normal leading-[1.75] text-read md:mt-8 md:text-lg">
             {INTEGRITY.body}
           </p>
-          <span aria-hidden className="mx-auto mb-8 mt-8 block h-px w-12 bg-[#B89A65] lg:mx-0" />
-          <h2 id="nad-integrity" className="font-display text-[1.125rem] font-normal tracking-[0.04em] text-[#5A1A1F] md:text-[1.25rem]">
-            {INTEGRITY.slogan}
-          </h2>
-          <p className="mx-auto mt-4 max-w-[520px] font-body text-[15px] font-light leading-[1.7] text-[#4A3F3C] lg:mx-0">
-            {INTEGRITY.sub}
+          <p className="mt-6 max-w-[36ch] border-l-2 border-gold pl-4 font-display text-lg font-medium leading-[1.5] text-burgundy md:mt-8 md:text-xl">
+            {INTEGRITY.ritual}
           </p>
         </div>
         <Image
@@ -26,6 +28,17 @@ export default function NadIntegrity() {
           sizes="(min-width: 1152px) 500px, (min-width: 1024px) calc(50vw - 76px), (min-width: 488px) 448px, calc(100vw - 40px)"
           className="mx-auto h-auto w-full max-w-md rounded-[1.75rem] lg:max-w-none"
         />
+        <div className="mx-auto grid w-full max-w-md gap-3 border-t border-hairline pt-6 lg:col-span-2 lg:max-w-none lg:grid-cols-2 lg:gap-14">
+          <div>
+            <p className="font-body text-xs font-medium tracking-[0.08em] text-oxblood-dark">{NAD.name}</p>
+            <p className="mt-2 font-display text-lg font-medium leading-normal text-burgundy">
+              {INTEGRITY.slogan}
+            </p>
+          </div>
+          <p className="text-pretty font-body text-sm font-normal leading-relaxed text-read">
+            {INTEGRITY.sub}
+          </p>
+        </div>
       </div>
     </section>
   );
