@@ -6,7 +6,7 @@ import { CATALOG_ID, BUNDLE_3M_ID } from "@/lib/nanoCollagen";
 export const metadata: Metadata = {
   title: "THAMRA NANO COLLAGEN HAIR ACTIVE DA-1 — თმის ფორმულა",
   description:
-    "გემრიელი კენკრის სასმელი, რომელიც შენს თმას შიგნიდან კვებავს — 8 აქტიური კომპონენტი, ნანო-კოლაგენი და მაქსიმალური შეწოვა. ერთი ჭიქა დღეში.",
+    "გემრიელი კენკრის სასმელი, რომელიც შენს თმას შიგნიდან კვებავს — 9 აქტიური კომპონენტი, ნანო-კოლაგენი და მაქსიმალური შეწოვა. ერთი ჭიქა დღეში.",
 };
 
 export default function NanoCollagenPage() {
