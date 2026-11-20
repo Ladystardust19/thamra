@@ -27,7 +27,7 @@ const DESCRIPTION =
   "ყოველდღიური თმის დანამატი, რომელიც შექმნილია თმის ცვენის შესამცირებლად, შესამჩნევად სქელი და უფრო სწრაფი თმის ზრდისთვის მენოპაუზის პერიოდში.";
 
 const IMAGES = [
-  { src: "/venice-hair-elixir.webp", alt: "THAMRA VENICE HAIR ELIXIR — ქილა და ოქროსფერი კოვზი ფხვნილით" },
+  { src: "/venice-hair-elixir-packaging.webp", alt: "THAMRA VENICE HAIR ELIXIR-ის შინდისფერი ქილა ოქროსფერი წარწერით" },
   { src: "/product-drinking.webp", alt: "ქალი სვამს Thamra-ს დილის შუქზე" },
   { src: "/product-bottle.webp", alt: "Thamra-ს ბოთლი ქვაზე, ყვავილებთან" },
 ];
@@ -84,14 +84,15 @@ export default function ProductPageClient() {
     <main className="bg-cream px-5 pb-20 pt-28 md:px-8 lg:pt-32">
       <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
         {/* ---------------- Gallery (left) ---------------- */}
-        <div className="flex flex-col gap-3">
-          <div className="relative aspect-[3/2] w-full overflow-hidden rounded-2xl bg-surface">
+        <div className="mx-auto flex w-full max-w-[34rem] flex-col gap-3 lg:max-w-none">
+          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl bg-surface">
             <Image
               src={IMAGES[0].src}
               alt={IMAGES[0].alt}
               fill
               priority
-              sizes="(max-width: 1024px) 100vw, 55vw"
+              quality={92}
+              sizes="(min-width: 1216px) 630px, (min-width: 1024px) 52vw, (min-width: 584px) 544px, calc(100vw - 40px)"
               className="object-cover"
             />
           </div>
