@@ -5,17 +5,6 @@ import Link from "next/link";
 import { useRef, useState, type KeyboardEvent } from "react";
 import { FORMULAS, FORMULA_HEADLINE, FORMULA_CTA } from "@/lib/formulas";
 
-/*
- * "Every stage" formula selector: one static powder photo, three product tabs.
- * Switching a tab swaps only the name, the two paragraphs and the CTA target.
- *
- * Grid areas — mobile:  head / img / tabs / panel (tabs sit right above
- *                        the text, so a tap visibly changes it)
- *              desktop: img + head over (panel | tabs)
- * All three panels share one grid cell on desktop so the tallest one sets the
- * height and the CTA doesn't jump between tabs.
- */
-
 const IVORY = "#F7F3EC";
 const BURGUNDY = "#5A1A1F";
 const GOLD = "#B89A65";
@@ -23,6 +12,7 @@ const GOLD = "#B89A65";
 export default function FormulaSelector() {
   const [active, setActive] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const { image } = FORMULAS[active];
 
   function onKeyDown(e: KeyboardEvent<HTMLButtonElement>, i: number) {
     const last = FORMULAS.length - 1;
@@ -45,12 +35,12 @@ export default function FormulaSelector() {
       style={{ backgroundColor: IVORY }}
     >
       <div
-        className="mx-auto grid w-full max-w-[1280px] gap-x-12 px-5 py-12 sm:px-10 sm:py-16 md:py-24 lg:gap-x-14 lg:px-12 lg:py-[120px] [grid-template-areas:'head'_'img'_'tabs'_'panel'] lg:grid-cols-[44%_minmax(0,1fr)_168px] lg:[grid-template-areas:'img_head_head'_'img_panel_tabs']"
+        className="mx-auto grid w-full max-w-[1280px] gap-x-12 px-5 py-12 sm:px-10 sm:py-16 md:py-24 lg:gap-x-14 lg:px-12 lg:py-[120px] [grid-template-areas:'head'_'tabs'_'img'_'panel'] lg:grid-cols-[minmax(0,46fr)_minmax(0,54fr)] lg:grid-rows-[auto_auto_1fr] lg:[grid-template-areas:'img_head'_'img_tabs'_'img_panel']"
       >
         {/* Shared headline */}
         <h2
           id="formulas-heading"
-          className="font-display font-normal [grid-area:head] lg:max-w-[560px] lg:self-end"
+          className="text-balance font-display font-normal [grid-area:head] lg:max-w-[560px] lg:pt-4"
           style={{
             color: BURGUNDY,
             fontSize: "clamp(1.5rem, 6vw, 2.625rem)",
@@ -60,11 +50,10 @@ export default function FormulaSelector() {
           {FORMULA_HEADLINE}
         </h2>
 
-        {/* Tabs — 3 columns on mobile, slim vertical column on desktop */}
         <div
           role="tablist"
           aria-label="THAMRA ფორმულები"
-          className="mt-5 grid grid-cols-3 gap-2 [grid-area:tabs] lg:mt-10 lg:flex lg:flex-col lg:gap-2.5 lg:self-start"
+          className="mt-5 grid grid-cols-3 gap-2 [grid-area:tabs] lg:mt-7 lg:max-w-[540px] lg:gap-2.5"
         >
           {FORMULAS.map((f, i) => {
             const selected = i === active;
@@ -97,29 +86,20 @@ export default function FormulaSelector() {
           })}
         </div>
 
-        {/* The one static photograph — never changes with the tab */}
-        <div className="mt-5 flex items-center justify-center [grid-area:img] lg:mt-0">
+        <div className="relative mx-auto mt-5 aspect-[4/5] w-full max-w-[28rem] self-center overflow-hidden rounded-[1.5rem] bg-surface [grid-area:img] lg:mt-0 lg:max-w-none">
           <Image
-            src="/thamra-powder.webp"
-            alt="THAMRA-ს ბორდოსფერი ფხვნილი ოქროსფერ კოვზში"
-            width={1254}
-            height={1254}
-            sizes="(min-width: 1024px) 540px, (min-width: 640px) 300px, 210px"
-            loading="eager"
-            className="h-auto w-full max-w-[210px] sm:max-w-[300px] lg:max-w-[540px]"
-            style={{
-              // Feather the photo's own backdrop into the section ivory; the
-              // powder itself is untouched (mask only, no filter).
-              WebkitMaskImage:
-                "radial-gradient(ellipse 50% 50% at 50% 50%, #000 52%, transparent 100%)",
-              maskImage:
-                "radial-gradient(ellipse 50% 50% at 50% 50%, #000 52%, transparent 100%)",
-            }}
+            key={image.src}
+            src={image.src}
+            alt={image.alt}
+            fill
+            quality={92}
+            sizes="(min-width: 1280px) 520px, (min-width: 1024px) 41vw, (min-width: 488px) 448px, calc(100vw - 40px)"
+            className="object-cover"
           />
         </div>
 
         {/* Text panel */}
-        <div className="mt-7 [grid-area:panel] lg:mt-10 lg:border-t lg:pt-10" style={{ borderColor: "rgba(184, 154, 101, 0.45)" }}>
+        <div className="mt-7 [grid-area:panel] lg:mt-8 lg:border-t lg:pt-7" style={{ borderColor: "rgba(184, 154, 101, 0.45)" }}>
           <div className="grid lg:max-w-[480px]">
             {FORMULAS.map((f, i) => {
               const selected = i === active;
