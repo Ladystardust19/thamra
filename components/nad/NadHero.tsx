@@ -17,6 +17,7 @@ import { NAD, PURCHASE_OPTIONS, type PurchaseOptionId } from "@/lib/hairCellNad"
 const BURGUNDY = "#5A1A1F";
 const IVORY = "#F7F3EC";
 const CHARCOAL = "#2A2526";
+const HERO_IMAGE_SIZES = "(min-width: 1280px) 564px, (min-width: 1024px) calc(50vw - 76px), 100vw";
 
 export default function NadHero({
   checkoutHref,
@@ -31,22 +32,22 @@ export default function NadHero({
   return (
     <>
       <section aria-labelledby="nad-title" className="w-full" style={{ backgroundColor: IVORY }}>
-        <div className="mx-auto grid w-full max-w-[1280px] lg:grid-cols-2 lg:items-center lg:gap-14 lg:px-12 lg:py-16">
+        <div className="mx-auto grid w-full max-w-[1280px] lg:grid-cols-2 lg:gap-x-14 lg:gap-y-5 lg:px-12 lg:py-16">
           {/* Packaging — full image, never cropped */}
-          <div className="lg:order-1">
+          <div className="lg:col-start-1 lg:row-start-1">
             <Image
               src="/hair-cell-nad/hero-packaging.webp"
               alt="THAMRA HAIR CELL NAD+ გახსნილ შინდისფერ ყუთში"
               width={1122}
               height={1402}
               priority
-              sizes="(min-width: 1280px) 564px, (min-width: 1024px) calc(50vw - 76px), 100vw"
+              sizes={HERO_IMAGE_SIZES}
               className="h-auto w-full"
             />
           </div>
 
           {/* Copy + purchase */}
-          <div className="flex flex-col justify-center px-5 pb-12 pt-8 sm:px-10 lg:order-2 lg:px-0 lg:py-0">
+          <div className="flex flex-col px-5 pb-12 pt-8 sm:px-10 lg:sticky lg:top-28 lg:col-start-2 lg:row-[1/3] lg:mt-20 lg:self-start lg:px-0 lg:py-0 xl:mt-28">
             <h1
               id="nad-title"
               className="font-display font-normal tracking-[0.04em]"
@@ -113,6 +114,16 @@ export default function NadHero({
             </fieldset>
 
           </div>
+
+          <Image
+            src="/hair-cell-nad/hero-sachets.webp"
+            alt="THAMRA HAIR CELL NAD+-ის შინდისფერი პაკეტები ოქროსფერი წარწერებით"
+            width={1122}
+            height={1402}
+            quality={94}
+            sizes={HERO_IMAGE_SIZES}
+            className="h-auto w-full lg:col-start-1 lg:row-start-2"
+          />
         </div>
       </section>
 
