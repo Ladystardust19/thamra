@@ -115,15 +115,26 @@ export default function NadHero({
 
           </div>
 
-          <Image
-            src="/hair-cell-nad/hero-sachets.webp"
-            alt="THAMRA HAIR CELL NAD+-ის შინდისფერი პაკეტები ოქროსფერი წარწერებით"
-            width={1122}
-            height={1402}
-            quality={94}
-            sizes={HERO_IMAGE_SIZES}
-            className="h-auto w-full lg:col-start-1 lg:row-start-2"
-          />
+          <div className="flex min-w-0 flex-col gap-5 lg:col-start-1 lg:row-start-2">
+            <Image
+              src="/hair-cell-nad/hero-sachets.webp"
+              alt="THAMRA HAIR CELL NAD+-ის შინდისფერი პაკეტები ოქროსფერი წარწერებით"
+              width={1122}
+              height={1402}
+              quality={94}
+              sizes={HERO_IMAGE_SIZES}
+              className="h-auto w-full"
+            />
+            <Image
+              src="/hair-cell-nad/hero-berry-drink.webp"
+              alt="THAMRA HAIR CELL NAD+-ის პაკეტი კენკრის სასმელის ბოთლთან და ჭიქასთან"
+              width={941}
+              height={1672}
+              quality={94}
+              sizes={HERO_IMAGE_SIZES}
+              className="h-auto w-full"
+            />
+          </div>
         </div>
       </section>
 
