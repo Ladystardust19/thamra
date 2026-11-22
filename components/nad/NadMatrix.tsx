@@ -17,9 +17,10 @@ export default function NadMatrix() {
         <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:gap-9 xl:gap-12">
           <div className="relative mx-auto aspect-[2/3] w-full max-w-md overflow-hidden rounded-[1.5rem] lg:aspect-auto lg:max-w-none">
             <Image
-              src="/hair-cell-nad/ingredients-berry-sachet.webp"
-              alt="THAMRA HAIR CELL NAD+-ის პაკეტი ყურძნისა და ჟოლოს გვერდით"
+              src="/hair-cell-nad/ingredients-frosted-berries.webp"
+              alt="THAMRA HAIR CELL NAD+-ის პაკეტი ყურძენთან და მაყვალთან ყინულზე"
               fill
+              quality={90}
               sizes="(min-width: 1280px) 552px, (min-width: 1024px) calc(50vw - 82px), (min-width: 488px) 448px, calc(100vw - 40px)"
               className="object-cover object-[58%_40%]"
             />
