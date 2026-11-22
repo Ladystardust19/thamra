@@ -1,9 +1,7 @@
 // THAMRA HAIR CELL NAD+ product page content. Georgian copy is supplied
 // verbatim by the brand — do not rewrite.
 //
-// Purchasing is enabled only once a catalog entry with id CATALOG_ID exists in
-// lib/products.ts (price is not defined yet). Until then the CTAs render
-// disabled rather than sending people to checkout with the wrong product.
+// The purchase links use the product and price from lib/products.ts.
 
 export const CATALOG_ID = "hair-cell-nad";
 
@@ -12,15 +10,11 @@ export const NAD = {
   subhead: "თმის ანტი-ასაკობრივი უჯრედული აქტივატორი.",
   micro:
     "სისტემური მიდგომა, რომელიც უარყოფს ზედაპირულ გადაწყვეტილებებს. ერთიანი, კომპლექსური ფორმულა ფოლიკულების ახალგაზრდული ენერგიის, თმის სტრუქტურული მთლიანობისა და სიცოცხლისუნარიანობის აღსადგენად.",
-  stickyCta: "დაამატე კალათაში",
+  purchaseTitle: "დაიწყე შენი თმის უჯრედული ტრანსფორმაცია",
+  purchaseDetails: "1 შეფუთვა · ერთჯერადი გადახდა",
+  orderCta: "შეუკვეთე ახლა",
+  deliveryNote: "მიწოდება მთელ საქართველოში",
 };
-
-export const PURCHASE_OPTIONS = [
-  { id: "routine", label: "ყოველთვიური ბიო-სისტემა" },
-  { id: "once", label: "ერთჯერადი შეძენა" },
-] as const;
-
-export type PurchaseOptionId = (typeof PURCHASE_OPTIONS)[number]["id"];
 
 export const TIMELINE = {
   heading: "ბიოლოგიური დროის მართვა",
